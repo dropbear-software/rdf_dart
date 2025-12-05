@@ -1,8 +1,10 @@
-/// Support for doing something awesome.
-///
-/// More dartdocs go here.
+/// A Dart implementation of the RDF 1.2 Concepts and Abstract Data Model.
 library;
 
-export 'src/rdf_dart_base.dart';
-
-// TODO: Export any libraries intended for clients of this package.
+export 'src/model/term.dart';
+export 'src/model/named_node.dart';
+export 'src/model/blank_node.dart';
+export 'src/model/literal.dart';
+export 'src/model/triple.dart';
+export 'src/model/triple_term.dart';
+export 'src/model/quad.dart';

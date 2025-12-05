@@ -8,6 +8,7 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
+  iri: ^0.1.1
   # path: ^1.9.0
 
 dev_dependencies:
