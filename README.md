@@ -1,39 +1,29 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# RDF for Dart
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages). 
+A comprehensive implementation of the **RDF 1.2** standard for the Dart programming language.
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages). 
--->
+## Overview
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+This package aims to provide a complete and compliant implementation of the [RDF 1.2 Concepts and Abstract Data Model](https://www.w3.org/TR/rdf12-concepts/) and related specifications. It is designed to modernize RDF support in Dart, incorporating the latest advancements from the W3C, including support for **RDF-star** (Triple Terms).
+
+This implementation will also be fully compatible with **RDF 1.1**.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+- **RDF 1.2 Data Model**: Full support for IRIs, Literals, Blank Nodes, and Triple Terms.
+- **Datasets**: Native support for RDF Datasets (Default Graph + Named Graphs).
+- **Strong Typing**: leveraged Dart's type system for correct RDF term representation.
+- **Modern Standards**: Built to align with specifications like `xsd:duration` and `xsd:dayTimeDuration`.
 
-## Getting started
+## Roadmap
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+- [ ] Abstract Data Model (IRIs, Literals, Blank Nodes, Triple Terms)
+- [ ] RDF Datasets
+- [ ] Serialization (Turtle, N-Triples, etc.)
+- [ ] Semantics & Reasoning (Entailment)
 
-## Usage
+## Dependencies
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
-
-```dart
-const like = 'sample';
-```
-
-## Additional information
-
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+This project will leverage community-standard packages where appropriate, including:
+- `iri` for strictly compliant IRI handling.
+- Custom XSD datatype handling for robust literal value conversion.
