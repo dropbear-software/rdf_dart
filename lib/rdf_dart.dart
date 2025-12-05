@@ -4,6 +4,8 @@ library;
 export 'src/model/term.dart';
 export 'src/model/named_node.dart';
 export 'src/model/blank_node.dart';
+export 'src/model/dataset.dart';
+export 'src/model/graph.dart';
 export 'src/model/literal.dart';
 export 'src/model/triple.dart';
 export 'src/model/triple_term.dart';
