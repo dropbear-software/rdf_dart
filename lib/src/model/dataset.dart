@@ -31,6 +31,14 @@ abstract interface class Dataset {
     Term? subject,
     Term? predicate,
     Term? object,
+
+    /// The name of the graph to match.
+    ///
+    /// If [graphName] is `null` (the default), it acts as a wildcard, matching
+    /// quads from **all** graphs (both the default graph and all named graphs).
+    ///
+    /// To match quads specifically in the default graph, you may need to filter
+    /// the results manually or use a specific implementation-dependent method if available.
     GraphName? graphName,
   });
 }
