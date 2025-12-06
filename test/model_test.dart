@@ -5,7 +5,9 @@ void main() {
   group('RDF Terms', () {
     test('NamedNode', () {
       final node = NamedNode('http://example.org/foo');
-      expect(node.value, 'http://example.org/foo');
+      // No .value getter on Term or NamedNode anymore (for string val)
+      // Use .iri.toString() or .toString()
+      expect(node.iri.toString(), 'http://example.org/foo');
       expect(node.toString(), '<http://example.org/foo>');
       expect(node, equals(NamedNode('http://example.org/foo')));
     });
@@ -14,7 +16,7 @@ void main() {
       final node1 = BlankNode('b1');
       final node2 = BlankNode('b1');
       final node3 = BlankNode('b2');
-      expect(node1.value, 'b1');
+      expect(node1.id, 'b1');
       expect(node1.toString(), '_:b1');
       expect(node1, equals(node2));
       expect(node1, isNot(equals(node3)));
@@ -23,7 +25,7 @@ void main() {
     test('Literal', () {
       final stringType = NamedNode('http://www.w3.org/2001/XMLSchema#string');
       final lit = Literal('foo', datatype: stringType);
-      expect(lit.value, 'foo');
+      expect(lit.lexicalForm, 'foo');
       expect(lit.datatype, stringType);
       expect(
         lit.toString(),
@@ -36,7 +38,7 @@ void main() {
         'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString',
       );
       final lit = Literal('foo', datatype: langString, language: 'en');
-      expect(lit.value, 'foo');
+      expect(lit.lexicalForm, 'foo');
       expect(lit.language, 'en');
       expect(lit.toString(), '"foo"@en');
     });

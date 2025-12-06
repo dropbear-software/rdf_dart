@@ -3,10 +3,7 @@
 /// The base interface for all RDF terms.
 ///
 /// This serves as a common root for all types that can appear in an RDF graph.
-abstract interface class Term {
-  /// The N-Triples/Turtle representation of this term.
-  String get value;
-}
+abstract interface class Term {}
 
 /// A marker interface for terms that can appear in the subject position of a triple.
 ///

@@ -8,26 +8,19 @@ class BlankNode implements Term, Subject, TripleObject, GraphName {
   ///
   /// This identifier is only valid within the scope of the graph or dataset
   /// it belongs to.
-  @override
-  final String value;
+  final String id;
 
-  /// Creates a [BlankNode] with the given [value] (identifier).
-  ///
-  /// If no value is provided, one should ideally be generated, but for this
-  /// abstract data model, we require an explicit ID or assume the caller generates it.
-  /// (TODO: Add auto-generation if needed).
-  BlankNode(this.value);
+  /// Creates a [BlankNode] with the given [id].
+  BlankNode(this.id);
 
   @override
-  String toString() => '_:$value';
+  String toString() => '_:$id';
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is BlankNode &&
-          runtimeType == other.runtimeType &&
-          value == other.value;
+      other is BlankNode && runtimeType == other.runtimeType && id == other.id;
 
   @override
-  int get hashCode => value.hashCode;
+  int get hashCode => id.hashCode;
 }

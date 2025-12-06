@@ -11,17 +11,14 @@ class NamedNode implements Term, Subject, Predicate, TripleObject, GraphName {
 
   /// Creates a [NamedNode] from a string.
   ///
-  /// Throws if [value] is not a valid IRI.
+  /// The string is parsed into an [IRI].
   NamedNode(String value) : iri = IRI(value);
 
   /// Creates a [NamedNode] from an existing [IRI] object.
   NamedNode.fromIRI(this.iri);
 
   @override
-  String get value => iri.toString();
-
-  @override
-  String toString() => '<$value>';
+  String toString() => '<$iri>';
 
   @override
   bool operator ==(Object other) =>

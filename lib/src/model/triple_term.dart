@@ -15,9 +15,6 @@ class TripleTerm implements Term, TripleObject {
   TripleTerm(this.triple);
 
   @override
-  String get value => triple.toString();
-
-  @override
   String toString() => '<<( $triple )>>';
 
   @override
