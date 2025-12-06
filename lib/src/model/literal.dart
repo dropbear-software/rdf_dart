@@ -1,3 +1,4 @@
+import 'dart:convert' as convert;
 import 'package:intl/intl.dart' as intl;
 import 'package:xsd/xsd.dart' as xsd;
 
@@ -145,30 +146,63 @@ class Literal implements Term, TripleObject {
     this.value,
   );
 
+  // TODO: https://github.com/dropbear-software/xsd/issues/78
+  static final Map<String, convert.Codec> _xsdCodecs = {
+    'http://www.w3.org/2001/XMLSchema#string': xsd.XsdStringCodec(),
+    'http://www.w3.org/2001/XMLSchema#boolean': xsd.XsdBooleanCodec(),
+    'http://www.w3.org/2001/XMLSchema#decimal': xsd.XsdDecimalCodec(),
+    'http://www.w3.org/2001/XMLSchema#integer': xsd.XsdIntegerCodec(),
+    'http://www.w3.org/2001/XMLSchema#double': xsd.XsdDoubleCodec(),
+    'http://www.w3.org/2001/XMLSchema#float': xsd.XsdFloatCodec(),
+    'http://www.w3.org/2001/XMLSchema#date': xsd.XsdDateCodec(),
+    'http://www.w3.org/2001/XMLSchema#dateTime': xsd.XsdDateTimeCodec(),
+    'http://www.w3.org/2001/XMLSchema#gYear': xsd.GregorianYearCodec(),
+    'http://www.w3.org/2001/XMLSchema#gYearMonth': xsd.YearMonthCodec(),
+    'http://www.w3.org/2001/XMLSchema#gMonth': xsd.GregorianMonthCodec(),
+    'http://www.w3.org/2001/XMLSchema#gMonthDay': xsd.GregorianMonthDayCodec(),
+    'http://www.w3.org/2001/XMLSchema#gDay': xsd.XsdGDayCodec(),
+    'http://www.w3.org/2001/XMLSchema#duration': xsd.XsdDurationCodec(),
+    'http://www.w3.org/2001/XMLSchema#byte': xsd.XsdByteCodec(),
+    'http://www.w3.org/2001/XMLSchema#short': xsd.XsdShortCodec(),
+    'http://www.w3.org/2001/XMLSchema#int': xsd.XsdIntCodec(),
+    'http://www.w3.org/2001/XMLSchema#long': xsd.XsdLongCodec(),
+    'http://www.w3.org/2001/XMLSchema#unsigedByte': xsd.XsdUnsignedByteCodec(),
+    'http://www.w3.org/2001/XMLSchema#unsigedShort':
+        xsd.XsdUnsignedShortCodec(),
+    'http://www.w3.org/2001/XMLSchema#unsigedInt': xsd.XsdUnsignedIntCodec(),
+    'http://www.w3.org/2001/XMLSchema#unsigedLong': xsd.XsdUnsignedLongCodec(),
+    'http://www.w3.org/2001/XMLSchema#positiveInteger':
+        xsd.XmlPositiveIntegerCodec(),
+    'http://www.w3.org/2001/XMLSchema#nonNegativeInteger':
+        xsd.XsdNonNegativeIntegerCodec(),
+    'http://www.w3.org/2001/XMLSchema#negativeInteger':
+        xsd.XsdNegativeIntegerCodec(),
+    'http://www.w3.org/2001/XMLSchema#nonPositiveInteger':
+        xsd.XsdNonPositiveIntegerCodec(),
+    'http://www.w3.org/2001/XMLSchema#hexBinary': xsd.XsdHexbinaryCodec(),
+    'http://www.w3.org/2001/XMLSchema#base64Binary': xsd.XsdBase64BinaryCodec(),
+    'http://www.w3.org/2001/XMLSchema#anyURI': xsd.XsdAnyUriCodec(),
+    'http://www.w3.org/2001/XMLSchema#language': xsd.XsdLanguageCodec(),
+    'http://www.w3.org/2001/XMLSchema#normalizedString':
+        xsd.XsdNormalizedStringCodec(),
+    'http://www.w3.org/2001/XMLSchema#token': xsd.XsdTokenCodec(),
+    'http://www.w3.org/2001/XMLSchema#NMTOKEN': xsd.XsdNmtokenCodec(),
+    'http://www.w3.org/2001/XMLSchema#Name': xsd.XsdNameCodec(),
+    'http://www.w3.org/2001/XMLSchema#NCName': xsd.XsdNcnameCodec(),
+  };
+
   static Object? _mapValue(String lexicalForm, NamedNode datatype) {
     // Basic mapping for common XSD types using package:xsd codecs
-    // Note: In a full implementation, we might have a registry.
-    // Here we manually map the most common ones.
     final iri = datatype.iri.toString();
+    final codec = _xsdCodecs[iri];
 
-    try {
-      if (iri == 'http://www.w3.org/2001/XMLSchema#string') {
-        return xsd.XsdStringCodec().decode(lexicalForm);
-      } else if (iri == 'http://www.w3.org/2001/XMLSchema#boolean') {
-        return xsd.XsdBooleanCodec().decode(lexicalForm);
-      } else if (iri == 'http://www.w3.org/2001/XMLSchema#integer') {
-        return xsd.XsdIntegerCodec().decode(lexicalForm);
-      } else if (iri == 'http://www.w3.org/2001/XMLSchema#decimal') {
-        return xsd.XsdDecimalCodec().decode(lexicalForm);
-      } else if (iri == 'http://www.w3.org/2001/XMLSchema#double') {
-        return xsd.XsdDoubleCodec().decode(lexicalForm);
-      } else if (iri == 'http://www.w3.org/2001/XMLSchema#dateTime') {
-        return xsd.XsdDateTimeCodec().decode(lexicalForm);
+    if (codec != null) {
+      try {
+        return codec.decode(lexicalForm);
+      } catch (_) {
+        // Ill-typed literal
+        return null;
       }
-      // TODO: Add more types (date, time, duration, etc.)
-    } catch (e) {
-      // Ill-typed literal
-      return null;
     }
 
     // Default: return the lexical form if unknown datatype (or langString)
