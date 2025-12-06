@@ -16,7 +16,7 @@ void main() {
           );
         });
 
-        test('With a BlankNode subject', () {
+        test('With a Blank Node subject', () {
           final s = BlankNode('b1');
           final p = Iri('http://example.org/p');
           final o = Iri('http://example.org/o');
@@ -27,7 +27,7 @@ void main() {
           );
         });
 
-        test('With a BlankNode object', () {
+        test('With a Blank Node object', () {
           final s = Iri('http://example.org/s');
           final p = Iri('http://example.org/p');
           final o = BlankNode('b1');
@@ -38,7 +38,7 @@ void main() {
           );
         });
 
-        test('With a BlankNode subject and object', () {
+        test('With a Blank Node subject and object', () {
           final s = BlankNode('b1');
           final p = Iri('http://example.org/p');
           final o = BlankNode('b2');
@@ -49,7 +49,7 @@ void main() {
           );
         });
 
-        test('With the same BlankNode subject and object', () {
+        test('With the same Blank Node subject and object', () {
           final s = BlankNode('b1');
           final p = Iri('http://example.org/p');
           final o = BlankNode('b1');
