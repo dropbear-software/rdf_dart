@@ -7,7 +7,7 @@ import 'triple.dart';
 /// in another triple. It essentially "quotes" the triple.
 ///
 /// Triple terms allow valid RDF-star (Triple Terms) syntax.
-class TripleTerm implements RdfTerm, TripleObject {
+class TripleTerm implements ObjectTerm {
   /// The underlying triple.
   final Triple triple;
 

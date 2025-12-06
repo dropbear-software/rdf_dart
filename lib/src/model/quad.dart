@@ -21,13 +21,13 @@ class Quad {
   Quad(this.triple, [this.graphName]);
 
   /// Convenience accessor for the subject.
-  Subject get subject => triple.subject;
+  SubjectTerm get subject => triple.subject;
 
   /// Convenience accessor for the predicate.
-  Predicate get predicate => triple.predicate;
+  PredicateTerm get predicate => triple.predicate;
 
   /// Convenience accessor for the object.
-  TripleObject get object => triple.object;
+  ObjectTerm get object => triple.object;
 
   @override
   String toString() {

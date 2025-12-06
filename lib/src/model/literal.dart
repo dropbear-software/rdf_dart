@@ -14,7 +14,7 @@ import 'term.dart';
 /// 2. A [datatypeIri] identifying the datatype.
 /// 3. An optional [languageTag] (for `rdf:langString`).
 /// 4. An optional [baseDirection] (for `rdf:dirLangString`).
-class Literal implements RdfTerm, TripleObject {
+class Literal implements ObjectTerm {
   /// The lexical form of the literal.
   final String lexicalForm;
 

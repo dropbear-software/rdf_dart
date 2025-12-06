@@ -2,17 +2,17 @@ import 'term.dart';
 
 /// An asserted RDF Triple.
 ///
-/// A triple consists of a [Subject], a [Predicate], and a [TripleObject].
+/// A triple consists of a [SubjectTerm], a [PredicateTerm], and a [ObjectTerm].
 /// It represents a statement in an RDF graph.
 class Triple {
   /// The subject of the triple.
-  final Subject subject;
+  final SubjectTerm subject;
 
   /// The predicate of the triple.
-  final Predicate predicate;
+  final PredicateTerm predicate;
 
   /// The object of the triple.
-  final TripleObject object;
+  final ObjectTerm object;
 
   /// Creates a new [Triple].
   ///

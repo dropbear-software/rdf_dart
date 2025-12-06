@@ -60,15 +60,15 @@ class InMemoryDataset implements Dataset {
       if (!_namedGraphs.containsKey(graphName)) return [];
 
       // Validate types before passing to Graph.match
-      if (subject != null && subject is! Subject) return [];
-      if (predicate != null && predicate is! Predicate) return [];
-      if (object != null && object is! TripleObject) return [];
+      if (subject != null && subject is! SubjectTerm) return [];
+      if (predicate != null && predicate is! PredicateTerm) return [];
+      if (object != null && object is! ObjectTerm) return [];
 
       return _namedGraphs[graphName]!
           .match(
-            subject: subject as Subject?,
-            predicate: predicate as Predicate?,
-            object: object as TripleObject?,
+            subject: subject as SubjectTerm?,
+            predicate: predicate as PredicateTerm?,
+            object: object as ObjectTerm?,
           )
           .map((t) => Quad(t, graphName));
     }

@@ -23,9 +23,9 @@ class InMemoryGraph with GraphMixin implements Graph {
 
   @override
   Iterable<Triple> match({
-    Subject? subject,
-    Predicate? predicate,
-    TripleObject? object,
+    SubjectTerm? subject,
+    PredicateTerm? predicate,
+    ObjectTerm? object,
   }) {
     return _triples.where((triple) {
       if (subject != null && triple.subject != subject) return false;
@@ -37,9 +37,9 @@ class InMemoryGraph with GraphMixin implements Graph {
 
   @override
   void removeMatches(
-    Subject? subject,
-    Predicate? predicate,
-    TripleObject? object,
+    SubjectTerm? subject,
+    PredicateTerm? predicate,
+    ObjectTerm? object,
   ) {
     _triples.removeWhere((triple) {
       if (subject != null && triple.subject != subject) return true;

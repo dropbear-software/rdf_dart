@@ -13,17 +13,17 @@ abstract interface class RdfTerm {
 /// A marker interface for terms that can appear in the subject position of a triple.
 ///
 /// In RDF 1.2, this includes [Iri] and [BlankNode].
-abstract interface class Subject implements RdfTerm {}
+abstract interface class SubjectTerm implements RdfTerm {}
 
 /// A marker interface for terms that can appear in the predicate position of a triple.
 ///
 /// In RDF 1.2, this includes [Iri].
-abstract interface class Predicate implements RdfTerm {}
+abstract interface class PredicateTerm implements RdfTerm {}
 
 /// A marker interface for terms that can appear in the object position of a triple.
 ///
 /// In RDF 1.2, this includes [Iri], [BlankNode], [Literal], and [TripleTerm].
-abstract interface class TripleObject implements RdfTerm {}
+abstract interface class ObjectTerm implements RdfTerm {}
 
 /// A marker interface for terms that can be used as a graph name in a dataset.
 ///
