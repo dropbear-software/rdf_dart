@@ -6,6 +6,10 @@ abstract interface class Graph {
   /// Returns all triples in the graph.
   Iterable<Triple> get triples;
 
+  /// The set of nodes of an RDF graph is the set of subjects and objects
+  /// of the asserted triples of the graph
+  Iterable<RdfTerm> get nodes;
+
   /// The number of triples in the graph.
   int get length;
 
