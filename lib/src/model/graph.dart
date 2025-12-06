@@ -9,7 +9,7 @@ abstract interface class Graph {
   /// The number of triples in the graph.
   int get length;
 
-  /// Returns true if the graph contains the given [triple].
+  /// Returns true if the graph contains (asserts) the given [triple].
   bool contains(Triple triple);
 
   /// Adds a [triple] to the graph. Returns true if it was added.
