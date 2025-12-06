@@ -8,7 +8,11 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
+  intl: ^0.20.2
   iri: ^0.1.1
+  xsd:
+    git: https://github.com/dropbear-software/xsd.git
+      
   # path: ^1.9.0
 
 dev_dependencies:
