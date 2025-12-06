@@ -3,7 +3,7 @@ import '../term.dart';
 import '../triple.dart';
 
 /// A set-based in-memory implementation of [Graph].
-class InMemoryGraph implements Graph {
+class InMemoryGraph with GraphMixin implements Graph {
   final Set<Triple> _triples = {};
 
   @override

@@ -3,7 +3,7 @@ import 'term.dart';
 /// An RDF Blank Node (a node without a global identifier).
 ///
 /// Blank nodes can appear in the Subject or Object position of a triple.
-class BlankNode implements Term, Subject, TripleObject, GraphName {
+class BlankNode implements RdfTerm, Subject, TripleObject, GraphName {
   /// The local identifier for this blank node.
   ///
   /// This identifier is only valid within the scope of the graph or dataset
@@ -23,4 +23,8 @@ class BlankNode implements Term, Subject, TripleObject, GraphName {
 
   @override
   int get hashCode => id.hashCode;
+
+  @override
+  /// Always returns false for BlankNodes.
+  bool get isGround => false;
 }

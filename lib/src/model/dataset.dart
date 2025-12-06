@@ -28,9 +28,9 @@ abstract interface class Dataset {
 
   /// Matches quads across the entire dataset.
   Iterable<Quad> match({
-    Term? subject,
-    Term? predicate,
-    Term? object,
+    RdfTerm? subject,
+    RdfTerm? predicate,
+    RdfTerm? object,
 
     /// The name of the graph to match.
     ///

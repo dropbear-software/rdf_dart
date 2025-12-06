@@ -38,4 +38,11 @@ class Triple {
 
   @override
   int get hashCode => Object.hash(subject, predicate, object);
+
+  /// The groundness of this triple.
+  ///
+  /// An [Triple] is said to be ground if its [subject], [predicate], and [object] are all ground.
+  bool get isGround {
+    return subject.isGround && predicate.isGround && object.isGround;
+  }
 }

@@ -13,7 +13,7 @@ import 'term.dart';
 /// 2. A [datatypeIri] identifying the datatype.
 /// 3. An optional [languageTag] (for `rdf:langString`).
 /// 4. An optional [baseDirection] (for `rdf:dirLangString`).
-class Literal implements Term, TripleObject {
+class Literal implements RdfTerm, TripleObject {
   /// The lexical form of the literal.
   final String lexicalForm;
 
@@ -253,4 +253,8 @@ class Literal implements Term, TripleObject {
     languageTag?.toLowerCase(),
     baseDirection,
   );
+
+  @override
+  /// Always returns true for Literals.
+  bool get isGround => true;
 }

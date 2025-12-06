@@ -34,4 +34,15 @@ abstract interface class Graph {
     Predicate? predicate,
     TripleObject? object,
   );
+
+  /// The groundness of this graph.
+  ///
+  /// An [Graph] is said to be ground if all its asserted triples are ground.
+  bool get isGround;
+}
+
+/// A mixin that provides default implementations for some [Graph] members.
+mixin GraphMixin implements Graph {
+  @override
+  bool get isGround => triples.every((triple) => triple.isGround);
 }

@@ -5,7 +5,7 @@ import 'term.dart';
 ///
 /// An [Iri] can appear in the Subject, Predicate, or Object position of a triple.
 /// It wraps an [iri_pkg.Iri] from the `iri` package to ensure compliance with RFC specifications.
-class Iri implements Term, Subject, Predicate, TripleObject, GraphName {
+class Iri implements RdfTerm, Subject, Predicate, TripleObject, GraphName {
   /// The underlying IRI value.
   final iri_pkg.IRI value;
 
@@ -27,4 +27,8 @@ class Iri implements Term, Subject, Predicate, TripleObject, GraphName {
 
   @override
   int get hashCode => value.hashCode;
+
+  @override
+  /// Always returns true for IRIs.
+  bool get isGround => true;
 }

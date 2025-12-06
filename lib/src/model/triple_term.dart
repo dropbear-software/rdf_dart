@@ -7,7 +7,7 @@ import 'triple.dart';
 /// in another triple. It essentially "quotes" the triple.
 ///
 /// Triple terms allow valid RDF-star (Triple Terms) syntax.
-class TripleTerm implements Term, TripleObject {
+class TripleTerm implements RdfTerm, TripleObject {
   /// The underlying triple.
   final Triple triple;
 
@@ -26,4 +26,10 @@ class TripleTerm implements Term, TripleObject {
 
   @override
   int get hashCode => triple.hashCode;
+
+  @override
+  /// Returns true if the underlying triple is ground.
+  bool get isGround {
+    return triple.isGround;
+  }
 }

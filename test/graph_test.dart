@@ -68,4 +68,49 @@ void main() {
       expect(graph.match(subject: Iri('http://example.org/none')), isEmpty);
     });
   });
+  group('Graph.isGround', () {
+    test('Empty graph is ground', () {
+      final graph = InMemoryGraph();
+      expect(graph.isGround, isTrue);
+    });
+
+    test('Ground graph', () {
+      final graph = InMemoryGraph();
+      final t1 = Triple(
+        subject: Iri('s'),
+        predicate: Iri('p'),
+        object: Iri('o'),
+      );
+      graph.add(t1);
+      expect(graph.isGround, isTrue);
+    });
+
+    test('Unground graph', () {
+      final graph = InMemoryGraph();
+      final t1 = Triple(
+        subject: BlankNode('b'),
+        predicate: Iri('p'),
+        object: Iri('o'),
+      );
+      graph.add(t1);
+      expect(graph.isGround, isFalse);
+    });
+
+    test('Mixed graph', () {
+      final graph = InMemoryGraph();
+      final t1 = Triple(
+        subject: Iri('s'),
+        predicate: Iri('p'),
+        object: Iri('o'),
+      );
+      final t2 = Triple(
+        subject: BlankNode('b'),
+        predicate: Iri('p'),
+        object: Iri('o'),
+      );
+      graph.add(t1);
+      graph.add(t2);
+      expect(graph.isGround, isFalse);
+    });
+  });
 }

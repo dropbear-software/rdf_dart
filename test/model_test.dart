@@ -7,6 +7,7 @@ void main() {
       final node = Iri('http://example.org/foo');
       expect(node.toString(), '<http://example.org/foo>');
       expect(node, equals(Iri('http://example.org/foo')));
+      expect(node.isGround, isTrue);
     });
 
     test('BlankNode', () {
@@ -17,6 +18,7 @@ void main() {
       expect(node1.toString(), '_:b1');
       expect(node1, equals(node2));
       expect(node1, isNot(equals(node3)));
+      expect(node1.isGround, isFalse);
     });
 
     test('Literal', () {
@@ -28,6 +30,7 @@ void main() {
         lit.toString(),
         '"foo"^^<http://www.w3.org/2001/XMLSchema#string>',
       );
+      expect(lit.isGround, isTrue);
     });
 
     test('Literal with language', () {
@@ -86,6 +89,40 @@ void main() {
       final quad = Quad(triple);
       expect(quad.graphName, isNull);
       expect(quad.toString(), triple.toString());
+    });
+
+    test('isGround', () {
+      final s = Iri('http://example.org/s');
+      final p = Iri('http://example.org/p');
+      final o = Iri('http://example.org/o');
+      final b = BlankNode('b1');
+
+      final groundTriple = Triple(subject: s, predicate: p, object: o);
+      expect(groundTriple.isGround, isTrue);
+
+      final ungroundTriple = Triple(subject: b, predicate: p, object: o);
+      expect(ungroundTriple.isGround, isFalse);
+
+      final groundTT = TripleTerm(groundTriple);
+      expect(groundTT.isGround, isTrue);
+
+      final ungroundTT = TripleTerm(ungroundTriple);
+      expect(ungroundTT.isGround, isFalse);
+
+      // Recursive check
+      final recursiveTriple = Triple(
+        subject: s,
+        predicate: p,
+        object: groundTT,
+      );
+      expect(recursiveTriple.isGround, isTrue);
+
+      final recursiveUngroundTriple = Triple(
+        subject: s,
+        predicate: p,
+        object: ungroundTT,
+      );
+      expect(recursiveUngroundTriple.isGround, isFalse);
     });
   });
 }

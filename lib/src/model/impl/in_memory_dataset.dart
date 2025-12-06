@@ -50,9 +50,9 @@ class InMemoryDataset implements Dataset {
 
   @override
   Iterable<Quad> match({
-    Term? subject,
-    Term? predicate,
-    Term? object,
+    RdfTerm? subject,
+    RdfTerm? predicate,
+    RdfTerm? object,
     GraphName? graphName,
   }) {
     // If graphName is provided, only match in that graph.
