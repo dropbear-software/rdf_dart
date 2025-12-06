@@ -1,6 +1,7 @@
 name: rdf_dart
 description: A Dart implementation of the RDF 1.2 Concepts and Abstract Data Model, including support for RDF 1.1.
 version: 1.0.0
+publish_to: none
 # repository: https://github.com/my_org/my_repo
 
 environment:
