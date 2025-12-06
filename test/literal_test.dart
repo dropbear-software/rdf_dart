@@ -137,6 +137,22 @@ void main() {
           );
         },
       );
+
+      test('Valid language tag is accepted', () {
+        expect(() => Literal('hello', languageTag: 'en-US'), returnsNormally);
+        expect(() => Literal('hello', languageTag: 'zh-Hant'), returnsNormally);
+      });
+
+      test('Invalid language tag throws FormatException', () {
+        expect(
+          () => Literal('hello', languageTag: 'invalid tag'),
+          throwsFormatException,
+        );
+        expect(
+          () => Literal('hello', languageTag: '123'),
+          throwsFormatException,
+        );
+      });
     });
   });
 }

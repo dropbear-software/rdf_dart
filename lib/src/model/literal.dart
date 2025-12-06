@@ -1,5 +1,6 @@
 import 'dart:convert' as convert;
 import 'package:intl/intl.dart' as intl;
+import 'package:intl/locale.dart';
 import 'package:xsd/xsd.dart' as xsd;
 
 import 'iri.dart';
@@ -119,6 +120,11 @@ class Literal implements RdfTerm, TripleObject {
           lexicalForm,
         );
       }
+    }
+
+    // Validate language tag if present
+    if (languageTag != null && Locale.tryParse(languageTag) == null) {
+      throw FormatException('Invalid language tag: $languageTag', languageTag);
     }
 
     Object? parsedValue;
