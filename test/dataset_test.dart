@@ -5,15 +5,15 @@ import 'package:test/test.dart';
 void main() {
   group('InMemoryDataset', () {
     late Dataset dataset;
-    final s1 = NamedNode('http://example.org/s1');
-    final p1 = NamedNode('http://example.org/p1');
+    final s1 = Iri('http://example.org/s1');
+    final p1 = Iri('http://example.org/p1');
     final o1 = Literal(
       'o1',
-      datatype: NamedNode('http://www.w3.org/2001/XMLSchema#string'),
+      datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#string'),
     );
     final t1 = Triple(subject: s1, predicate: p1, object: o1);
 
-    final g1Name = NamedNode('http://example.org/g1');
+    final g1Name = Iri('http://example.org/g1');
 
     // Quad in default graph
     final qDefault = Quad(t1);
@@ -73,7 +73,7 @@ void main() {
       expect(dataset.match(subject: s1), hasLength(2));
 
       // Match non-existent graph
-      expect(dataset.match(graphName: NamedNode('http://other')), isEmpty);
+      expect(dataset.match(graphName: Iri('http://other')), isEmpty);
     });
 
     test('namedGraph returns same instance', () {

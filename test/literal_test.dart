@@ -5,41 +5,53 @@ import 'package:test/test.dart';
 void main() {
   group('Literal Details', () {
     test('Value Mapping - Integer', () {
-      final integerType = NamedNode('http://www.w3.org/2001/XMLSchema#integer');
-      final lit = Literal('123', datatype: integerType);
+      final integerType = Iri('http://www.w3.org/2001/XMLSchema#integer');
+      final lit = Literal('123', datatypeIri: integerType);
 
       expect(lit.lexicalForm, '123');
-      expect(lit.datatype, integerType);
+      expect(lit.datatypeIri, integerType);
       expect(lit.value, BigInt.from(123)); // Check typed value
     });
 
     test('Value Mapping - Boolean', () {
-      final booleanType = NamedNode('http://www.w3.org/2001/XMLSchema#boolean');
-      final lit = Literal('true', datatype: booleanType);
+      final booleanType = Iri('http://www.w3.org/2001/XMLSchema#boolean');
+      final lit = Literal('true', datatypeIri: booleanType);
 
       expect(lit.value, true);
     });
 
     test('Value Mapping - Ill-typed', () {
-      final integerType = NamedNode('http://www.w3.org/2001/XMLSchema#integer');
-      final lit = Literal('abc', datatype: integerType);
+      final integerType = Iri('http://www.w3.org/2001/XMLSchema#integer');
+      final lit = Literal('abc', datatypeIri: integerType);
 
       // Should be null for ill-typed
       expect(lit.value, isNull);
     });
 
     test('Equality - Case Insensitive Language', () {
-      final l1 = Literal('hello', language: 'en-US');
-      final l2 = Literal('hello', language: 'EN-us');
+      final l1 = Literal('hello', languageTag: 'en-US');
+      final l2 = Literal('hello', languageTag: 'EN-us');
 
       expect(l1, equals(l2));
       expect(l1.hashCode, equals(l2.hashCode));
     });
 
     test('Equality - Direction', () {
-      final l1 = Literal('hello', language: 'en', direction: TextDirection.LTR);
-      final l2 = Literal('hello', language: 'en', direction: TextDirection.LTR);
-      final l3 = Literal('hello', language: 'en', direction: TextDirection.RTL);
+      final l1 = Literal(
+        'hello',
+        languageTag: 'en',
+        baseDirection: TextDirection.LTR,
+      );
+      final l2 = Literal(
+        'hello',
+        languageTag: 'en',
+        baseDirection: TextDirection.LTR,
+      );
+      final l3 = Literal(
+        'hello',
+        languageTag: 'en',
+        baseDirection: TextDirection.RTL,
+      );
 
       expect(l1, equals(l2));
       expect(l1, isNot(equals(l3)));
@@ -50,8 +62,8 @@ void main() {
         expect(
           () => Literal(
             'hello',
-            language: 'en',
-            datatype: NamedNode('http://www.w3.org/2001/XMLSchema#string'),
+            languageTag: 'en',
+            datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#string'),
           ),
           throwsFormatException,
         );
@@ -64,8 +76,8 @@ void main() {
         expect(
           () => Literal(
             'hello',
-            direction: TextDirection.LTR,
-            datatype: NamedNode('http://www.w3.org/2001/XMLSchema#string'),
+            baseDirection: TextDirection.LTR,
+            datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#string'),
           ),
           throwsFormatException,
         );
@@ -75,9 +87,9 @@ void main() {
         expect(
           () => Literal(
             'hello',
-            language: 'en',
-            direction: TextDirection.LTR,
-            datatype: NamedNode(
+            languageTag: 'en',
+            baseDirection: TextDirection.LTR,
+            datatypeIri: Iri(
               'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString',
             ),
           ),
@@ -89,7 +101,7 @@ void main() {
         expect(
           () => Literal(
             'hello',
-            datatype: NamedNode(
+            datatypeIri: Iri(
               'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString',
             ),
           ),
@@ -101,8 +113,8 @@ void main() {
         expect(
           () => Literal(
             'hello',
-            direction: TextDirection.LTR,
-            datatype: NamedNode(
+            baseDirection: TextDirection.LTR,
+            datatypeIri: Iri(
               'http://www.w3.org/1999/02/22-rdf-syntax-ns#dirLangString',
             ),
           ),
@@ -116,8 +128,8 @@ void main() {
           expect(
             () => Literal(
               'hello',
-              language: 'en',
-              datatype: NamedNode(
+              languageTag: 'en',
+              datatypeIri: Iri(
                 'http://www.w3.org/1999/02/22-rdf-syntax-ns#dirLangString',
               ),
             ),

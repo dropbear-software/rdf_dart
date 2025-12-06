@@ -3,13 +3,10 @@ import 'package:test/test.dart';
 
 void main() {
   group('RDF Terms', () {
-    test('NamedNode', () {
-      final node = NamedNode('http://example.org/foo');
-      // No .value getter on Term or NamedNode anymore (for string val)
-      // Use .iri.toString() or .toString()
-      expect(node.iri.toString(), 'http://example.org/foo');
+    test('Iri', () {
+      final node = Iri('http://example.org/foo');
       expect(node.toString(), '<http://example.org/foo>');
-      expect(node, equals(NamedNode('http://example.org/foo')));
+      expect(node, equals(Iri('http://example.org/foo')));
     });
 
     test('BlankNode', () {
@@ -23,10 +20,10 @@ void main() {
     });
 
     test('Literal', () {
-      final stringType = NamedNode('http://www.w3.org/2001/XMLSchema#string');
-      final lit = Literal('foo', datatype: stringType);
+      final stringType = Iri('http://www.w3.org/2001/XMLSchema#string');
+      final lit = Literal('foo', datatypeIri: stringType);
       expect(lit.lexicalForm, 'foo');
-      expect(lit.datatype, stringType);
+      expect(lit.datatypeIri, stringType);
       expect(
         lit.toString(),
         '"foo"^^<http://www.w3.org/2001/XMLSchema#string>',
@@ -34,21 +31,21 @@ void main() {
     });
 
     test('Literal with language', () {
-      final langString = NamedNode(
+      final langString = Iri(
         'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString',
       );
-      final lit = Literal('foo', datatype: langString, language: 'en');
+      final lit = Literal('foo', datatypeIri: langString, languageTag: 'en');
       expect(lit.lexicalForm, 'foo');
-      expect(lit.language, 'en');
+      expect(lit.languageTag, 'en');
       expect(lit.toString(), '"foo"@en');
     });
   });
 
   group('Triples and Quads', () {
-    final s = NamedNode('http://example.org/s');
-    final p = NamedNode('http://example.org/p');
-    final o = NamedNode('http://example.org/o');
-    final g = NamedNode('http://example.org/g');
+    final s = Iri('http://example.org/s');
+    final p = Iri('http://example.org/p');
+    final o = Iri('http://example.org/o');
+    final g = Iri('http://example.org/g');
 
     test('Triple', () {
       final triple = Triple(subject: s, predicate: p, object: o);

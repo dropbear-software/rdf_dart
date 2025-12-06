@@ -2,7 +2,7 @@ import 'dart:convert' as convert;
 import 'package:intl/intl.dart' as intl;
 import 'package:xsd/xsd.dart' as xsd;
 
-import 'named_node.dart';
+import 'iri.dart';
 import 'term.dart';
 
 /// An RDF Literal.
@@ -10,26 +10,26 @@ import 'term.dart';
 /// Literals are used for values such as strings, numbers, and dates.
 /// A literal consists of:
 /// 1. A [lexicalForm] (the string representation).
-/// 2. A [datatype] IRI.
-/// 3. An optional [language] tag (for `rdf:langString`).
-/// 4. An optional [direction] (for `rdf:dirLangString`).
+/// 2. A [datatypeIri] identifying the datatype.
+/// 3. An optional [languageTag] (for `rdf:langString`).
+/// 4. An optional [baseDirection] (for `rdf:dirLangString`).
 class Literal implements Term, TripleObject {
   /// The lexical form of the literal.
   final String lexicalForm;
 
   /// The datatype IRI of the literal.
-  final NamedNode datatype;
+  final Iri datatypeIri;
 
   /// The language tag, if any.
   ///
-  /// This must be non-null if and only if [datatype] is `rdf:langString`
+  /// This must be non-null if and only if [datatypeIri] is `rdf:langString`
   /// or `rdf:dirLangString`.
-  final String? language;
+  final String? languageTag;
 
   /// The base direction, if any.
   ///
-  /// This must be non-null if and only if [datatype] is `rdf:dirLangString`.
-  final intl.TextDirection? direction;
+  /// This must be non-null if and only if [datatypeIri] is `rdf:dirLangString`.
+  final intl.TextDirection? baseDirection;
 
   /// The typed value of this literal, mapped from the lexical form.
   ///
@@ -48,27 +48,27 @@ class Literal implements Term, TripleObject {
   /// Creates a literal.
   ///
   /// [lexicalForm] is the string representation.
-  /// [datatype] is the datatype IRI. Defaults to `xsd:string` if not provided,
-  /// unless [language] is present (defaults to `rdf:langString`) or
-  /// [direction] is present (defaults to `rdf:dirLangString`).
+  /// [datatypeIri] is the datatype IRI. Defaults to `xsd:string` if not provided,
+  /// unless [languageTag] is present (defaults to `rdf:langString`) or
+  /// [baseDirection] is present (defaults to `rdf:dirLangString`).
   factory Literal(
     String lexicalForm, {
-    NamedNode? datatype,
-    String? language,
-    intl.TextDirection? direction,
+    Iri? datatypeIri,
+    String? languageTag,
+    intl.TextDirection? baseDirection,
   }) {
     // Determine datatype if not provided
-    if (datatype == null) {
-      if (direction != null) {
-        datatype = NamedNode(
+    if (datatypeIri == null) {
+      if (baseDirection != null) {
+        datatypeIri = Iri(
           'http://www.w3.org/1999/02/22-rdf-syntax-ns#dirLangString',
         );
-      } else if (language != null) {
-        datatype = NamedNode(
+      } else if (languageTag != null) {
+        datatypeIri = Iri(
           'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString',
         );
       } else {
-        datatype = NamedNode('http://www.w3.org/2001/XMLSchema#string');
+        datatypeIri = Iri('http://www.w3.org/2001/XMLSchema#string');
       }
     }
 
@@ -77,15 +77,15 @@ class Literal implements Term, TripleObject {
     // If and only if datatype is dirLangString, language must be non-null and direction must be non-null.
     // Otherwise, language and direction must be null.
 
-    final iri = datatype.iri.toString();
+    final iri = datatypeIri.value.toString();
     if (iri == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString') {
-      if (language == null) {
+      if (languageTag == null) {
         throw FormatException(
           'Language tag must be provided for rdf:langString',
           lexicalForm,
         );
       }
-      if (direction != null) {
+      if (baseDirection != null) {
         throw FormatException(
           'Direction must not be provided for rdf:langString',
           lexicalForm,
@@ -93,13 +93,13 @@ class Literal implements Term, TripleObject {
       }
     } else if (iri ==
         'http://www.w3.org/1999/02/22-rdf-syntax-ns#dirLangString') {
-      if (language == null) {
+      if (languageTag == null) {
         throw FormatException(
           'Language tag must be provided for rdf:dirLangString',
           lexicalForm,
         );
       }
-      if (direction == null) {
+      if (baseDirection == null) {
         throw FormatException(
           'Direction must be provided for rdf:dirLangString',
           lexicalForm,
@@ -107,13 +107,13 @@ class Literal implements Term, TripleObject {
       }
     } else {
       // For all other datatypes, language and direction must be null
-      if (language != null) {
+      if (languageTag != null) {
         throw FormatException(
           'Language tag must not be provided for datatype $iri',
           lexicalForm,
         );
       }
-      if (direction != null) {
+      if (baseDirection != null) {
         throw FormatException(
           'Direction must not be provided for datatype $iri',
           lexicalForm,
@@ -123,26 +123,22 @@ class Literal implements Term, TripleObject {
 
     Object? parsedValue;
     // Attempt to map value using XSD package
-    // Note: We need a registry of codecs or similar from the xsd package.
-    // Assuming xsd package provides individual codecs but purely for known types.
-    // For now, we will do a manual mapping based on the IRI string for built-ins.
-    // Ideally, we'd have a `XsdCodec.forType(iri)` but that might not exist yet.
-    // Let's implement a basic lookup here or in a helper.
-    // For the "Proof of Concept to Production" shift, we'll start with manual mapping
-    // or assume we refine this part later. For now, let's implement the structure.
+    parsedValue = _mapValue(lexicalForm, datatypeIri);
 
-    // Simple pass-through for now to satisfy the constructor API,
-    // real mapping logic can be added in `_mapValue`.
-    parsedValue = _mapValue(lexicalForm, datatype);
-
-    return Literal._(lexicalForm, datatype, language, direction, parsedValue);
+    return Literal._(
+      lexicalForm,
+      datatypeIri,
+      languageTag,
+      baseDirection,
+      parsedValue,
+    );
   }
 
   const Literal._(
     this.lexicalForm,
-    this.datatype,
-    this.language,
-    this.direction,
+    this.datatypeIri,
+    this.languageTag,
+    this.baseDirection,
     this.value,
   );
 
@@ -191,9 +187,9 @@ class Literal implements Term, TripleObject {
     'http://www.w3.org/2001/XMLSchema#NCName': xsd.XsdNcnameCodec(),
   };
 
-  static Object? _mapValue(String lexicalForm, NamedNode datatype) {
+  static Object? _mapValue(String lexicalForm, Iri datatypeIri) {
     // Basic mapping for common XSD types using package:xsd codecs
-    final iri = datatype.iri.toString();
+    final iri = datatypeIri.value.toString();
     final codec = _xsdCodecs[iri];
 
     if (codec != null) {
@@ -211,13 +207,13 @@ class Literal implements Term, TripleObject {
 
   @override
   String toString() {
-    if (direction != null && language != null) {
+    if (baseDirection != null && languageTag != null) {
       // N-Triples doesn't standardly support direction yet, but for debug/roundtrip:
-      return '"$lexicalForm"@$language--${direction == intl.TextDirection.LTR ? 'ltr' : 'rtl'}';
-    } else if (language != null) {
-      return '"$lexicalForm"@$language';
+      return '"$lexicalForm"@$languageTag--${baseDirection == intl.TextDirection.LTR ? 'ltr' : 'rtl'}';
+    } else if (languageTag != null) {
+      return '"$lexicalForm"@$languageTag';
     } else {
-      return '"$lexicalForm"^^$datatype';
+      return '"$lexicalForm"^^$datatypeIri';
     }
   }
 
@@ -230,27 +226,31 @@ class Literal implements Term, TripleObject {
     if (lexicalForm != other.lexicalForm) return false;
 
     // 2. Datatype (IRI equality)
-    if (datatype != other.datatype) return false;
+    if (datatypeIri != other.datatypeIri) return false;
 
     // 3. Language tag (case-insensitive)
     // "The two language tags are ... both present and compare equal"
-    if (language != null) {
-      if (other.language == null) return false;
+    if (languageTag != null) {
+      if (other.languageTag == null) return false;
       // Case-insensitive comparison
-      if (language!.toLowerCase() != other.language!.toLowerCase()) {
+      if (languageTag!.toLowerCase() != other.languageTag!.toLowerCase()) {
         return false;
       }
     } else {
-      if (other.language != null) return false;
+      if (other.languageTag != null) return false;
     }
 
     // 4. Base direction
-    if (direction != other.direction) return false;
+    if (baseDirection != other.baseDirection) return false;
 
     return true;
   }
 
   @override
-  int get hashCode =>
-      Object.hash(lexicalForm, datatype, language?.toLowerCase(), direction);
+  int get hashCode => Object.hash(
+    lexicalForm,
+    datatypeIri,
+    languageTag?.toLowerCase(),
+    baseDirection,
+  );
 }

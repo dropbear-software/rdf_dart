@@ -20,5 +20,18 @@ abstract interface class Graph {
 
   /// Returns a new iterable of triples matching the given pattern.
   /// null values are treated as wildcards.
-  Iterable<Triple> match({Term? subject, Term? predicate, Term? object});
+  Iterable<Triple> match({
+    Subject? subject,
+    Predicate? predicate,
+    TripleObject? object,
+  });
+
+  /// Removes all triples matching the given pattern.
+  ///
+  /// [subject], [predicate], and [object] can be specific terms or `null` (wildcard).
+  void removeMatches(
+    Subject? subject,
+    Predicate? predicate,
+    TripleObject? object,
+  );
 }

@@ -5,15 +5,15 @@ import 'package:test/test.dart';
 void main() {
   group('InMemoryGraph', () {
     late Graph graph;
-    final s1 = NamedNode('http://example.org/s1');
-    final p1 = NamedNode('http://example.org/p1');
+    final s1 = Iri('http://example.org/s1');
+    final p1 = Iri('http://example.org/p1');
     final o1 = Literal(
       'o1',
-      datatype: NamedNode('http://www.w3.org/2001/XMLSchema#string'),
+      datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#string'),
     );
     final t1 = Triple(subject: s1, predicate: p1, object: o1);
 
-    final s2 = NamedNode('http://example.org/s2');
+    final s2 = Iri('http://example.org/s2');
     final t2 = Triple(subject: s2, predicate: p1, object: o1);
 
     setUp(() {
@@ -65,10 +65,7 @@ void main() {
       expect(graph.match(object: o1), hasLength(2));
 
       // No match
-      expect(
-        graph.match(subject: NamedNode('http://example.org/none')),
-        isEmpty,
-      );
+      expect(graph.match(subject: Iri('http://example.org/none')), isEmpty);
     });
   });
 }

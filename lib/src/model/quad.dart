@@ -1,3 +1,4 @@
+import 'iri.dart';
 import 'term.dart';
 import 'triple.dart';
 
@@ -9,7 +10,11 @@ class Quad {
   /// The underlying triple.
   final Triple triple;
 
-  /// The name of the graph this triple belongs to, or null for the default graph.
+  /// The graph name of the quad.
+  ///
+  /// This is [Iri] or [BlankNode] for named graphs, or potentially `null`
+  /// (or a default graph IRI) for the default graph depending on implementation.
+  /// Strictly speaking in RDF 1.2 Dataset, it is an [Iri] or [BlankNode].
   final GraphName? graphName;
 
   /// Creates a new [Quad].
