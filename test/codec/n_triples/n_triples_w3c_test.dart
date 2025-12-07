@@ -1409,6 +1409,798 @@ void main() {
           });
         });
       });
+
+      group('N-Triples Canonicalization', () {
+        group('Proposed Tests', () {
+          test('triples including comments', () async {
+            final inputFile = await _loadTestFile(
+              'comment_following_triple',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'comment_following_triple-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('triples with extra whitespace', () async {
+            final inputFile = await _loadTestFile(
+              'extra_whitespace-01',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'extra_whitespace-01-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('triples with extra whitespace (2)', () async {
+            final inputFile = await _loadTestFile(
+              'extra_whitespace-02',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'extra_whitespace-02-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('triples with extra whitespace (3)', () async {
+            final inputFile = await _loadTestFile(
+              'extra_whitespace-03',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'extra_whitespace-03-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('triples with extra whitespace (4)', () async {
+            final inputFile = await _loadTestFile(
+              'extra_whitespace-04',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'extra_whitespace-04-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('triples including language-tagged string', () async {
+            final inputFile = await _loadTestFile(
+              'langtagged_string',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'langtagged_string-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test(
+            'triples including directional language-tagged string',
+            () async {
+              final inputFile = await _loadTestFile(
+                'dirlangtagged_string',
+                _NTriplesVersion.rdf12,
+                true,
+              );
+
+              final expectedOutput = await _loadTestFile(
+                'dirlangtagged_string-c14n',
+                _NTriplesVersion.rdf12,
+                true,
+              );
+
+              final result = nTriplesCodec.decode(inputFile);
+              final canonicalOutput = nTriplesCodec.encode(result);
+
+              expect(canonicalOutput, expectedOutput);
+            },
+          );
+
+          test('literals with control characters', () async {
+            final inputFile = await _loadTestFile(
+              'literal_all_controls',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'literal_all_controls-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('literals with punctuation characters', () async {
+            final inputFile = await _loadTestFile(
+              'literal_all_punctuation',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'literal_all_punctuation-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test("literal_ascii_boundaries '\x00\x26\x28…'", () async {
+            final inputFile = await _loadTestFile(
+              'literal_ascii_boundaries',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'literal_ascii_boundaries-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('literal with 2 dquotes """a""b"""', () async {
+            final inputFile = await _loadTestFile(
+              'literal_with_2_dquotes',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'literal_with_2_dquotes-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('literal with 2 squotes "x\'y"', () async {
+            final inputFile = await _loadTestFile(
+              'literal_with_2_squotes',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'literal_with_2_squotes-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('literals with backspace', () async {
+            final inputFile = await _loadTestFile(
+              'literal_with_BACKSPACE',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'literal_with_BACKSPACE-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('literals with carriage return', () async {
+            final inputFile = await _loadTestFile(
+              'literal_with_CARRIAGE_RETURN',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'literal_with_CARRIAGE_RETURN-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('literals with character tabulation', () async {
+            final inputFile = await _loadTestFile(
+              'literal_with_CHARACTER_TABULATION',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'literal_with_CHARACTER_TABULATION-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('literals with double quote', () async {
+            final inputFile = await _loadTestFile(
+              'literal_with_dquote',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'literal_with_dquote-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('literals with form feed', () async {
+            final inputFile = await _loadTestFile(
+              'literal_with_FORM_FEED',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'literal_with_FORM_FEED-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('literals with line feed', () async {
+            final inputFile = await _loadTestFile(
+              'literal_with_LINE_FEED',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'literal_with_LINE_FEED-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('literals with short numeric escapes', () async {
+            final inputFile = await _loadTestFile(
+              'literal_with_numeric_escape4',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'literal_with_numeric_escape4-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('literals with long numeric escapes', () async {
+            final inputFile = await _loadTestFile(
+              'literal_with_numeric_escape8',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'literal_with_numeric_escape8-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('literals with reverse solidus', () async {
+            final inputFile = await _loadTestFile(
+              'literal_with_REVERSE_SOLIDUS',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'literal_with_REVERSE_SOLIDUS-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('literals with reverse solidus (2)', () async {
+            final inputFile = await _loadTestFile(
+              'literal_with_REVERSE_SOLIDUS2',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'literal_with_REVERSE_SOLIDUS2-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('literals with single quotes', () async {
+            final inputFile = await _loadTestFile(
+              'literal_with_squote',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'literal_with_squote-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('literal with explicit xsd:string', () async {
+            final inputFile = await _loadTestFile(
+              'literal_with_string_dt',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'literal_with_string_dt-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('literals having extra whitespace', () async {
+            final inputFile = await _loadTestFile(
+              'literal_with_extra_whitespace',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'literal_with_extra_whitespace-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('literals with UTF8 boundaries', () async {
+            final inputFile = await _loadTestFile(
+              'literal_with_UTF8_boundaries',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'literal_with_UTF8_boundaries-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('triples without optional whitespace', () async {
+            final inputFile = await _loadTestFile(
+              'minimal_whitespace-01',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'minimal_whitespace-01-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('triples without optional whitespace (2)', () async {
+            final inputFile = await _loadTestFile(
+              'minimal_whitespace-02',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'minimal_whitespace-02-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('triple terms with iri subject and object', () async {
+            final inputFile = await _loadTestFile(
+              'triple-term-01',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'triple-term-01-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('triple terms with iri subject and bnode object', () async {
+            final inputFile = await _loadTestFile(
+              'triple-term-02',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'triple-term-02-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('triple terms with iri subject and literal object', () async {
+            final inputFile = await _loadTestFile(
+              'triple-term-03',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'triple-term-03-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('triple terms with triple term object', () async {
+            final inputFile = await _loadTestFile(
+              'triple-term-04',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'triple-term-04-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('canonicalization of IRIs', () async {
+            final inputFile = await _loadTestFile(
+              'nt-syntax-uri-01',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'nt-syntax-uri-01-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('canonicalization of IRIs (2)', () async {
+            final inputFile = await _loadTestFile(
+              'nt-syntax-uri-02',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'nt-syntax-uri-02-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('canonicalization of IRIs (3)', () async {
+            final inputFile = await _loadTestFile(
+              'nt-syntax-uri-03',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'nt-syntax-uri-03-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('canonicalization of IRIs (4)', () async {
+            final inputFile = await _loadTestFile(
+              'nt-syntax-uri-04',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'nt-syntax-uri-04-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('string escapes', () async {
+            final inputFile = await _loadTestFile(
+              'nt-syntax-str-esc-01',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'nt-syntax-str-esc-01-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('string escapes (2)', () async {
+            final inputFile = await _loadTestFile(
+              'nt-syntax-str-esc-02',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'nt-syntax-str-esc-02-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test('string escapes (3)', () async {
+            final inputFile = await _loadTestFile(
+              'nt-syntax-str-esc-03',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final expectedOutput = await _loadTestFile(
+              'nt-syntax-str-esc-03-c14n',
+              _NTriplesVersion.rdf12,
+              true,
+            );
+
+            final result = nTriplesCodec.decode(inputFile);
+            final canonicalOutput = nTriplesCodec.encode(result);
+
+            expect(canonicalOutput, expectedOutput);
+          });
+
+          test(
+            'strings with codepoints requiring UCHAR escaping, with input using raw UTF-8 data',
+            () async {
+              final inputFile = await _loadTestFile(
+                'literal_needing_uchar_escaping-01',
+                _NTriplesVersion.rdf12,
+                true,
+              );
+
+              final expectedOutput = await _loadTestFile(
+                'literal_needing_uchar_escaping-01-c14n',
+                _NTriplesVersion.rdf12,
+                true,
+              );
+
+              final result = nTriplesCodec.decode(inputFile);
+              final canonicalOutput = nTriplesCodec.encode(result);
+
+              expect(canonicalOutput, expectedOutput);
+            },
+          );
+
+          test(
+            'strings with codepoints requiring UCHAR escaping, with input using \\U escaping',
+            () async {
+              final inputFile = await _loadTestFile(
+                'literal_needing_uchar_escaping-02',
+                _NTriplesVersion.rdf12,
+                true,
+              );
+
+              final expectedOutput = await _loadTestFile(
+                'literal_needing_uchar_escaping-01-c14n',
+                _NTriplesVersion.rdf12,
+                true,
+              );
+
+              final result = nTriplesCodec.decode(inputFile);
+              final canonicalOutput = nTriplesCodec.encode(result);
+
+              expect(canonicalOutput, expectedOutput);
+            },
+          );
+        });
+      });
     });
   });
 }
@@ -1417,10 +2209,19 @@ enum _NTriplesVersion { rdf11, rdf12 }
 
 /// Helper method that takes in a filename and loads the appropriate test file
 /// and returns it as a String for input to the codec.
-Future<String> _loadTestFile(String fileName, _NTriplesVersion version) async {
+Future<String> _loadTestFile(
+  String fileName,
+  _NTriplesVersion version, [
+  bool isCanonicalTest = false,
+]) async {
   if (version == _NTriplesVersion.rdf11) {
     final bytes = await File(
       'test/codec/n_triples/w3c/rdf11/rdf-n-triples/$fileName.nt',
+    ).readAsString();
+    return bytes;
+  } else if (isCanonicalTest) {
+    final bytes = await File(
+      'test/codec/n_triples/w3c/rdf12/rdf-n-triples/c14n/$fileName.nt',
     ).readAsString();
     return bytes;
   } else {
