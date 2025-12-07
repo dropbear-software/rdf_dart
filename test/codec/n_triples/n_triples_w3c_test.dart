@@ -121,10 +121,12 @@ void main() {
 
               expect(decoded.first.subject, Iri('http://example/s'));
               expect(decoded.first.predicate, Iri('http://example/p'));
-              expect(decoded.first.object, Literal('string'));
               expect(
-                (decoded.first.object as Literal),
-                Iri('http://www.w3.org/2001/XMLSchema#string'),
+                decoded.first.object,
+                Literal(
+                  'string',
+                  datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#string'),
+                ),
               );
 
               final encoded = nTriplesCodec.encode(decoded);
@@ -991,7 +993,7 @@ void main() {
                     object: TripleTerm(
                       Triple(
                         subject: Iri('http://example/s3'),
-                        predicate: Iri('http://example/p2'),
+                        predicate: Iri('http://example/p3'),
                         object: Iri('http://example/o3'),
                       ),
                     ),
@@ -1018,7 +1020,7 @@ void main() {
                 ),
               );
 
-              expect(result.last.subject, BlankNode('b0'));
+              expect(result.last.subject, BlankNode('b1'));
               expect(
                 result.last.predicate,
                 Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies'),
@@ -1115,7 +1117,7 @@ void main() {
 
             test('N-Triples literal with base direction rtl', () async {
               final inputFile = await _loadTestFile(
-                '<ntriples-langdir-2',
+                'ntriples-langdir-2',
                 _NTriplesVersion.rdf12,
               );
 
