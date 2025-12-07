@@ -5,7 +5,7 @@ import '../term.dart';
 import 'in_memory_graph.dart';
 
 /// A map-based in-memory implementation of [Dataset].
-class InMemoryDataset implements Dataset {
+class InMemoryDataset with DatasetMixin implements Dataset {
   final Graph _defaultGraph = InMemoryGraph();
   final Map<GraphName, Graph> _namedGraphs = {};
 

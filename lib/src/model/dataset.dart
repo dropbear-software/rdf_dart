@@ -1,6 +1,9 @@
+import 'blank_node.dart';
 import 'graph.dart';
+import 'impl/isomorphism_solver.dart';
 import 'quad.dart';
 import 'term.dart';
+import 'triple.dart';
 
 /// An RDF Dataset is a collection of RDF graphs.
 abstract interface class Dataset {
@@ -41,4 +44,106 @@ abstract interface class Dataset {
     /// the results manually or use a specific implementation-dependent method if available.
     GraphName? graphName,
   });
+
+  /// Returns `true` if this dataset is isomorphic to [other].
+  ///
+  /// Two RDF datasets are isomorphic if there is a bijection between the
+  /// blank nodes of the two datasets (including those used as graph names)
+  /// such that a quad (s, p, o, g) is in one dataset if and only if
+  /// the quad (M(s), M(p), M(o), M(g)) is in the other.
+  bool isomorphic(Dataset other);
+}
+
+/// A mixin that provides default implementations for some [Dataset] members.
+mixin DatasetMixin implements Dataset {
+  @override
+  bool isomorphic(Dataset other) {
+    // Use quads for isomorphism check
+    // We treat dataset as a set of quads.
+    final solver = IsomorphismSolver<Quad>(_DatasetIsomorphismStrategy());
+    return solver.isIsomorphic(quads, other.quads);
+  }
+}
+
+class _DatasetIsomorphismStrategy implements IsomorphismStrategy<Quad> {
+  @override
+  bool isGround(Quad item) {
+    if (!item.triple.isGround) return false;
+    final gn = item.graphName;
+    if (gn == null) return true;
+    return gn.isGround;
+  }
+
+  @override
+  void collectBlankNodes(Quad item, Set<BlankNode> set) {
+    IsomorphismHelpers.collectFromTerm(
+      item.subject,
+      set,
+      recurseTriple: collectTripleBNodes,
+    );
+    // Predicate is always an IRI, so no blank nodes to collect.
+    IsomorphismHelpers.collectFromTerm(
+      item.object,
+      set,
+      recurseTriple: collectTripleBNodes,
+    );
+
+    final gn = item.graphName;
+    if (gn is BlankNode) {
+      set.add(gn);
+    }
+  }
+
+  /// Recursively collects blank nodes from a triple.
+  void collectTripleBNodes(Triple t, Set<BlankNode> set) {
+    IsomorphismHelpers.collectFromTerm(
+      t.subject,
+      set,
+      recurseTriple: collectTripleBNodes,
+    );
+    // Predicate is always an IRI.
+    IsomorphismHelpers.collectFromTerm(
+      t.object,
+      set,
+      recurseTriple: collectTripleBNodes,
+    );
+  }
+
+  @override
+  Quad mapBlankNodes(Quad item, Map<BlankNode, BlankNode> mapping) {
+    return Quad(
+      Triple(
+        subject:
+            IsomorphismHelpers.mapTerm(
+                  item.subject,
+                  mapping,
+                  mapTriple: mapTriple,
+                )
+                as SubjectTerm,
+        predicate: item.predicate, // Predicate is always an IRI.
+        object:
+            IsomorphismHelpers.mapTerm(
+                  item.object,
+                  mapping,
+                  mapTriple: mapTriple,
+                )
+                as ObjectTerm,
+      ),
+      item.graphName is BlankNode
+          ? mapping[item.graphName] as GraphName?
+          : item.graphName,
+    );
+  }
+
+  Triple mapTriple(Triple t, Map<BlankNode, BlankNode> mapping) {
+    return Triple(
+      subject:
+          IsomorphismHelpers.mapTerm(t.subject, mapping, mapTriple: mapTriple)
+              as SubjectTerm,
+      predicate: t.predicate, // Predicate is always an IRI.
+      object:
+          IsomorphismHelpers.mapTerm(t.object, mapping, mapTriple: mapTriple)
+              as ObjectTerm,
+    );
+  }
 }
