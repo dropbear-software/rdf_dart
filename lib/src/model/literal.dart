@@ -168,11 +168,11 @@ class Literal implements ObjectTerm {
     'http://www.w3.org/2001/XMLSchema#short': xsd.XsdShortCodec(),
     'http://www.w3.org/2001/XMLSchema#int': xsd.XsdIntCodec(),
     'http://www.w3.org/2001/XMLSchema#long': xsd.XsdLongCodec(),
-    'http://www.w3.org/2001/XMLSchema#unsigedByte': xsd.XsdUnsignedByteCodec(),
-    'http://www.w3.org/2001/XMLSchema#unsigedShort':
+    'http://www.w3.org/2001/XMLSchema#unsignedByte': xsd.XsdUnsignedByteCodec(),
+    'http://www.w3.org/2001/XMLSchema#unsignedShort':
         xsd.XsdUnsignedShortCodec(),
-    'http://www.w3.org/2001/XMLSchema#unsigedInt': xsd.XsdUnsignedIntCodec(),
-    'http://www.w3.org/2001/XMLSchema#unsigedLong': xsd.XsdUnsignedLongCodec(),
+    'http://www.w3.org/2001/XMLSchema#unsignedInt': xsd.XsdUnsignedIntCodec(),
+    'http://www.w3.org/2001/XMLSchema#unsignedLong': xsd.XsdUnsignedLongCodec(),
     'http://www.w3.org/2001/XMLSchema#positiveInteger':
         xsd.XmlPositiveIntegerCodec(),
     'http://www.w3.org/2001/XMLSchema#nonNegativeInteger':

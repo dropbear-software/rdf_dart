@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:intl/intl.dart';
 import 'package:rdf_dart/rdf_dart.dart';
 import 'package:test/test.dart';
@@ -210,23 +212,26 @@ void main() {
             });
 
             test('Maps xsd:dateTime', () {
-              final dateLiteral = Literal(
+              final dateTimeLiteral = Literal(
                 '2002-10-10T12:00:00+05:30',
                 datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#dateTime'),
               );
 
               expect(
-                dateLiteral.value,
+                dateTimeLiteral.value,
                 XsdDateTime.parse('2002-10-10T12:00:00+05:30'),
               );
-              expect((dateLiteral.value as XsdDateTime).value.year, 2002);
-              expect((dateLiteral.value as XsdDateTime).value.month, 10);
-              expect((dateLiteral.value as XsdDateTime).value.day, 10);
-              expect((dateLiteral.value as XsdDateTime).value.isUtc, isTrue);
-              expect((dateLiteral.value as XsdDateTime).value.hour, 6);
-              expect((dateLiteral.value as XsdDateTime).value.minute, 30);
+              expect((dateTimeLiteral.value as XsdDateTime).value.year, 2002);
+              expect((dateTimeLiteral.value as XsdDateTime).value.month, 10);
+              expect((dateTimeLiteral.value as XsdDateTime).value.day, 10);
               expect(
-                (dateLiteral.value as XsdDateTime).originalOffset,
+                (dateTimeLiteral.value as XsdDateTime).value.isUtc,
+                isTrue,
+              );
+              expect((dateTimeLiteral.value as XsdDateTime).value.hour, 6);
+              expect((dateTimeLiteral.value as XsdDateTime).value.minute, 30);
+              expect(
+                (dateTimeLiteral.value as XsdDateTime).originalOffset,
                 const Duration(hours: 5, minutes: 30),
               );
             });
@@ -235,55 +240,55 @@ void main() {
 
         group('Recurring and partial dates', () {
           test('Maps xsd:gYear', () {
-            final dateLiteral = Literal(
+            final gYearLiteral = Literal(
               '0000',
               datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#gYear'),
             );
 
-            expect(dateLiteral.value, GregorianYear.parse('0000'));
-            expect((dateLiteral.value as GregorianYear).year, 0);
+            expect(gYearLiteral.value, GregorianYear.parse('0000'));
+            expect((gYearLiteral.value as GregorianYear).year, 0);
           });
 
           test('Maps xsd:gYearMonth', () {
-            final dateLiteral = Literal(
+            final gYearMonthLiteral = Literal(
               '2002-10',
               datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#gYearMonth'),
             );
 
-            expect(dateLiteral.value, YearMonth.parse('2002-10'));
-            expect((dateLiteral.value as YearMonth).year, 2002);
-            expect((dateLiteral.value as YearMonth).month, 10);
+            expect(gYearMonthLiteral.value, YearMonth.parse('2002-10'));
+            expect((gYearMonthLiteral.value as YearMonth).year, 2002);
+            expect((gYearMonthLiteral.value as YearMonth).month, 10);
           });
 
           test('Maps xsd:gMonth', () {
-            final dateLiteral = Literal(
+            final gMonthLiteral = Literal(
               '--02+05:30',
               datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#gMonth'),
             );
 
             expect(
-              dateLiteral.value,
+              gMonthLiteral.value,
               GregorianMonth(2, timezoneOffsetInMinutes: 330),
             );
           });
 
           test('Maps xsd:gMonthDay', () {
-            final dateLiteral = Literal(
+            final gMonthDayLiteral = Literal(
               '--12-31',
               datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#gMonthDay'),
             );
 
-            expect(dateLiteral.value, GregorianMonthDay(12, 31));
+            expect(gMonthDayLiteral.value, GregorianMonthDay(12, 31));
           });
 
           test('Maps xsd:gDay', () {
-            final dateLiteral = Literal(
+            final gDayLiteral = Literal(
               '---03-08:00',
               datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#gDay'),
             );
 
             expect(
-              dateLiteral.value,
+              gDayLiteral.value,
               GregorianDay(3, timezoneOffsetInMinutes: -480),
             );
           });
@@ -329,12 +334,12 @@ void main() {
           });
 
           test('Maps xsd:long', () {
-            final intLiteral = Literal(
+            final longLiteral = Literal(
               '9223372036854775801',
               datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#long'),
             );
 
-            expect(intLiteral.value, BigInt.from(9223372036854775801));
+            expect(longLiteral.value, BigInt.from(9223372036854775801));
           });
 
           test('Maps xsd:unsignedByte', () {
@@ -347,20 +352,169 @@ void main() {
           });
 
           test('Maps xsd:unsignedShort', () {
-            final byteLiteral = Literal(
+            final unsignedShortLiteral = Literal(
               '65530',
               datatypeIri: Iri(
                 'http://www.w3.org/2001/XMLSchema#unsignedShort',
               ),
             );
 
-            expect(byteLiteral.value, 65530);
+            expect(unsignedShortLiteral.value, isA<int>());
+            expect(unsignedShortLiteral.value, 65530);
+          });
+
+          test('Maps xsd:unsignedInt', () {
+            final unsignedIntLiteral = Literal(
+              '429496729',
+              datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#unsignedInt'),
+            );
+
+            expect(unsignedIntLiteral.value, 429496729);
+          });
+
+          test('Maps xsd:unsignedLong', () {
+            final unsignedLongLiteral = Literal(
+              '1844674407370955161',
+              datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#unsignedLong'),
+            );
+
+            expect(unsignedLongLiteral.value, BigInt.from(1844674407370955161));
+          });
+
+          test('Maps xsd:positiveInteger', () {
+            final positiveIntegerLiteral = Literal(
+              '\n\t+123  ',
+              datatypeIri: Iri(
+                'http://www.w3.org/2001/XMLSchema#positiveInteger',
+              ),
+            );
+
+            expect(positiveIntegerLiteral.value, BigInt.from(123));
+          });
+
+          test('Maps xsd:nonNegativeInteger', () {
+            final nonNegativeIntegerLiteral = Literal(
+              '123456789',
+              datatypeIri: Iri(
+                'http://www.w3.org/2001/XMLSchema#nonNegativeInteger',
+              ),
+            );
+
+            expect(nonNegativeIntegerLiteral.value, BigInt.from(123456789));
+          });
+
+          test('Maps xsd:negativeInteger', () {
+            final negativeIntegerLiteral = Literal(
+              '-123456789',
+              datatypeIri: Iri(
+                'http://www.w3.org/2001/XMLSchema#negativeInteger',
+              ),
+            );
+
+            expect(negativeIntegerLiteral.value, BigInt.from(-123456789));
+          });
+
+          test('Maps xsd:nonPositiveInteger', () {
+            final nonPositiveIntegerLiteral = Literal(
+              '-123456789',
+              datatypeIri: Iri(
+                'http://www.w3.org/2001/XMLSchema#nonPositiveInteger',
+              ),
+            );
+
+            expect(nonPositiveIntegerLiteral.value, BigInt.from(-123456789));
           });
         });
 
-        group('Encoded binary data', () {});
+        group('Encoded binary data', () {
+          test('Maps xsd:base64Binary', () {
+            final byteLiteral = Literal(
+              'Zm9v',
+              datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#base64Binary'),
+            );
 
-        group('Miscellaneous XSD types', () {});
+            expect(byteLiteral.value, Uint8List.fromList('foo'.codeUnits));
+          });
+
+          test('Maps xsd:hexBinary', () {
+            final byteLiteral = Literal(
+              '0123ABCDEF',
+              datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#hexBinary'),
+            );
+
+            expect(
+              byteLiteral.value,
+              Uint8List.fromList([0x01, 0x23, 0xAB, 0xCD, 0xEF]),
+            );
+          });
+        });
+
+        group('Miscellaneous XSD types', () {
+          test('Maps xsd:anyURI', () {
+            final uriLiteral = Literal(
+              'urn:isbn:1234567890',
+              datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#anyURI'),
+            );
+
+            expect(uriLiteral.value, Uri.parse('urn:isbn:1234567890'));
+          });
+
+          test('Maps xsd:language', () {
+            final uriLiteral = Literal(
+              'de-DE-x-goethe',
+              datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#language'),
+            );
+
+            expect(uriLiteral.value, Locale.parse('de-DE-x-goethe'));
+          });
+
+          test('Maps xsd:normalizedString', () {
+            final normalizedStringLiteral = Literal(
+              'hello\t\n\rworld',
+              datatypeIri: Iri(
+                'http://www.w3.org/2001/XMLSchema#normalizedString',
+              ),
+            );
+
+            expect(normalizedStringLiteral.value, 'hello   world');
+          });
+
+          test('Maps xsd:token', () {
+            final tokenLiteral = Literal(
+              '\t  hello   \n \r world  \t',
+              datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#token'),
+            );
+
+            expect(tokenLiteral.value, 'hello world');
+          });
+
+          test('Maps xsd:Name', () {
+            final nameLiteral = Literal(
+              '\t_val:id.Name-\n',
+              datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#Name'),
+            );
+
+            expect(nameLiteral.value, '_val:id.Name-');
+          });
+
+          test('Maps xsd:NMTOKEN', () {
+            final nameLiteral = Literal(
+              'עם-שלום',
+              datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#NMTOKEN'),
+            );
+
+            expect(nameLiteral.value, 'עם-שלום');
+          });
+
+          test('Maps xsd:NCName', () {
+            final nameLiteral = Literal(
+              'Österreich',
+              datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#NCName'),
+            );
+
+            expect(nameLiteral.value, 'Österreich');
+          });
+        });
 
         test(
           'Ill-typed literals have null value but keep their lexical form',
