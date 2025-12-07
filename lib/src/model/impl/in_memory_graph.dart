@@ -42,10 +42,10 @@ class InMemoryGraph with GraphMixin implements Graph {
     ObjectTerm? object,
   ) {
     _triples.removeWhere((triple) {
-      if (subject != null && triple.subject != subject) return true;
-      if (predicate != null && triple.predicate != predicate) return true;
-      if (object != null && triple.object != object) return true;
-      return false;
+      if (subject != null && triple.subject != subject) return false;
+      if (predicate != null && triple.predicate != predicate) return false;
+      if (object != null && triple.object != object) return false;
+      return true;
     });
   }
 }
