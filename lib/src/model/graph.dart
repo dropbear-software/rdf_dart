@@ -49,4 +49,14 @@ abstract interface class Graph {
 mixin GraphMixin implements Graph {
   @override
   bool get isGround => triples.every((triple) => triple.isGround);
+
+  @override
+  Iterable<RdfTerm> get nodes {
+    final Set<RdfTerm> nodes = {};
+    for (final triple in triples) {
+      nodes.add(triple.subject);
+      nodes.add(triple.object);
+    }
+    return nodes;
+  }
 }

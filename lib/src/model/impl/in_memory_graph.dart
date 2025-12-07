@@ -48,14 +48,4 @@ class InMemoryGraph with GraphMixin implements Graph {
       return false;
     });
   }
-
-  @override
-  Iterable<RdfTerm> get nodes {
-    final Set<RdfTerm> nodes = {};
-    for (final triple in _triples) {
-      nodes.add(triple.subject);
-      nodes.add(triple.object);
-    }
-    return nodes;
-  }
 }
