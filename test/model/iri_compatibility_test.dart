@@ -1,4 +1,4 @@
-import 'package:rdf_dart/src/model/internationalised_resource_identifier.dart';
+import 'package:rdf_dart/src/model/iri.dart';
 import 'package:test/test.dart';
 
 void main() {

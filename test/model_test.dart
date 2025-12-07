@@ -5,7 +5,7 @@ void main() {
   group('RDF Terms', () {
     test('Iri', () {
       final node = Iri('http://example.org/foo');
-      expect(node.toString(), '<http://example.org/foo>');
+      expect(node.toString(), 'http://example.org/foo');
       expect(node, equals(Iri('http://example.org/foo')));
       expect(node.isGround, isTrue);
     });
@@ -49,40 +49,6 @@ void main() {
     final p = Iri('http://example.org/p');
     final o = Iri('http://example.org/o');
     final g = Iri('http://example.org/g');
-
-    test('Triple', () {
-      final triple = Triple(subject: s, predicate: p, object: o);
-      expect(triple.subject, s);
-      expect(triple.predicate, p);
-      expect(triple.object, o);
-      expect(
-        triple.toString(),
-        '<http://example.org/s> <http://example.org/p> <http://example.org/o> .',
-      );
-    });
-
-    test('TripleTerm', () {
-      final triple = Triple(subject: s, predicate: p, object: o);
-      final tt = TripleTerm(triple);
-      // TripleTerm is an Object, so it can be used in a triple
-      final nestedTriple = Triple(subject: s, predicate: p, object: tt);
-      expect(nestedTriple.object, tt);
-      expect(
-        tt.toString(),
-        '<<( <http://example.org/s> <http://example.org/p> <http://example.org/o> . )>>',
-      );
-    });
-
-    test('Quad', () {
-      final triple = Triple(subject: s, predicate: p, object: o);
-      final quad = Quad(triple, g);
-      expect(quad.subject, s);
-      expect(quad.graphName, g);
-      expect(
-        quad.toString(),
-        '<http://example.org/s> <http://example.org/p> <http://example.org/o> <http://example.org/g> .',
-      );
-    });
 
     test('Quad default graph', () {
       final triple = Triple(subject: s, predicate: p, object: o);

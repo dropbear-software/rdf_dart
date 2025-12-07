@@ -26,8 +26,8 @@ class Iri implements Uri {
     return Iri.fromUri(Uri.parse(value));
   }
 
-  /// Returns the underlying [Uri].
-  Uri toUri() => _uri;
+  /// Returns the underlying [Uri] with percent-encoded components.
+  Uri toPercentEncodedUri() => _uri;
 
   /// Creates a new [Iri] from its components.
   ///
@@ -43,9 +43,6 @@ class Iri implements Uri {
     Map<String, dynamic>? queryParameters,
     String? fragment,
   }) {
-    // Note: Uri constructor expects component strings.
-    // If we pass unicode strings, Uri constructor might encode them?
-    // Testing showed Uri.parse handles unicode. Uri() constructor also does.
     return Iri.fromUri(
       Uri(
         scheme: scheme,

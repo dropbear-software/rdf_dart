@@ -78,7 +78,7 @@ class Literal implements ObjectTerm {
     // If and only if datatype is dirLangString, language must be non-null and direction must be non-null.
     // Otherwise, language and direction must be null.
 
-    final iri = datatypeIri.value.toString();
+    final iri = datatypeIri.toString();
     if (iri == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString') {
       if (languageTag == null) {
         throw FormatException(
@@ -195,7 +195,7 @@ class Literal implements ObjectTerm {
 
   static Object? _mapValue(String lexicalForm, Iri datatypeIri) {
     // Basic mapping for common XSD types using package:xsd codecs
-    final iri = datatypeIri.value.toString();
+    final iri = datatypeIri.toString();
     final codec = _xsdCodecs[iri];
 
     if (codec != null) {
@@ -219,7 +219,7 @@ class Literal implements ObjectTerm {
     } else if (languageTag != null) {
       return '"$lexicalForm"@$languageTag';
     } else {
-      return '"$lexicalForm"^^$datatypeIri';
+      return '"$lexicalForm"^^<$datatypeIri>';
     }
   }
 

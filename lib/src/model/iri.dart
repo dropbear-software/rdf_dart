@@ -1,32 +1,65 @@
-import 'package:iri/iri.dart' as iri_pkg;
+import '../util/iri.dart' as impl;
 import 'term.dart';
 
 /// An RDF Term acting as an IRI (Internationalized Resource Identifier).
 ///
 /// An [Iri] can appear in the Subject, Predicate, or Object position of a triple.
-/// It wraps an [iri_pkg.Iri] from the `iri` package to ensure compliance with RFC specifications.
-class Iri implements SubjectTerm, PredicateTerm, ObjectTerm, GraphName {
-  /// The underlying IRI value.
-  final iri_pkg.IRI value;
-
+/// It extends [impl.Iri] to provide IRI handling while implementing RDF term interfaces.
+class Iri extends impl.Iri
+    implements SubjectTerm, PredicateTerm, ObjectTerm, GraphName {
   /// Creates an [Iri] from a string.
   ///
-  /// The string is parsed into an [iri_pkg.IRI].
-  Iri(String value) : value = iri_pkg.IRI(value);
+  /// Delegates to [impl.Iri.parse].
+  factory Iri(String value) => Iri.fromUri(Uri.parse(value));
 
-  /// Creates an [Iri] from an existing [iri_pkg.IRI] object.
-  Iri.fromIri(this.value);
+  /// Parses [value] as an IRI.
+  static Iri parse(String value) => Iri(value);
+
+  /// Creates an [Iri] from an existing Uri.
+  const Iri.fromUri(super.uri) : super.fromUri();
+
+  /// Creates an [Iri] from its components.
+  factory Iri.fromComponents({
+    String? scheme,
+    String? userInfo,
+    String? host,
+    int? port,
+    String? path,
+    Iterable<String>? pathSegments,
+    String? query,
+    Map<String, dynamic>? queryParameters,
+    String? fragment,
+  }) {
+    return Iri.fromUri(
+      impl.Iri(
+        scheme: scheme,
+        userInfo: userInfo,
+        host: host,
+        port: port,
+        path: path,
+        pathSegments: pathSegments,
+        query: query,
+        queryParameters: queryParameters,
+        fragment: fragment,
+      ).toPercentEncodedUri(),
+    );
+  }
 
   @override
-  String toString() => '<$value>';
+  bool operator ==(Object other) {
+    if (other is Iri) {
+      return toPercentEncodedUri() == other.toPercentEncodedUri();
+    }
+    if (other is impl.Iri) {
+      return toPercentEncodedUri() ==
+          other.toPercentEncodedUri(); // Compare with base class
+    }
+    if (other is Uri) return toPercentEncodedUri() == other;
+    return false;
+  }
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Iri && runtimeType == other.runtimeType && value == other.value;
-
-  @override
-  int get hashCode => value.hashCode;
+  int get hashCode => toPercentEncodedUri().hashCode;
 
   @override
   /// Always returns true for IRIs.
