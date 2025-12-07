@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:intl/intl.dart';
 
 import '../../model/blank_node.dart';
 import '../../model/iri.dart';
@@ -109,25 +110,38 @@ class NTriplesEncoder extends Converter<Iterable<Triple>, String> {
       if (literal.languageTag!.isNotEmpty) {
         sb.write('@');
         sb.write(literal.languageTag!.toLowerCase()); // Canonical: lowercase
+        if (literal.baseDirection != null) {
+          sb.write('--');
+          sb.write(literal.baseDirection == TextDirection.LTR ? 'ltr' : 'rtl');
+        }
       }
-    } else    if (literal.datatypeIri.toString() !=
+    } else if (literal.datatypeIri.toString() !=
         'http://www.w3.org/2001/XMLSchema#string') {
       sb.write('^^');
       _writeIri(literal.datatypeIri, sb);
     }
-  
   }
 
   String _escapeIri(String s) {
     final sb = StringBuffer();
-    for (var i = 0; i < s.length; i++) {
-      final char = s[i];
-      final code = char.codeUnitAt(0);
-      if (code <= 0x20 || '<>"{}\\^`|'.contains(char)) {
-        // Perform UCHAR escape
+    for (final code in s.runes) {
+      // Check prohibited chars for IRI: 0x00-0x20, <, >, ", {, }, |, ^, `, \
+      // Note: s.runes gives integer codepoints.
+      // Prohibited set check needs to be careful with integer comparison.
+      if (code <= 0x20 ||
+          code == 60 || // <
+          code == 62 || // >
+          code == 34 || // "
+          code == 123 || // {
+          code == 125 || // }
+          code == 124 || // |
+          code == 94 || // ^
+          code == 96 || // `
+          code == 92 || // \
+          !_isXml11Char(code)) {
         _writeUchar(code, sb);
       } else {
-        sb.write(char);
+        sb.writeCharCode(code);
       }
     }
     return sb.toString();
@@ -135,10 +149,7 @@ class NTriplesEncoder extends Converter<Iterable<Triple>, String> {
 
   String _escapeString(String s) {
     final sb = StringBuffer();
-    for (var i = 0; i < s.length; i++) {
-      final char = s[i];
-      final code = char.codeUnitAt(0);
-
+    for (final code in s.runes) {
       switch (code) {
         case 0x08:
           sb.write(r'\b');
@@ -165,14 +176,23 @@ class NTriplesEncoder extends Converter<Iterable<Triple>, String> {
           if (code >= 0x00 && code <= 0x07 ||
               code == 0x0B ||
               (code >= 0x0E && code <= 0x1F) ||
-              code == 0x7F) {
+              code == 0x7F ||
+              !_isXml11Char(code)) {
             _writeUchar(code, sb);
           } else {
-            sb.write(char);
+            sb.writeCharCode(code);
           }
       }
     }
     return sb.toString();
+  }
+
+  bool _isXml11Char(int code) {
+    // XML 1.1 Char production:
+    // [#x1-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
+    return (code >= 0x1 && code <= 0xD7FF) ||
+        (code >= 0xE000 && code <= 0xFFFD) ||
+        (code >= 0x10000 && code <= 0x10FFFF);
   }
 
   void _writeUchar(int code, StringBuffer sb) {

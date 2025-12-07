@@ -217,6 +217,9 @@ class _NTriplesScanner {
   Literal _parseLiteral() {
     final value = _parseStringLiteral();
 
+    // Allow whitespace between string and suffix (lang/type)
+    _skipWhitespace();
+
     // Check for lang tag or datatype
     if (_peek() == '@') {
       _advance(1);
@@ -262,6 +265,8 @@ class _NTriplesScanner {
       return Literal(value, languageTag: rawTag);
     } else if (_startsWith('^^')) {
       _advance(2);
+      // Allow whitespace between ^^ and IRI
+      _skipWhitespace();
       final datatype = _parseIri();
       return Literal(value, datatypeIri: datatype);
     }
