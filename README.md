@@ -22,8 +22,3 @@ This implementation will also be fully compatible with **RDF 1.1**.
 - [ ] Serialization (Turtle, N-Triples, etc.)
 - [ ] Semantics & Reasoning (Entailment)
 
-## Dependencies
-
-This project will leverage community-standard packages where appropriate, including:
-- `iri` for strictly compliant IRI handling.
-- Custom XSD datatype handling for robust literal value conversion.
