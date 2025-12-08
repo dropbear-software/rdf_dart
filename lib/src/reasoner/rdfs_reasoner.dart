@@ -67,6 +67,7 @@ class RDFSReasoner {
       // We OR the results so that if ANY rule adds a triple, we loop again.
       // Order matters slightly for efficiency, but eventually, all valid facts will be found.
 
+      changed |= _applyRdfD2();
       changed |= _applyRdfs1();
       changed |= _applyRdfs2();
       changed |= _applyRdfs3();
@@ -87,6 +88,28 @@ class RDFSReasoner {
         pass++;
       }
     }
+  }
+
+  /// Rule rdfD2: If a triple (s p o) exists -> p rdf:type rdf:Property
+  bool _applyRdfD2() {
+    bool changed = false;
+
+    for (final triple in _graph.triples.toList()) {
+      final predicate = triple.predicate;
+
+      final inferred = Triple(
+        subject:
+            predicate as SubjectTerm, // Safe cast required for Dart type system
+        predicate: _rdfType,
+        object: _rdfProperty,
+      );
+
+      if (_graph.add(inferred)) {
+        changed = true;
+        print('Rule rdfD2 inferred: $inferred');
+      }
+    }
+    return changed;
   }
 
   /// Rule rdfs1: If a recognized datatype IRI appears in the graph -> (iri rdf:type rdfs:Datatype)

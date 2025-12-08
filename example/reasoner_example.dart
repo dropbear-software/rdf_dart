@@ -21,6 +21,7 @@ void main() {
 
   final hasParent = Iri('http://example.org/hasParent');
   final hasFather = Iri('http://example.org/hasFather');
+  final hasAge = Iri('http://example.org/hasAge');
 
   final fido = Iri('http://example.org/Fido');
   final rex = Iri('http://example.org/Rex');
@@ -45,6 +46,8 @@ void main() {
     Triple(subject: hasFather, predicate: rdfType, object: rdfProperty),
   );
 
+  graph.add(Triple(subject: hasAge, predicate: rdfType, object: rdfProperty));
+
   // 3. Add Instance Data (The Facts)
 
   // "Fido is a Dog"
@@ -52,6 +55,28 @@ void main() {
 
   // "Fido has father Rex"
   graph.add(Triple(subject: fido, predicate: hasFather, object: rex));
+
+  graph.add(
+    Triple(
+      subject: fido,
+      predicate: hasAge,
+      object: Literal(
+        "5",
+        datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#unsignedByte'),
+      ),
+    ),
+  );
+
+  graph.add(
+    Triple(
+      subject: rex,
+      predicate: hasAge,
+      object: Literal(
+        "35",
+        datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#unsignedByte'),
+      ),
+    ),
+  );
 
   print('Initial Graph Size: ${graph.length} triples');
   print(nTriplesCodec.encode(graph.triples));
@@ -92,4 +117,7 @@ void main() {
   print('\nAll Triples in Graph:');
 
   print(nTriplesCodec.encode(graph.triples));
+
+  print('\n -- Graph Edges --');
+  print(graph.nodes);
 }
