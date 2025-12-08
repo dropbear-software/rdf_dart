@@ -83,7 +83,7 @@ void main() {
 
   // 4. Run the Reasoner
   print('\n--- Running Reasoner ---');
-  final reasoner = RDFSReasoner(graph);
+  final reasoner = RdfsReasoner(graph);
   reasoner.apply();
 
   // 5. Check the Results

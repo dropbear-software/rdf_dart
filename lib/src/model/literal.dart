@@ -263,4 +263,34 @@ class Literal implements ObjectTerm {
   @override
   /// Always returns true for Literals.
   bool get isGround => true;
+
+  /// Returns the canonical form of this literal.
+  ///
+  /// If the literal has a supported datatype, this returns a new [Literal]
+  /// with the canonical lexical form of the value.
+  /// Otherwise, it returns `this`.
+  Literal get canonical {
+    if (value == null) return this;
+
+    final iri = datatypeIri.toString();
+    final codec = _xsdCodecs[iri];
+
+    if (codec != null) {
+      try {
+        // Re-encode to get canonical form
+        final canonicalLexical = codec.encode(value);
+        if (canonicalLexical != lexicalForm) {
+          return Literal(
+            canonicalLexical,
+            datatypeIri: datatypeIri,
+            // Language/Direction should be null if codec exists, usually.
+            // Except maybe langString? But langString doesn't have a codec in the map above.
+          );
+        }
+      } catch (_) {
+        // Ignore encoding errors, return as is
+      }
+    }
+    return this;
+  }
 }

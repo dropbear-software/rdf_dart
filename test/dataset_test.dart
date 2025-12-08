@@ -1,5 +1,4 @@
 import 'package:rdf_dart/rdf_dart.dart';
-import 'package:rdf_dart/src/model/impl/in_memory_dataset.dart';
 import 'package:test/test.dart';
 
 void main() {
