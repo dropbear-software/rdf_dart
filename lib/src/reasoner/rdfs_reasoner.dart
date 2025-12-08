@@ -560,8 +560,15 @@ class RdfsReasoner {
 
   bool _applyContainerMembershipProperties() {
     bool changed = false;
-    for (final node in _graph.nodes) {
-      if (node is Iri && _cmpRegExp.hasMatch(node.toString())) {
+    final candidates = <Iri>{};
+    for (final t in _graph.triples) {
+      if (t.subject is Iri) candidates.add(t.subject as Iri);
+      if (t.predicate is Iri) candidates.add(t.predicate as Iri);
+      if (t.object is Iri) candidates.add(t.object as Iri);
+    }
+
+    for (final node in candidates) {
+      if (_cmpRegExp.hasMatch(node.toString())) {
         if (_graph.add(
           Triple(
             subject: node,

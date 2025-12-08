@@ -22,6 +22,8 @@ void main() {
   final hasParent = Iri('http://example.org/hasParent');
   final hasFather = Iri('http://example.org/hasFather');
   final hasAge = Iri('http://example.org/hasAge');
+  final likes = Iri('http://example.org/likes');
+  final claims = Iri('http://example.org/claims');
 
   final fido = Iri('http://example.org/Fido');
   final rex = Iri('http://example.org/Rex');
@@ -47,6 +49,14 @@ void main() {
   );
 
   graph.add(Triple(subject: hasAge, predicate: rdfType, object: rdfProperty));
+  graph.add(Triple(subject: rex, predicate: likes, object: fido));
+  graph.add(
+    Triple(
+      subject: rex,
+      predicate: claims,
+      object: TripleTerm(Triple(subject: fido, predicate: likes, object: rex)),
+    ),
+  );
 
   // 3. Add Instance Data (The Facts)
 
