@@ -70,6 +70,7 @@ class RDFSReasoner {
       changed |= _applyRdfs1();
       changed |= _applyRdfs2();
       changed |= _applyRdfs3();
+      changed |= _applyRdfs4();
       changed |= _applyRdfs5();
       changed |= _applyRdfs6();
       changed |= _applyRdfs7();
