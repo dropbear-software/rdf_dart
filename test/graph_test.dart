@@ -1,5 +1,10 @@
-import 'package:rdf_dart/rdf_dart.dart';
+import 'package:rdf_dart/src/model/blank_node.dart';
+import 'package:rdf_dart/src/model/graph.dart';
 import 'package:rdf_dart/src/model/impl/in_memory_graph.dart';
+import 'package:rdf_dart/src/model/iri.dart';
+import 'package:rdf_dart/src/model/literal.dart';
+import 'package:rdf_dart/src/model/triple.dart';
+import 'package:rdf_dart/src/model/triple_term.dart';
 import 'package:test/test.dart';
 
 void main() {
