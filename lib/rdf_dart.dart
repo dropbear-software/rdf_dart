@@ -12,5 +12,6 @@ export 'src/model/triple_term.dart';
 export 'src/model/quad.dart';
 export 'src/reasoner/rdfs_reasoner.dart';
 export 'src/codecs/n-triples/n_triples_codec.dart';
+export 'src/codecs/turtle/turtle_codec.dart';
 export 'src/model/impl/in_memory_graph.dart';
 export 'src/model/impl/in_memory_dataset.dart';
