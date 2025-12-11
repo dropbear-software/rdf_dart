@@ -69,7 +69,7 @@ Future<void> main() async {
   buffer.writeln("  });"); // End W3C Test Suite
   buffer.writeln("}"); // End main
 
-  final outputFile = File('test/codec/turtle/generated_test_helper.dart');
+  final outputFile = File('test/codec/turtle/generated_turtle11_test.dart');
   await outputFile.writeAsString(buffer.toString());
   print('Generated tests at ${outputFile.path}');
 }
@@ -94,6 +94,7 @@ void _writeEvaluateGroup(
     final actionFile = test['mf:action']['@id'];
 
     // The name of the test in the test() call
+    buffer.writeln("");
     buffer.writeln("            test('$name', () async {");
 
     // Read action file
@@ -105,7 +106,7 @@ void _writeEvaluateGroup(
       final resultFile = test['mf:result']?['@id'];
       if (resultFile != null) {
         buffer.writeln(
-          "              final expectedOutput = await File('\$testFilePath/$resultFile').readAsString();",
+          "              final resultContent = await File('\$testFilePath/$resultFile').readAsString();",
         );
       }
     }
@@ -120,21 +121,28 @@ void _writeEvaluateGroup(
     );
     buffer.writeln("                action: actionContent,");
     if (isPositive && test['mf:result'] != null) {
-      buffer.writeln("                result: expectedOutput");
+      buffer.writeln("                result: resultContent");
     }
     buffer.writeln("              );");
     buffer.writeln();
 
     if (isPositive) {
       // Positive test logic
-      buffer.writeln("              // Test that we can decode it");
       buffer.writeln(
-        "              final result = turtleCodec.decode(testData.action);",
+        "              final turtleTriples = turtleCodec.decode(testData.action);",
       );
       buffer.writeln(
-        "              final actualOutput = turtleCodec.encode(result);",
+        "              final nTriples = nTriplesCodec.decode(testData.result);",
       );
-      buffer.writeln("              expect(actualOutput, expectedOutput);");
+      buffer.writeln(
+        "              final nTriplesGraph = InMemoryGraph()..addAll(nTriples);",
+      );
+      buffer.writeln(
+        "              final turtleGraph = InMemoryGraph()..addAll(turtleTriples);",
+      );
+      buffer.writeln(
+        "              expect(turtleGraph.isomorphic(nTriplesGraph), isTrue);",
+      );
     } else {
       // Negative test logic
       buffer.writeln("              expect(");
