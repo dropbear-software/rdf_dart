@@ -5,7 +5,7 @@ import 'package:rdf_dart/rdf_dart.dart';
 
 void main() {
   group('W3C Test Suite', () {
-    group('RDF 1.1', () {
+    group('Turtle 1.1', () {
       // All the test case files are loaded from this directory
       const testFilePath = 'test/codec/turtle/w3c/rdf11';
       group('Turtle Syntax ', () {
