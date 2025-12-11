@@ -1,0 +1,321 @@
+[
+  {
+    "@id": "trs:turtle12-annotation-01",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-annotation-01.ttl"
+    },
+    "mf:name": "Turtle 1.2 - Annotation form",
+    "mf:result": {
+      "@id": "turtle12-eval-annotation-01.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-annotation-02",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-annotation-02.ttl"
+    },
+    "mf:name": "Turtle 1.2 - Annotation example",
+    "mf:result": {
+      "@id": "turtle12-eval-annotation-02.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-annotation-03",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-annotation-03.ttl"
+    },
+    "mf:name": "Turtle 1.2 - Annotation - predicate and object lists",
+    "mf:result": {
+      "@id": "turtle12-eval-annotation-03.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-annotation-04",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-annotation-04.ttl"
+    },
+    "mf:name": "Turtle 1.2 - Annotation - nested",
+    "mf:result": {
+      "@id": "turtle12-eval-annotation-04.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-annotation-05",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-annotation-05.ttl"
+    },
+    "mf:name": "Turtle 1.2 - Annotation object list",
+    "mf:result": {
+      "@id": "turtle12-eval-annotation-05.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-annotation-06",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-annotation-06.ttl"
+    },
+    "mf:name": "Turtle 1.2 - Annotation with identifier",
+    "mf:result": {
+      "@id": "turtle12-eval-annotation-06.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-annotation-07",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-annotation-07.ttl"
+    },
+    "mf:name": "Turtle 1.2 - Different annotations have different default identifiers",
+    "mf:result": {
+      "@id": "turtle12-eval-annotation-07.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-annotation-08",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-annotation-08.ttl"
+    },
+    "mf:name": "Turtle 1.2 - Annotation form with explicit identifier",
+    "mf:result": {
+      "@id": "turtle12-eval-annotation-08.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-annotation-09",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-annotation-09.ttl"
+    },
+    "mf:name": "Turtle 1.2 - Annotation form with multiple reifiers",
+    "mf:result": {
+      "@id": "turtle12-eval-annotation-09.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-annotation-10",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-annotation-10.ttl"
+    },
+    "mf:name": "Turtle 1.2 - Annotation form with multiple annotation blocks",
+    "mf:result": {
+      "@id": "turtle12-eval-annotation-10.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-annotation-11",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-annotation-11.ttl"
+    },
+    "mf:name": "Turtle 1.2 - Annotation form with annotation block followed by reifier",
+    "mf:result": {
+      "@id": "turtle12-eval-annotation-11.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-annotation-12",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-annotation-12.ttl"
+    },
+    "mf:name": "Turtle 1.2 - Annotation form with alternating reifiers and annotation blocks",
+    "mf:result": {
+      "@id": "turtle12-eval-annotation-12.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-bnode-01",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-bnode-01.ttl"
+    },
+    "mf:name": "Turtle 1.2 - blank node label",
+    "mf:result": {
+      "@id": "turtle12-eval-bnode-01.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-bnode-02",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-bnode-02.ttl"
+    },
+    "mf:name": "Turtle 1.2 - blank node labels",
+    "mf:result": {
+      "@id": "turtle12-eval-bnode-02.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-reified-triples-annotation-01",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-reified-triples-annotation-01.ttl"
+    },
+    "mf:name": "Turtle 1.2 - Annotation with reified triples",
+    "mf:result": {
+      "@id": "turtle12-eval-reified-triples-annotation-01.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-reified-triples-annotation-02",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-reified-triples-annotation-02.ttl"
+    },
+    "mf:name": "Turtle 1.2 - Annotation on triple with reified triple subject",
+    "mf:result": {
+      "@id": "turtle12-eval-reified-triples-annotation-02.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-reified-triples-annotation-03",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-reified-triples-annotation-03.ttl"
+    },
+    "mf:name": "Turtle 1.2 - Annotation on triple with reified triple object",
+    "mf:result": {
+      "@id": "turtle12-eval-reified-triples-annotation-03.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-rt-01",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-rt-01.ttl"
+    },
+    "mf:name": "Turtle 1.2 - subject reification",
+    "mf:result": {
+      "@id": "turtle12-eval-rt-01.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-rt-02",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-rt-02.ttl"
+    },
+    "mf:name": "Turtle 1.2 - object reification",
+    "mf:result": {
+      "@id": "turtle12-eval-rt-02.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-rt-03",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-rt-03.ttl"
+    },
+    "mf:name": "Turtle 1.2 - subject reification with identifier",
+    "mf:result": {
+      "@id": "turtle12-eval-rt-03.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-rt-04",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-rt-04.ttl"
+    },
+    "mf:name": "Turtle 1.2 - object reification with identifier",
+    "mf:result": {
+      "@id": "turtle12-eval-rt-04.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-rt-05",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-rt-05.ttl"
+    },
+    "mf:name": "Turtle 1.2 - subject reification with bnode identifier",
+    "mf:result": {
+      "@id": "turtle12-eval-rt-05.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-rt-06",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-rt-06.ttl"
+    },
+    "mf:name": "Turtle 1.2 - object reification with bnode identifier",
+    "mf:result": {
+      "@id": "turtle12-eval-rt-06.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-rt-07",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-rt-07.ttl"
+    },
+    "mf:name": "Turtle 1.2 - subject reification with empty identifier",
+    "mf:result": {
+      "@id": "turtle12-eval-rt-07.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-rt-08",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-rt-08.ttl"
+    },
+    "mf:name": "Turtle 1.2 - object reification with empty identifier",
+    "mf:result": {
+      "@id": "turtle12-eval-rt-08.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-tt-01",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-tt-01.ttl"
+    },
+    "mf:name": "Turtle 1.2 - object triple term",
+    "mf:result": {
+      "@id": "turtle12-eval-tt-01.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-tt-02",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-tt-02.ttl"
+    },
+    "mf:name": "Turtle 1.2 - object triple term, no whitespace",
+    "mf:result": {
+      "@id": "turtle12-eval-tt-02.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-tt-03",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-tt-03.ttl"
+    },
+    "mf:name": "Turtle 1.2 - Nested, no whitespace",
+    "mf:result": {
+      "@id": "turtle12-eval-tt-03.nt"
+    }
+  },
+  {
+    "@id": "trs:turtle12-tt-04",
+    "@type": "rdft:TestTurtleEval",
+    "mf:action": {
+      "@id": "turtle12-eval-tt-04.ttl"
+    },
+    "mf:name": "Turtle 1.2 - Nested object term",
+    "mf:result": {
+      "@id": "turtle12-eval-tt-04.nt"
+    }
+  }
+]
