@@ -21,6 +21,9 @@ abstract interface class Graph {
   /// Adds a [triple] to the graph. Returns true if it was added.
   bool add(Triple triple);
 
+  /// Adds all [triples] to the graph. Returns true if any were added.
+  bool addAll(Iterable<Triple> triples);
+
   /// Removes a [triple] from the graph. Returns true if it was removed.
   bool remove(Triple triple);
 

@@ -48,4 +48,12 @@ class InMemoryGraph with GraphMixin implements Graph {
       return true;
     });
   }
+
+  @override
+  bool addAll(Iterable<Triple> triples) {
+    for (final triple in triples) {
+      _triples.add(triple);
+    }
+    return true;
+  }
 }
