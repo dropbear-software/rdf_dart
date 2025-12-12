@@ -11,10 +11,8 @@ class TurtleCodec extends Codec<Iterable<Triple>, String> {
   const TurtleCodec();
 
   @override
-  // TODO: implement decoder
   Converter<String, Iterable<Triple>> get decoder => const TurtleDecoder();
 
   @override
-  // TODO: implement encoder
   Converter<Iterable<Triple>, String> get encoder => const TurtleEncoder();
 }
