@@ -300,8 +300,9 @@ class _TurtleParser {
         try {
           return _parseNumericLiteral();
         } catch (_) {
-          if (char == '.')
+          if (char == '.') {
             rethrow; // Dot is definitely not a term, let explicit error happen or bubble up
+          }
           // If + or - and not numeric, could it be something else?
           // No, PrefixedName cannot start with + or -.
           rethrow;
@@ -458,7 +459,6 @@ class _TurtleParser {
     final sb = StringBuffer();
     // We scan greedily, then backtrack dots
 
-    final localStart = _pos;
     while (!_isAtEnd()) {
       final char = _input[_pos];
 
