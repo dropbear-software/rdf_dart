@@ -1051,7 +1051,7 @@ prefix : <http://example.com/ns#>
 
       test('Terms inside triple terms can be replaced by fresh bnodes.', () {
         final testCase = (
-          name: 'annotation',
+          name: 'bnodes-in-triple-term-object',
           type: 'rdft:PositiveEntailmentTest',
           entailmentRegime: 'simple',
           recognizedDatatypes: [],
@@ -1064,7 +1064,1009 @@ prefix : <http://example.com/ns#>
           result: '''
 prefix : <http://example.com/ns#>
 
+:a1 :p1 <<( :a :b _:x )>> .
+''',
+        );
+        runTestCase(testCase, true);
+      });
+
+      test(
+        'Terms inside triple terms can be replaced by fresh bnodes. (2)',
+        () {
+          final testCase = (
+            name: 'bnodes-in-triple-term-subject',
+            type: 'rdft:PositiveEntailmentTest',
+            entailmentRegime: 'simple',
+            recognizedDatatypes: [],
+            unrecognizedDatatypes: [],
+            action: '''
+prefix : <http://example.com/ns#>
+
+:a1 :p1 <<( :a :b :c )>> .
+''',
+            result: '''
+prefix : <http://example.com/ns#>
+
 :a1 :p1 <<( _:x :b :c )>> .
+''',
+          );
+          runTestCase(testCase, true);
+        },
+      );
+
+      test(
+        'Terms inside triple terms can be replaced by fresh bnodes. (3)',
+        () {
+          final testCase = (
+            name: 'bnodes-in-triple-term-subject-and-object',
+            type: 'rdft:PositiveEntailmentTest',
+            entailmentRegime: 'simple',
+            recognizedDatatypes: [],
+            unrecognizedDatatypes: [],
+            action: '''
+prefix : <http://example.com/ns#>
+
+:a1 :p1 <<( :a :b :c )>> .
+''',
+            result: '''
+prefix : <http://example.com/ns#>
+
+:a1 :p1 <<( _:x :b _:y )>> .
+''',
+          );
+          runTestCase(testCase, true);
+        },
+      );
+
+      test('The same bnode can not match different triple terms.', () {
+        final testCase = (
+          name: 'bnodes-in-triple-term-subject-and-object-fail',
+          type: 'rdft:NegativeEntailmentTest',
+          entailmentRegime: 'simple',
+          recognizedDatatypes: [],
+          unrecognizedDatatypes: [],
+          action: '''
+prefix : <http://example.com/ns#>
+
+:a1 :p1 <<( :a :b :c )>> .
+''',
+          result: '''
+prefix : <http://example.com/ns#>
+
+:a1 :p1 <<( _:x :b _:x )>> .
+''',
+        );
+        runTestCase(testCase, true);
+      });
+
+      test(
+        'Terms inside and outside triple terms can be replaced by fresh bnodes.',
+        () {
+          final testCase = (
+            name: 'constrained-bnodes-in-triple-term-object',
+            type: 'rdft:PositiveEntailmentTest',
+            entailmentRegime: 'simple',
+            recognizedDatatypes: [],
+            unrecognizedDatatypes: [],
+            action: '''
+prefix : <http://example.com/ns#>
+
+:a1 :p1 <<( :a :b :c )>>.
+:a :label "A".
+:c :label "C".
+''',
+            result: '''
+prefix : <http://example.com/ns#>
+
+:a1 :p1 <<( :a :b _:x )>>.
+_:x :label "C".
+''',
+          );
+          runTestCase(testCase, true);
+        },
+      );
+
+      test(
+        'Terms inside and outside triple terms can be replaced by fresh bnodes. (2)',
+        () {
+          final testCase = (
+            name: 'constrained-bnodes-in-triple-term-subject',
+            type: 'rdft:PositiveEntailmentTest',
+            entailmentRegime: 'simple',
+            recognizedDatatypes: [],
+            unrecognizedDatatypes: [],
+            action: '''
+prefix : <http://example.com/ns#>
+
+:a1 :p1 <<( :a :b :c )>>.
+:a :label "A".
+:c :label "C".
+''',
+            result: '''
+prefix : <http://example.com/ns#>
+
+:a1 :p1 <<( _:x :b :c )>>.
+_:x :label "A".
+''',
+          );
+          runTestCase(testCase, true);
+        },
+      );
+
+      test(
+        'Literals inside and outside triple terms can be replaced by fresh bnodes.',
+        () {
+          final testCase = (
+            name: 'constrained-bnodes-on-literal',
+            type: 'rdft:PositiveEntailmentTest',
+            entailmentRegime: 'simple',
+            recognizedDatatypes: [],
+            unrecognizedDatatypes: [],
+            action: '''
+prefix : <http://example.com/ns#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+:a1 :p1 <<( :a :b "42"^^xsd:integer )>>.
+:s2 :p2 "42"^^xsd:integer.
+''',
+            result: '''
+prefix : <http://example.com/ns#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+:a1 :p1 <<( :a :b _:x )>>.
+:s2 :p2 _:x.
+''',
+          );
+          runTestCase(testCase, true);
+        },
+      );
+
+      test('Different bnodes can match identical triple terms.', () {
+        final testCase = (
+          name: 'different-bnodes-same-triple-term',
+          type: 'rdft:PositiveEntailmentTest',
+          entailmentRegime: 'simple',
+          recognizedDatatypes: [],
+          unrecognizedDatatypes: [],
+          action: '''
+prefix : <http://example.com/ns#>
+
+:a1 :p1 <<( :a :b :a )>> .
+''',
+          result: '''
+prefix : <http://example.com/ns#>
+
+:a1 :p1 <<( _:x :b _:y )>> .
+''',
+        );
+        runTestCase(testCase, true);
+      });
+
+      test('Triple terms are not asserted.', () {
+        final testCase = (
+          name: 'triple-term-not-asserted',
+          type: 'rdft:NegativeEntailmentTest',
+          entailmentRegime: 'simple',
+          recognizedDatatypes: [],
+          unrecognizedDatatypes: [],
+          action: '''
+prefix : <http://example.com/ns#>
+
+:a1 :p1 <<( :a :b :c )>> .
+''',
+          result: '''
+prefix : <http://example.com/ns#>
+
+:a :b :c.
+''',
+        );
+        runTestCase(testCase, true);
+      });
+
+      test('This test ensures that other entailments are not spurious.', () {
+        final testCase = (
+          name: 'triple-terms-no-spurious',
+          type: 'rdft:NegativeEntailmentTest',
+          entailmentRegime: 'simple',
+          recognizedDatatypes: [],
+          unrecognizedDatatypes: [],
+          action: '''
+prefix : <http://example.com/ns#>
+
+:a1 :p1 <<( :a :b :c )>> .
+''',
+          result: '''
+prefix : <http://example.com/ns#>
+
+:a1 :p1 <<( :a :b :d )>> .
+''',
+        );
+        runTestCase(testCase, true);
+      });
+
+      test('Literals denote instances of their datatype.', () {
+        final testCase = (
+          name: 'literal-type',
+          type: 'rdft:PositiveEntailmentTest',
+          entailmentRegime: 'RDF',
+          recognizedDatatypes: [
+            Iri('http://www.w3.org/2001/XMLSchema#integer'),
+          ],
+          unrecognizedDatatypes: [],
+          action: '''
+prefix : <http://example.com/ns#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+:a :b "42"^^xsd:integer.
+''',
+          result: '''
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX : <http://example.com/ns#>
+
+:a :b _:x .
+_:x rdf:type xsd:integer .
+''',
+        );
+        runTestCase(testCase, true);
+      });
+
+      test(
+        'Malformed literals are allowed in triple terms, but cause inconsistency.',
+        () {
+          final testCase = (
+            name: 'malformed-literal',
+            type: 'rdft:PositiveEntailmentTest',
+            entailmentRegime: 'RDF',
+            recognizedDatatypes: [
+              Iri('http://www.w3.org/2001/XMLSchema#integer'),
+            ],
+            unrecognizedDatatypes: [],
+            action: '<malformed-literal.ttl>',
+            result: false,
+          );
+          runTestCase(testCase, true);
+        },
+        skip: "https://github.com/w3c/rdf-tests/issues/213",
+      );
+
+      test(
+        'Malformed literals are allowed when in triple terms.',
+        () {
+          final testCase = (
+            name: 'malformed-literal-accepted',
+            type: 'rdft:PositiveEntailmentTest',
+            entailmentRegime: 'RDF',
+            recognizedDatatypes: [
+              Iri('http://www.w3.org/2001/XMLSchema#integer'),
+            ],
+            unrecognizedDatatypes: [],
+            action: '<malformed-literal.ttl>',
+            result: false,
+          );
+          runTestCase(testCase, true);
+        },
+        skip: "https://github.com/w3c/rdf-tests/issues/213",
+      );
+
+      test(
+        'Malformed literals cannot be replaced by blank nodes.',
+        () {
+          final testCase = (
+            name: 'malformed-literal-bnode-neg',
+            type: 'rdft:NegativeEntailmentTest',
+            entailmentRegime: 'RDF',
+            recognizedDatatypes: [
+              Iri('http://www.w3.org/2001/XMLSchema#integer'),
+            ],
+            unrecognizedDatatypes: [],
+            result: '''
+prefix : <http://example.com/ns#>
+
+:a1 :p1 <<( :a :b _:x )>> .
+''',
+          );
+          runTestCase(testCase, true);
+        },
+        skip: "https://github.com/w3c/rdf-tests/issues/213",
+      );
+
+      test(
+        'Checks that xsd:integer is indeed recognized, to ensure that malformed-literal-* tests do not pass spuriously.',
+        () {
+          final testCase = (
+            name: 'malformed-literal-control',
+            type: 'rdft:PositiveEntailmentTest',
+            entailmentRegime: 'RDF',
+            recognizedDatatypes: [
+              Iri('http://www.w3.org/2001/XMLSchema#integer'),
+            ],
+            unrecognizedDatatypes: [],
+            action: '''
+prefix : <http://example.com/ns#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+:a :b "c"^^xsd:integer.
+''',
+            result: false,
+          );
+          runTestCase(testCase, true);
+        },
+      );
+
+      test(
+        'Malformed literals within triple terms do not lead to spurious entailment.',
+        () {
+          final testCase = (
+            name: 'malformed-literal-no-spurious',
+            type: 'rdft:NegativeEntailmentTest',
+            entailmentRegime: 'RDF',
+            recognizedDatatypes: [
+              Iri('http://www.w3.org/2001/XMLSchema#integer'),
+            ],
+            unrecognizedDatatypes: [],
+            result: '''
+prefix : <http://example.com/ns#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+:a1 :p1 <<( :a :b "d"^^xsd:integer )>>.
+''',
+            action: '<malformed-literal.ttl>',
+          );
+          runTestCase(testCase, true);
+        },
+        skip: "https://github.com/w3c/rdf-tests/issues/213",
+      );
+
+      test(
+        'Triple term IRIs are transparent.',
+        () {
+          final testCase = (
+            name: 'malformed-literal-no-spurious',
+            type: 'rdft:PositiveEntailmentTest',
+            entailmentRegime: 'RDFS-Plus',
+            recognizedDatatypes: [],
+            unrecognizedDatatypes: [],
+            action: '''
+prefix : <http://example.com/ns#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+
+:clark :reports <<( :superman :can :fly )>>.
+:clark owl:sameAs :superman.
+''',
+            result: '''
+prefix : <http://example.com/ns#>
+
+:clark :reports <<( :clark :can :fly )>>.
+''',
+          );
+          runTestCase(testCase, true);
+        },
+        skip: "RDFS-Plus is not supported yet",
+      );
+
+      test(
+        'Check that owl:sameAs works as expected; was to ensure that opaque-iri did not pass spuriously.',
+        () {
+          final testCase = (
+            name: 'opaque-iri-control',
+            type: 'rdft:PositiveEntailmentTest',
+            entailmentRegime: 'RDFS-Plus',
+            recognizedDatatypes: [],
+            unrecognizedDatatypes: [],
+            action: '''
+prefix : <http://example.com/ns#>
+prefix owl: <http://www.w3.org/2002/07/owl#>
+
+:superman :can :fly .
+:clark owl:sameAs :superman.
+''',
+            result: '''
+prefix : <http://example.com/ns#>
+
+:clark :can :fly .
+''',
+          );
+          runTestCase(testCase, true);
+        },
+        skip: "RDFS-Plus is not supported yet",
+      );
+
+      test(
+        'Literals within reifying terms (including language strings) are transparent.',
+        () {
+          final testCase = (
+            name: 'opaque-language-string',
+            type: 'rdft:PositiveEntailmentTest',
+            entailmentRegime: 'simple',
+            recognizedDatatypes: [],
+            unrecognizedDatatypes: [],
+            action: '''
+prefix : <http://example.com/ns#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+:a1 :p1 <<( :a :b "hello"@en-us )>>.
+''',
+            result: '''
+prefix : <http://example.com/ns#>
+
+:a1 :p1 <<( :a :b "hello"@en-US )>>.
+''',
+          );
+          runTestCase(testCase, true);
+        },
+      );
+
+      test(
+        'Checks that language strings are indeed recognized; was to ensure that opaque-language-string did not pass spuriously.',
+        () {
+          final testCase = (
+            name: 'opaque-language-string-control',
+            type: 'rdft:PositiveEntailmentTest',
+            entailmentRegime: 'simple',
+            recognizedDatatypes: [],
+            unrecognizedDatatypes: [],
+            action: '''
+prefix : <http://example.com/ns#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+:a :b "hello"@en-us.
+''',
+            result: '''
+prefix : <http://example.com/ns#>
+
+:a :b "hello"@en-US.
+''',
+          );
+          runTestCase(testCase, true);
+        },
+      );
+
+      test(
+        'Literals within reifying terms (including directional language strings) are opaque, even when their datatype is recognized.',
+        () {
+          final testCase = (
+            name: 'opaque-dir-language-string',
+            type: 'rdft:NegativeEntailmentTest',
+            entailmentRegime: 'simple',
+            recognizedDatatypes: [],
+            unrecognizedDatatypes: [],
+            action: '''
+prefix : <http://example.com/ns#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+:a1 :p1 <<( :a :b "hello"@en-us--ltr )>>.
+''',
+            result: '''
+prefix : <http://example.com/ns#>
+
+:a1 :p1 <<( :a :b "hello"@en-US--ltr )>>.
+''',
+          );
+          runTestCase(testCase, true);
+        },
+      );
+
+      test(
+        'Checks that directional language strings are indeed recognized, to ensure that opaque-dir-language-string does not pass spuriously.',
+        () {
+          final testCase = (
+            name: 'opaque-dir-language-string-control',
+            type: 'rdft:PositiveEntailmentTest',
+            entailmentRegime: 'simple',
+            recognizedDatatypes: [],
+            unrecognizedDatatypes: [],
+            action: '''
+prefix : <http://example.com/ns#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+:a :b "hello"@en-us--ltr.
+''',
+            result: '''
+prefix : <http://example.com/ns#>
+
+:a :b "hello"@en-US--ltr.
+''',
+          );
+          runTestCase(testCase, true);
+        },
+      );
+
+      test('Literals within triple terms are transparent.', () {
+        final testCase = (
+          name: 'opaque-literal',
+          type: 'rdft:PositiveEntailmentTest',
+          entailmentRegime: 'simple',
+          recognizedDatatypes: [
+            Iri('http://www.w3.org/2001/XMLSchema#integer'),
+          ],
+          unrecognizedDatatypes: [],
+          action: '''
+prefix : <http://example.com/ns#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+:a1 :p1 <<( :a :b "042"^^xsd:integer )>>.
+''',
+          result: '''
+prefix : <http://example.com/ns#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+:a1 :p1 <<( :a :b "42"^^xsd:integer )>>.
+''',
+        );
+        runTestCase(testCase, true);
+      });
+
+      test(
+        'Checks that xsd:integer is indeed recognized; was to ensure that opaque-literal did not pass spuriously.',
+        () {
+          final testCase = (
+            name: 'opaque-literal-control',
+            type: 'rdft:PositiveEntailmentTest',
+            entailmentRegime: 'RDF',
+            recognizedDatatypes: [
+              Iri('http://www.w3.org/2001/XMLSchema#integer'),
+            ],
+            unrecognizedDatatypes: [],
+            action: '''
+prefix : <http://example.com/ns#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+:a :b "042"^^xsd:integer.
+''',
+            result: '''
+prefix : <http://example.com/ns#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+
+:a :b "42"^^xsd:integer.
+''',
+          );
+          runTestCase(testCase, true);
+        },
+      );
+
+      test(
+        'Identical triple term can be replaced by the same fresh bnode multiple times.',
+        () {
+          final testCase = (
+            name: 'same-bnode-same-quoted-term',
+            type: 'rdft:PositiveEntailmentTest',
+            entailmentRegime: 'simple',
+            recognizedDatatypes: [],
+            unrecognizedDatatypes: [],
+            action: '''
+prefix : <http://example.com/ns#>
+
+:a1 :p1 <<( :a :b :a )>> .
+''',
+            result: '''
+prefix : <http://example.com/ns#>
+
+:a1 :p1 <<( _:x :b _:x )>> .
+''',
+          );
+          runTestCase(testCase, true);
+        },
+      );
+
+      test('Arrays are ordered in rdf:JSON.', () {
+        final testCase = (
+          name: 'json-array-unordered',
+          type: 'rdft:NegativeEntailmentTest',
+          entailmentRegime: 'RDF',
+          recognizedDatatypes: [
+            Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#JSON'),
+          ],
+          unrecognizedDatatypes: [],
+          action: '''
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "[ -0, 0 ]"^^rdf:JSON .
+''',
+          result: '''
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "[ 0, -0 ]"^^rdf:JSON .
+''',
+        );
+        runTestCase(testCase, true);
+      });
+
+      test(
+        'Objects are unordered in rdf:JSON.',
+        () {
+          final testCase = (
+            name: 'json-object-unordered',
+            type: 'rdft:PositiveEntailmentTest',
+            entailmentRegime: 'RDF',
+            recognizedDatatypes: [
+              Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#JSON'),
+            ],
+            unrecognizedDatatypes: [],
+            action: '''
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX : <http://example.com/ns#>
+
+:a :b '{ "a":0, "b":1 }'^^rdf:JSON .
+''',
+            result: '''
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX : <http://example.com/ns#>
+
+:a :b '{ "b":1, "a":0 }'^^rdf:JSON .
+''',
+          );
+          runTestCase(testCase, true);
+        },
+        skip: "RDF:JSON support is not currently implemented",
+      );
+
+      test('Positive zero and negative zero are different in rdf:JSON.', () {
+        final testCase = (
+          name: 'json-object-unordered',
+          type: 'rdft:NegativeEntailmentTest',
+          entailmentRegime: 'RDF',
+          recognizedDatatypes: [
+            Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#JSON'),
+          ],
+          unrecognizedDatatypes: [],
+          action: '''
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "0"^^rdf:JSON .
+''',
+          result: '''
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "-0"^^rdf:JSON .
+''',
+        );
+        runTestCase(testCase, true);
+      });
+
+      test(
+        'Positive zero and negative zero are different in rdf:JSON inside arrays.',
+        () {
+          final testCase = (
+            name: 'json-zero-array',
+            type: 'rdft:NegativeEntailmentTest',
+            entailmentRegime: 'RDF',
+            recognizedDatatypes: [
+              Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#JSON'),
+            ],
+            unrecognizedDatatypes: [],
+            action: '''
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "[ 0 ]"^^rdf:JSON .
+''',
+            result: '''
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "[ -0 ]"^^rdf:JSON .
+''',
+          );
+          runTestCase(testCase, true);
+        },
+      );
+
+      test('Rounding to different even rdf:JSON.', () {
+        final testCase = (
+          name: 'json-round-different',
+          type: 'rdft:NegativeEntailmentTest',
+          entailmentRegime: 'RDF',
+          recognizedDatatypes: [
+            Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#JSON'),
+          ],
+          unrecognizedDatatypes: [],
+          action: '''
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "9007199254740990.5"^^rdf:JSON .
+''',
+          result: '''
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "9007199254740991.5"^^rdf:JSON .
+''',
+        );
+        runTestCase(testCase, true);
+      });
+
+      test(
+        'Rounding to same even rdf:JSON.',
+        () {
+          final testCase = (
+            name: 'json-round-same',
+            type: 'rdft:PositiveEntailmentTest',
+            entailmentRegime: 'RDF',
+            recognizedDatatypes: [
+              Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#JSON'),
+            ],
+            unrecognizedDatatypes: [],
+            action: '''
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "9007199254740992.5"^^rdf:JSON .
+''',
+            result: '''
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "9007199254740991.5"^^rdf:JSON .
+''',
+          );
+          runTestCase(testCase, true);
+        },
+        skip: "RDF:JSON support is not currently implemented",
+      );
+
+      test(
+        'Large rdf:JSON number values are infinity.',
+        () {
+          final testCase = (
+            name: 'json-infinity',
+            type: 'rdft:PositiveEntailmentTest',
+            entailmentRegime: 'RDF',
+            recognizedDatatypes: [
+              Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#JSON'),
+            ],
+            unrecognizedDatatypes: [],
+            action: '''
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "1E400"^^rdf:JSON	.
+''',
+            result: '''
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "1E401"^^rdf:JSON	.
+''',
+          );
+          runTestCase(testCase, true);
+        },
+        skip: "RDF:JSON support is not currently implemented",
+      );
+
+      test('Positive zero and negative zero are different in xsd:float.', () {
+        final testCase = (
+          name: 'float-zero',
+          type: 'rdft:NegativeEntailmentTest',
+          entailmentRegime: 'RDF',
+          recognizedDatatypes: [Iri('http://www.w3.org/2001/XMLSchema#float')],
+          unrecognizedDatatypes: [],
+          action: '''
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "0"^^xsd:float .
+''',
+          result: '''
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "-0"^^xsd:float .
+''',
+        );
+        runTestCase(testCase, true);
+      });
+
+      test('Rounding to different even xsd:float.', () {
+        final testCase = (
+          name: 'float-round-different',
+          type: 'rdft:NegativeEntailmentTest',
+          entailmentRegime: 'RDF',
+          recognizedDatatypes: [Iri('http://www.w3.org/2001/XMLSchema#float')],
+          unrecognizedDatatypes: [],
+          action: '''
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "16777206.5"^^xsd:float .
+''',
+          result: '''
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "16777207.5"^^xsd:float .
+''',
+        );
+        runTestCase(testCase, true);
+      });
+
+      test('Rounding to same even xsd:float.', () {
+        final testCase = (
+          name: 'float-round-same',
+          type: 'rdft:PositiveEntailmentTest',
+          entailmentRegime: 'RDF',
+          recognizedDatatypes: [Iri('http://www.w3.org/2001/XMLSchema#float')],
+          unrecognizedDatatypes: [],
+          action: '''
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "16777206.5"^^xsd:float .
+''',
+          result: '''
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "16777205.5"^^xsd:float .
+''',
+        );
+        runTestCase(testCase, true);
+      });
+
+      test('Large xsd:float values are infinity.', () {
+        final testCase = (
+          name: 'float-infinity',
+          type: 'rdft:PositiveEntailmentTest',
+          entailmentRegime: 'RDF',
+          recognizedDatatypes: [Iri('http://www.w3.org/2001/XMLSchema#float')],
+          unrecognizedDatatypes: [],
+          action: '''
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "1E400"^^xsd:float .
+''',
+          result: '''
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "1E401"^^xsd:float .
+''',
+        );
+        runTestCase(testCase, true);
+      });
+
+      test('Positive zero and negative zero are different in xsd:double.', () {
+        final testCase = (
+          name: 'double-zero',
+          type: 'rdft:NegativeEntailmentTest',
+          entailmentRegime: 'RDF',
+          recognizedDatatypes: [Iri('http://www.w3.org/2001/XMLSchema#double')],
+          unrecognizedDatatypes: [],
+          action: '''
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "0"^^xsd:double .
+''',
+          result: '''
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "-0"^^xsd:double .
+''',
+        );
+        runTestCase(testCase, true);
+      });
+
+      test('Rounding to different even xsd:double.', () {
+        final testCase = (
+          name: 'double-round-different',
+          type: 'rdft:NegativeEntailmentTest',
+          entailmentRegime: 'RDF',
+          recognizedDatatypes: [Iri('http://www.w3.org/2001/XMLSchema#double')],
+          unrecognizedDatatypes: [],
+          action: '''
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "9007199254740990.5"^^xsd:double .
+''',
+          result: '''
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "9007199254740991.5"^^xsd:double .
+''',
+        );
+        runTestCase(testCase, true);
+      });
+
+      test('Rounding to same even xsd:double.', () {
+        final testCase = (
+          name: 'double-round-different',
+          type: 'rdft:PositiveEntailmentTest',
+          entailmentRegime: 'RDF',
+          recognizedDatatypes: [Iri('http://www.w3.org/2001/XMLSchema#double')],
+          unrecognizedDatatypes: [],
+          action: '''
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "9007199254740992.5"^^xsd:double .
+''',
+          result: '''
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "9007199254740991.5"^^xsd:double .
+''',
+        );
+        runTestCase(testCase, true);
+      });
+
+      test('Large xsd:double values are infinity.', () {
+        final testCase = (
+          name: 'double-infinity',
+          type: 'rdft:PositiveEntailmentTest',
+          entailmentRegime: 'RDF',
+          recognizedDatatypes: [Iri('http://www.w3.org/2001/XMLSchema#double')],
+          unrecognizedDatatypes: [],
+          action: '''
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "1E400"^^xsd:double .
+''',
+          result: '''
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX : <http://example.com/ns#>
+
+:a :b "1E401"^^xsd:double .
+''',
+        );
+        runTestCase(testCase, true);
+      });
+
+      test('Triple terms denote instances of rdfs:Proposition.', () {
+        final testCase = (
+          name: 'triple-terms-propositions',
+          type: 'rdft:PositiveEntailmentTest',
+          entailmentRegime: 'RDFS',
+          recognizedDatatypes: [],
+          unrecognizedDatatypes: [],
+          action: '''
+prefix : <http://example.com/ns#>
+
+:a1 :p1 <<( :a :b :c )>> .
+''',
+          result: '''
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX : <http://example.com/ns#>
+
+:a1 :p1 _:pp .
+_:pp rdf:type rdfs:Proposition .
+''',
+        );
+        runTestCase(testCase, true);
+      });
+
+      test('Range of rdf:reifies is rdfs:Proposition.', () {
+        final testCase = (
+          name: 'reifies-range',
+          type: 'rdft:PositiveEntailmentTest',
+          entailmentRegime: 'RDFS',
+          recognizedDatatypes: [],
+          unrecognizedDatatypes: [],
+          action: '''
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX : <http://example.com/ns#>
+
+:a rdf:reifies :b .
+''',
+          result: '''
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX : <http://example.com/ns#>
+
+:b rdf:type rdfs:Proposition .
 ''',
         );
         runTestCase(testCase, true);
