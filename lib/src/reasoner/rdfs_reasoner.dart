@@ -62,6 +62,9 @@ class RdfsReasoner {
   static final _rdfValue = Iri(
     'http://www.w3.org/1999/02/22-rdf-syntax-ns#value',
   );
+  static final _rdfReifies = Iri(
+    'http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies',
+  );
 
   // RDFS
   static final _rdfsDomain = Iri('http://www.w3.org/2000/01/rdf-schema#domain');
@@ -83,6 +86,9 @@ class RdfsReasoner {
   );
   static final _rdfsMember = Iri('http://www.w3.org/2000/01/rdf-schema#member');
   static final _rdfsClass = Iri('http://www.w3.org/2000/01/rdf-schema#Class');
+  static final _rdfsProposition = Iri(
+    'http://www.w3.org/2000/01/rdf-schema#Proposition',
+  );
   static final _rdfsResource = Iri(
     'http://www.w3.org/2000/01/rdf-schema#Resource',
   );
@@ -194,6 +200,7 @@ class RdfsReasoner {
       _rdfFirst,
       _rdfRest,
       _rdfValue,
+      _rdfReifies,
     ]) {
       _addAxiom(p, _rdfType, _rdfProperty);
       _addAxiom(p, _rdfsDomain, _rdfsResource);
@@ -223,6 +230,9 @@ class RdfsReasoner {
     _addAxiom(_rdfStatement, _rdfType, _rdfsClass); // RDF Statement is a class
     _addAxiom(_rdfProperty, _rdfType, _rdfsClass);
     _addAxiom(_rdfsContainerMembershipProperty, _rdfsSubClassOf, _rdfProperty);
+    _addAxiom(_rdfsProposition, _rdfType, _rdfsClass);
+
+    _addAxiom(_rdfReifies, _rdfsRange, _rdfsProposition);
   }
 
   bool _addAxiom(SubjectTerm s, Iri p, ObjectTerm o) {

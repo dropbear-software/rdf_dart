@@ -13,6 +13,13 @@ import '../model/triple_term.dart';
 /// [query] to the terms of [target] such that the graph obtained by applying
 /// M to [query] is a subgraph of [target].
 class EntailmentSolver {
+  static final _rdfType = Iri(
+    'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+  );
+  static final _rdfsProposition = Iri(
+    'http://www.w3.org/2000/01/rdf-schema#Proposition',
+  );
+
   final Set<Iri> _recognizedDatatypes;
 
   EntailmentSolver({Set<Iri> recognizedDatatypes = const {}})
@@ -145,7 +152,36 @@ class EntailmentSolver {
     Graph targetGraph,
   ) {
     for (final triple in queryPattern) {
-      final mappedTriple = _mapTriple(triple, mapping);
+      final s = _mapTerm(triple.subject, mapping);
+      final p = triple
+          .predicate; // Predicate is constant in Query Triple pattern (if not generalized)
+      final o = _mapTerm(triple.object, mapping);
+
+      // --- RDF 1.2 Entailment: TripleTerm is a Proposition ---
+      // If s matches a TripleTerm, and we are checking for rdf:type rdfs:Proposition,
+      // then this holds true by definition, even if TripleTerm cannot be an explicit subject.
+      if (s is TripleTerm) {
+        if (p == _rdfType && o == _rdfsProposition) {
+          continue; // Valid entailment
+        }
+        // TripleTerm cannot be a subject of any other triple in standard RDF 1.2
+        return false;
+      }
+
+      // Safe to cast to valid Subject/Object terms now since we handled TripleTerm
+      if (s is! SubjectTerm || o is! ObjectTerm) {
+        // Should not happen if query is valid and mapping aligns types,
+        // but candidates might contain Literals mixed with Subjects if we aren't careful.
+        // Literal as Subject => Invalid in standard RDF.
+        return false;
+      }
+
+      final mappedTriple = Triple(
+        subject: s,
+        predicate: p,
+        object: o,
+      );
+
       if (!_matchesTriple(mappedTriple, targetGraph)) {
         return false;
       }
