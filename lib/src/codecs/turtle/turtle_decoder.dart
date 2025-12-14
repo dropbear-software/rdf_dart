@@ -11,13 +11,11 @@ import '../../model/triple_term.dart';
 
 /// A [Converter] that decodes Turtle strings to [Iterable] of [Triple]s.
 class TurtleDecoder extends Converter<String, Iterable<Triple>> {
-  final Iri? baseUri;
-
-  const TurtleDecoder({this.baseUri});
+  const TurtleDecoder();
 
   @override
   Iterable<Triple> convert(String input) sync* {
-    final parser = _TurtleParser(input, baseUri: baseUri);
+    final parser = _TurtleParser(input);
     yield* parser.parse();
   }
 }
@@ -34,7 +32,7 @@ class _TurtleParser {
   // Buffers for emitting triples
   final List<Triple> _triples = [];
 
-  _TurtleParser(this._input, {Iri? baseUri}) : _base = baseUri;
+  _TurtleParser(this._input);
 
   Iterable<Triple> parse() sync* {
     while (!_isAtEnd()) {
