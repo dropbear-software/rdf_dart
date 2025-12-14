@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:test/test.dart';
+import 'package:rdf_dart/src/codecs/turtle/turtle_decoder.dart';
 import 'package:rdf_dart/rdf_dart.dart';
 
 void main() {
@@ -28,7 +29,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -52,7 +53,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -76,7 +77,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -100,7 +101,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -124,7 +125,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -148,7 +149,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -172,7 +173,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -196,7 +197,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -220,7 +221,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -245,7 +246,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -270,7 +271,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -294,7 +295,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -319,7 +320,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -344,7 +345,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -368,7 +369,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -392,7 +393,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -416,7 +417,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -440,7 +441,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -465,7 +466,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -489,7 +490,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -513,7 +514,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -537,7 +538,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -561,7 +562,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -585,7 +586,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -610,7 +611,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -634,7 +635,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -658,7 +659,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -682,7 +683,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -706,7 +707,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -730,7 +731,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -754,7 +755,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -778,7 +779,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -802,7 +803,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -826,7 +827,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -851,7 +852,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -879,7 +880,7 @@ void main() {
                   result: resultContent,
                 );
 
-                final turtleTriples = turtleCodec.decode(testData.action);
+                final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
                 final nTriples = nTriplesCodec.decode(testData.result);
                 final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
                 final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -904,7 +905,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -929,7 +930,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -954,7 +955,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -978,7 +979,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1002,7 +1003,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1026,7 +1027,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1050,7 +1051,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1074,7 +1075,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1098,7 +1099,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1122,7 +1123,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1146,7 +1147,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1174,7 +1175,7 @@ void main() {
                   result: resultContent,
                 );
 
-                final turtleTriples = turtleCodec.decode(testData.action);
+                final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
                 final nTriples = nTriplesCodec.decode(testData.result);
                 final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
                 final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1199,7 +1200,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1223,7 +1224,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1248,7 +1249,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1272,7 +1273,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1296,7 +1297,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1320,7 +1321,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1344,7 +1345,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1368,7 +1369,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1392,7 +1393,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1416,7 +1417,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1440,7 +1441,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1464,7 +1465,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1488,7 +1489,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1512,7 +1513,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1536,7 +1537,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1560,7 +1561,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1584,7 +1585,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1608,7 +1609,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1632,7 +1633,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1656,7 +1657,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1680,7 +1681,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1704,7 +1705,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1728,7 +1729,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1756,7 +1757,7 @@ void main() {
                   result: resultContent,
                 );
 
-                final turtleTriples = turtleCodec.decode(testData.action);
+                final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
                 final nTriples = nTriplesCodec.decode(testData.result);
                 final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
                 final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1785,7 +1786,7 @@ void main() {
                   result: resultContent,
                 );
 
-                final turtleTriples = turtleCodec.decode(testData.action);
+                final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
                 final nTriples = nTriplesCodec.decode(testData.result);
                 final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
                 final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1810,7 +1811,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1834,7 +1835,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1859,7 +1860,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1883,7 +1884,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1907,7 +1908,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1931,7 +1932,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1956,7 +1957,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -1980,7 +1981,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2004,7 +2005,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2028,7 +2029,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2052,7 +2053,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2076,7 +2077,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2100,7 +2101,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2124,7 +2125,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2150,7 +2151,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2174,7 +2175,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2198,7 +2199,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2222,7 +2223,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2247,7 +2248,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2271,7 +2272,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2295,7 +2296,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2319,7 +2320,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2343,7 +2344,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2367,7 +2368,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2391,7 +2392,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2415,7 +2416,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2439,7 +2440,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2463,7 +2464,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2487,7 +2488,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2511,7 +2512,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2535,7 +2536,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2559,7 +2560,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2583,7 +2584,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2607,7 +2608,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2631,7 +2632,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2655,7 +2656,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2679,7 +2680,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2703,7 +2704,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2727,7 +2728,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2751,7 +2752,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2775,7 +2776,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2799,7 +2800,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2823,7 +2824,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2847,7 +2848,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2871,7 +2872,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2895,7 +2896,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2919,7 +2920,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2944,7 +2945,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2968,7 +2969,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -2992,7 +2993,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -3016,7 +3017,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -3040,7 +3041,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -3064,7 +3065,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -3088,7 +3089,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -3112,7 +3113,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -3136,7 +3137,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -3160,7 +3161,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -3184,7 +3185,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -3208,7 +3209,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -3232,7 +3233,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -3256,7 +3257,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -3280,7 +3281,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -3304,7 +3305,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -3328,7 +3329,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -3433,7 +3434,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -3458,7 +3459,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -3483,7 +3484,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -3507,7 +3508,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -3531,7 +3532,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -3555,7 +3556,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -3579,7 +3580,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
@@ -3603,7 +3604,7 @@ void main() {
                 result: resultContent,
               );
 
-              final turtleTriples = turtleCodec.decode(testData.action);
+              final turtleTriples = TurtleDecoder(baseUri: 'https://w3c.github.io/rdf-tests/rdf/rdf11/rdf-turtle/${testData.name}.ttl').convert(testData.action);
               final nTriples = nTriplesCodec.decode(testData.result);
               final nTriplesGraph = InMemoryGraph()..addAll(nTriples);
               final turtleGraph = InMemoryGraph()..addAll(turtleTriples);
