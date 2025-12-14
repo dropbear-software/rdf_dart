@@ -33,19 +33,16 @@ void main() {
   // result, and the result is correct in the configured entailment regime
   // with the configured recognized datatypes.
   group("RDF Schema and Semantics tests", () {
-    final nTriplesCodec = NTriplesCodec();
-
     Graph createGraph(Iterable<Triple> triples) {
       final g = InMemoryGraph();
       triples.forEach(g.add);
       return g;
     }
 
-    void runTestCase(dynamic testCase) {
+    void runTestCase(dynamic testCase, [bool isTurtle = false]) {
+      final codec = isTurtle ? TurtleCodec() : NTriplesCodec();
       // 1. Parse Input Graph
-      final inputGraph = createGraph(
-        nTriplesCodec.decode(testCase.action as String),
-      );
+      final inputGraph = createGraph(codec.decode(testCase.action as String));
 
       // 2. Configure Reasoner
       final regimeName = testCase.entailmentRegime as String;
@@ -75,7 +72,7 @@ void main() {
 
       if (result is String) {
         // Canonicalize output graph (Query) for D-entailment checks
-        final rawOutputGraph = createGraph(nTriplesCodec.decode(result));
+        final rawOutputGraph = createGraph(codec.decode(result));
         final outputGraph = InMemoryGraph();
         for (final t in rawOutputGraph.triples) {
           final s = t
@@ -1000,9 +997,78 @@ _:ub2bL3C54 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org
             result:
                 '<http://example.com/ns#a1> <http://example.com/ns#p1> <<( <http://example.com/ns#a> <http://example.com/ns#b> <http://example.com/ns#c> )>> .',
           );
-          runTestCase(testCase);
+          runTestCase(testCase, true);
         },
       );
+
+      test(
+        'Annotated triples are asserted. This is about shorthand expansion, and is not really a semantics test.',
+        () {
+          final testCase = (
+            name: 'annotated-asserted',
+            type: 'rdft:PositiveEntailmentTest',
+            entailmentRegime: 'simple',
+            recognizedDatatypes: [],
+            unrecognizedDatatypes: [],
+            action: '''
+prefix : <http://example.com/ns#>
+
+:a :b :c {| :p1 :o1 |}.
+''',
+            result: '''
+prefix : <http://example.com/ns#>
+
+:a :b :c.
+''',
+          );
+          runTestCase(testCase, true);
+        },
+      );
+
+      test(
+        'Annotations are about the reifying triple.  This is about shorthand expansion, and is not really a semantics test.',
+        () {
+          final testCase = (
+            name: 'annotation',
+            type: 'rdft:PositiveEntailmentTest',
+            entailmentRegime: 'simple',
+            recognizedDatatypes: [],
+            unrecognizedDatatypes: [],
+            action: '''
+prefix : <http://example.com/ns#>
+
+:a :b :c {| :p1 :o1 |}.
+''',
+            result: '''
+prefix : <http://example.com/ns#>
+
+:a1 :p1 <<( :a :b :c )>>.
+''',
+          );
+          runTestCase(testCase, true);
+        },
+      );
+
+      test('Terms inside triple terms can be replaced by fresh bnodes.', () {
+        final testCase = (
+          name: 'annotation',
+          type: 'rdft:PositiveEntailmentTest',
+          entailmentRegime: 'simple',
+          recognizedDatatypes: [],
+          unrecognizedDatatypes: [],
+          action: '''
+prefix : <http://example.com/ns#>
+
+:a1 :p1 <<( :a :b :c )>> .
+''',
+          result: '''
+prefix : <http://example.com/ns#>
+
+:a1 :p1 <<( _:x :b :c )>> .
+''',
+        );
+        runTestCase(testCase, true);
+      });
     });
   });
 }

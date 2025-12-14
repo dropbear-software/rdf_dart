@@ -54,11 +54,11 @@ class _TurtleParser {
       _skipWhitespaceAndComments();
       if (_isAtEnd()) break;
 
-      if (_startsWith('@prefix') || _startsWith('PREFIX')) {
+      if (_startsWith('@prefix') || _startsWithIgnoreCase('PREFIX')) {
         _parsePrefixID();
-      } else if (_startsWith('@base') || _startsWith('BASE')) {
+      } else if (_startsWith('@base') || _startsWithIgnoreCase('BASE')) {
         _parseBase();
-      } else if (_startsWith('@version') || _startsWith('VERSION')) {
+      } else if (_startsWith('@version') || _startsWithIgnoreCase('VERSION')) {
         _parseVersion();
       } else {
         yield* _parseTriples();
@@ -78,7 +78,7 @@ class _TurtleParser {
       _expect('.');
       _namespaces[prefix.substring(0, prefix.length - 1)] = iriPart.toString();
     } else {
-      _expect('PREFIX');
+      _expectIgnoreCase('PREFIX');
       _skipWhitespaceAndComments();
       final prefix = _parsePNameNS();
       _skipWhitespaceAndComments();
@@ -97,7 +97,7 @@ class _TurtleParser {
       _skipWhitespaceAndComments();
       _expect('.');
     } else {
-      _expect('BASE');
+      _expectIgnoreCase('BASE');
       _skipWhitespaceAndComments();
       _base = _parseIRIREF();
     }
@@ -113,7 +113,7 @@ class _TurtleParser {
       _skipWhitespaceAndComments();
       _expect('.');
     } else {
-      _expect('VERSION');
+      _expectIgnoreCase('VERSION');
       _skipWhitespaceAndComments();
       _parseVersionSpecifier();
     }
@@ -961,6 +961,13 @@ class _TurtleParser {
     _advance(token.length);
   }
 
+  void _expectIgnoreCase(String token) {
+    if (!_startsWithIgnoreCase(token)) {
+      throw FormatException('Expected $token (case-insensitive) at $_pos');
+    }
+    _advance(token.length);
+  }
+
   bool _consumeIf(String token) {
     if (_startsWith(token)) {
       _advance(token.length);
@@ -970,6 +977,13 @@ class _TurtleParser {
   }
 
   bool _startsWith(String token) => _input.startsWith(token, _pos);
+
+  bool _startsWithIgnoreCase(String token) {
+    if (_pos + token.length > _input.length) return false;
+    return _input.substring(_pos, _pos + token.length).toUpperCase() ==
+        token.toUpperCase();
+  }
+
   String _peek([int offset = 0]) =>
       (_pos + offset < _input.length) ? _input[_pos + offset] : '';
   void _advance(int n) => _pos += n;
