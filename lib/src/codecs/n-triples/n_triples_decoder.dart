@@ -9,10 +9,13 @@ import '../../model/triple.dart';
 import '../../model/triple_term.dart';
 
 /// A [Converter] that decodes N-Triples strings to [Iterable] of [Triple]s.
+///
+/// Implements the W3C N-Triples 1.2 specification.
 class NTriplesDecoder extends Converter<String, Iterable<Triple>> {
   const NTriplesDecoder();
 
   @override
+  /// [1] ntriplesDoc ::= statement? (EOL statement)* EOL?
   Iterable<Triple> convert(String input) sync* {
     // 1. Split by EOL (CR or LF)
     final lines = input.split(RegExp(r'[\r\n]+'));
@@ -40,6 +43,8 @@ class _NTriplesScanner {
 
   _NTriplesScanner(this.line, this.bnodeLabels);
 
+  /// [2] statement ::= directive | triple
+  /// [6] triple ::= subject predicate object '.'
   Triple? scan() {
     _skipWhitespace();
     if (_isAtEnd()) return null;
@@ -79,6 +84,7 @@ class _NTriplesScanner {
     return Triple(subject: s, predicate: p, object: o);
   }
 
+  /// [7] subject ::= IRIREF | BLANK_NODE_LABEL
   SubjectTerm _parseSubject() {
     if (_peek() == '<') {
       return _parseIri();
@@ -93,6 +99,7 @@ class _NTriplesScanner {
     }
   }
 
+  /// [8] predicate ::= IRIREF
   Iri _parsePredicate() {
     if (_peek() == '<') {
       return _parseIri();
@@ -101,6 +108,7 @@ class _NTriplesScanner {
     }
   }
 
+  /// [9] object ::= IRIREF | BLANK_NODE_LABEL | literal | tripleTerm
   ObjectTerm _parseObject() {
     final char = _peek();
     if (char == '<') {
@@ -118,6 +126,7 @@ class _NTriplesScanner {
     }
   }
 
+  /// [11] tripleTerm ::= '<<(' subject predicate object ')>>'
   TripleTerm _parseTripleTerm() {
     // Expected '<<('
     _advance(3);
@@ -137,6 +146,7 @@ class _NTriplesScanner {
     return TripleTerm(Triple(subject: s, predicate: p, object: o));
   }
 
+  /// [15] IRIREF
   Iri _parseIri() {
     // IRIREF ::= '<' ([^#x00-#x20<>"{}|^`\] | UCHAR)* '>'
     _advance(1); // <
@@ -180,6 +190,7 @@ class _NTriplesScanner {
     throw FormatException('Unterminated IRI', line, _index);
   }
 
+  /// [16] BLANK_NODE_LABEL ::= '_:' ( PN_CHARS_U | [0-9] ) ((PN_CHARS|'.')* PN_CHARS)?
   BlankNode _parseBlankNode() {
     // BLANK_NODE_LABEL ::= '_:' ( PN_CHARS_U | [0-9] ) ((PN_CHARS|'.')* PN_CHARS)?
     if (!_startsWith('_:')) throw FormatException('Expected _:', line, _index);
@@ -214,6 +225,7 @@ class _NTriplesScanner {
     return bnodeLabels.putIfAbsent(label, () => BlankNode(label));
   }
 
+  /// [10] literal ::= STRING_LITERAL_QUOTE ('^^' IRIREF | LANG_DIR )?
   Literal _parseLiteral() {
     final value = _parseStringLiteral();
 
@@ -274,6 +286,7 @@ class _NTriplesScanner {
     return Literal(value);
   }
 
+  /// [18] STRING_LITERAL_QUOTE ::= '"' ( [^#x22#x5C#xA#xD] | ECHAR | UCHAR )* '"'
   String _parseStringLiteral() {
     if (_peek() != '"') {
       throw FormatException('Expected string start "', line, _index);

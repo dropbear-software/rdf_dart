@@ -10,7 +10,15 @@ import '../../model/triple.dart';
 import '../../model/triple_term.dart';
 
 /// A [Converter] that decodes Turtle strings to [Iterable] of [Triple]s.
+///
+/// Implements the W3C Turtle 1.2 specification.
+///
+/// Example usage:
+/// ```dart
+/// final triples = TurtleDecoder(baseUri: 'http://example.org/').convert(turtleString);
+/// ```
 class TurtleDecoder extends Converter<String, Iterable<Triple>> {
+  /// The base URI to use for resolving relative IRIs in the input.
   final String? baseUri;
 
   const TurtleDecoder({this.baseUri});
@@ -40,6 +48,7 @@ class _TurtleParser {
     }
   }
 
+  /// [1] turtleDoc ::= statement*
   Iterable<Triple> parse() sync* {
     while (!_isAtEnd()) {
       _skipWhitespaceAndComments();
@@ -57,6 +66,8 @@ class _TurtleParser {
     }
   }
 
+  /// [4] prefixID ::= '@prefix' PNAME_NS IRIREF '.'
+  /// [7] sparqlPrefix ::= "PREFIX" PNAME_NS IRIREF
   void _parsePrefixID() {
     if (_consumeIf('@prefix')) {
       _skipWhitespaceAndComments();
@@ -77,6 +88,8 @@ class _TurtleParser {
     }
   }
 
+  /// [5] base ::= '@base' IRIREF '.'
+  /// [8] sparqlBase ::= "BASE" IRIREF
   void _parseBase() {
     if (_consumeIf('@base')) {
       _skipWhitespaceAndComments();
@@ -90,6 +103,8 @@ class _TurtleParser {
     }
   }
 
+  /// [6] version ::= '@version' VersionSpecifier '.'
+  /// [9] sparqlVersion ::= "VERSION" VersionSpecifier
   void _parseVersion() {
     // We largely ignore version directives but must consume them
     if (_consumeIf('@version')) {
@@ -104,6 +119,7 @@ class _TurtleParser {
     }
   }
 
+  /// [10] VersionSpecifier ::= STRING_LITERAL_QUOTE | STRING_LITERAL_SINGLE_QUOTE
   void _parseVersionSpecifier() {
     // VersionSpecifier ::= STRING_LITERAL_QUOTE | STRING_LITERAL_SINGLE_QUOTE
     if (_startsWith('"""') || _startsWith("'''")) {
@@ -120,6 +136,7 @@ class _TurtleParser {
     }
   }
 
+  /// [11] triples ::= subject predicateObjectList | blankNodePropertyList predicateObjectList? | reifiedTriple predicateObjectList?
   Iterable<Triple> _parseTriples() sync* {
     final subject = _parseSubject();
     _skipWhitespaceAndComments();
@@ -136,6 +153,7 @@ class _TurtleParser {
     _triples.clear();
   }
 
+  /// [14] predicateObjectList ::= verb objectList (';' (verb objectList)? )*
   void _parsePredicateObjectList(RdfTerm subject) {
     var predicate = _parseVerb();
     _skipWhitespaceAndComments();
@@ -160,6 +178,7 @@ class _TurtleParser {
     }
   }
 
+  /// [15] objectList ::= object annotation ( ',' object annotation )*
   void _parseObjectList(RdfTerm subject, RdfTerm predicate) {
     while (true) {
       final object = _parseObject();
@@ -245,6 +264,7 @@ class _TurtleParser {
 
   // Term parsing methods
 
+  /// [17] subject ::= iri | BlankNode | collection
   RdfTerm _parseSubject() {
     return _parseTerm(inSubjectPosition: true);
   }
@@ -322,7 +342,7 @@ class _TurtleParser {
     }
   }
 
-  // Returns IRI from either IRIREF or PrefixedName
+  /// [28] iri ::= IRIREF | PrefixedName
   Iri _parseIri() {
     if (_peek() == '<') {
       return _parseIRIREF();
@@ -330,6 +350,7 @@ class _TurtleParser {
     return _parsePrefixedName();
   }
 
+  /// [43] IRIREF
   Iri _parseIRIREF() {
     _expect('<');
     final sb = StringBuffer();
@@ -373,38 +394,16 @@ class _TurtleParser {
             'Invalid escape sequence in IRIREF: \\$escapeChar',
           );
         }
-        // Check if the decoded character is valid in IRIREF?
-        // Grammar says: ( [^#x00-#x20<>"{}|^`\] | UCHAR )*
-        // This implies UCHAR *can* produce characters in the excluded set?
-        // Usually, UCHAR escapes are used to represent characters that are otherwise not allowed directly.
-        // However, standard RDF practice typically disallows control chars even if escaped?
-        // Actually, the grammar is: ( [^...] | UCHAR )*.
-        // This suggests if you use UCHAR, it's valid.
-        // BUT, "The characters produced by the UCHAR escape sequence ... must be considered as having been written directly".
-        // No, that's not what EBNF means. EBNF means either a char NOT in excluded set, OR a UCHAR sequence.
-        // So `\u0020` IS valid because it matches `UCHAR`.
-        // The exclusion list applies to RAW characters.
-        // Let's re-read the test failure for `bad-01`.
-        // `bad-01` has `\u0020` (space).
-        // If the test EXPECTS failure, then space is NOT allowed even via UCHAR.
-        // Let's check spec text if possible?
-        // RDF 1.1 Turtle says: "Hex-encoded characters are expanded... The resulting string ... is resolved..."
-        // IRI RFC says spaces are NOT allowed.
-        // So even if grammar allows parsing `\u0020` into the STRING, the resulting IRI is invalid.
-        // So validation should happen on the *result* or *during* parsing if we want Strict IRI validation.
-        // The failure in `bad-01` (FormatException expected) implies we should Reject it.
-        // So I will validate decoded chars too.
-        // Checking disallowed set: 0x00-0x20, <, >, ", {, }, |, ^, `, \
+        // Validate decoded characters. Even if escaped via UCHAR, the resulting
+        // IRI must not contain characters from the excluded set (0x00-0x20, <, >, ", {, }, |, ^, `, \).
+        // See W3C tests (e.g., bad-01).
         final invalidChars = RegExp(r'[\x00-\x20<>"{}|^`\\]');
         if (invalidChars.hasMatch(encoded)) {
           throw FormatException('Invalid character in IRIREF: $encoded');
         }
         sb.write(encoded);
       } else {
-        // Raw character validation
-        // disallowed: 0-20, <, >, ", {, }, |, ^, `, \
-        // < is end check, \ is escape check.
-        // So check others.
+        // Validate raw characters against the excluded set.
         if (char.codeUnitAt(0) <= 0x20 || '<>"{}|^`\\'.contains(char)) {
           throw FormatException('Invalid character in IRIREF: $char');
         }
@@ -415,6 +414,7 @@ class _TurtleParser {
     throw FormatException('Unterminated IRIREF');
   }
 
+  /// [44] PNAME_NS ::= PN_PREFIX? ':'
   String _parsePNameNS() {
     // Basic PNAME_NS parsing
     final start = _pos;
@@ -430,6 +430,7 @@ class _TurtleParser {
     throw FormatException('Invalid PNAME_NS');
   }
 
+  /// [29] PrefixedName ::= PNAME_LN | PNAME_NS
   Iri _parsePrefixedName() {
     final start = _pos;
     // Scan for colon to identify PNAME_NS
@@ -507,6 +508,7 @@ class _TurtleParser {
     return Iri('$namespace$localName');
   }
 
+  /// [30] BlankNode ::= BLANK_NODE_LABEL | ANON
   BlankNode _parseBlankNode() {
     if (_consumeIf('_:')) {
       final sb = StringBuffer();
@@ -537,6 +539,7 @@ class _TurtleParser {
     }
   }
 
+  /// [21] blankNodePropertyList ::= '[' predicateObjectList ']'
   RdfTerm _parseBlankNodePropertyListOrAnon() {
     _expect('[');
     _skipWhitespaceAndComments();
@@ -552,6 +555,7 @@ class _TurtleParser {
     return bnode;
   }
 
+  /// [22] collection ::= '(' object* ')'
   RdfTerm _parseCollection() {
     _expect('(');
     _skipWhitespaceAndComments();
@@ -584,6 +588,7 @@ class _TurtleParser {
     return current;
   }
 
+  /// [35] tripleTerm ::= '<<(' ttSubject verb ttObject ')>>'
   TripleTerm _parseTripleTerm() {
     _expect('<<(');
     _skipWhitespaceAndComments();
@@ -603,6 +608,7 @@ class _TurtleParser {
     );
   }
 
+  /// [32] reifiedTriple ::= '<<' rtSubject verb rtObject reifier? '>>'
   RdfTerm _parseReifiedTriple() {
     _expect('<<');
     _skipWhitespaceAndComments();
@@ -655,6 +661,7 @@ class _TurtleParser {
     return r;
   }
 
+  /// [59] ANON ::= '[' WS* ']'
   RdfTerm _parseAnon() {
     _expect('[');
     _skipWhitespaceAndComments();
@@ -662,7 +669,7 @@ class _TurtleParser {
     return BlankNode(_newBNodeLabel());
   }
 
-  // ttSubject ::= iri | BlankNode
+  /// [36] ttSubject ::= iri | BlankNode
   RdfTerm _parseTtSubject() {
     final char = _peek();
     if (char == '<') return _parseIRIREF();
@@ -677,7 +684,7 @@ class _TurtleParser {
     throw FormatException('Invalid TripleTerm subject');
   }
 
-  // ttObject ::= iri | BlankNode | literal | tripleTerm
+  /// [37] ttObject ::= iri | BlankNode | literal | tripleTerm
   RdfTerm _parseTtObject() {
     final char = _peek();
     if (char == '<') {
@@ -697,7 +704,7 @@ class _TurtleParser {
     return _parsePrefixedName();
   }
 
-  // rtSubject ::= iri | BlankNode | reifiedTriple
+  /// [33] rtSubject ::= iri | BlankNode | reifiedTriple
   RdfTerm _parseRtSubject() {
     final char = _peek();
     if (char == '<') {
@@ -718,7 +725,7 @@ class _TurtleParser {
     throw FormatException('Invalid ReifiedTriple subject');
   }
 
-  // rtObject ::= iri | BlankNode | literal | tripleTerm | reifiedTriple
+  /// [34] rtObject ::= iri | BlankNode | literal | tripleTerm | reifiedTriple
   RdfTerm _parseRtObject() {
     final char = _peek();
     if (char == '<') {
@@ -738,6 +745,7 @@ class _TurtleParser {
     return _parsePrefixedName();
   }
 
+  /// [20] literal ::= RDFLiteral | NumericLiteral | BooleanLiteral
   Literal _parseLiteral() {
     if (_peek() == '"' || _peek() == "'") {
       return _parseRDFLiteral();
@@ -746,6 +754,7 @@ class _TurtleParser {
     }
   }
 
+  /// [24] RDFLiteral ::= String ( LANG_DIR | ( '^^' iri ) )?
   Literal _parseRDFLiteral() {
     final val = _parseString();
     _skipWhitespaceAndComments();
@@ -784,6 +793,7 @@ class _TurtleParser {
     return Literal(val);
   }
 
+  /// [26] String ::= STRING_LITERAL_QUOTE | STRING_LITERAL_SINGLE_QUOTE | STRING_LITERAL_LONG_SINGLE_QUOTE | STRING_LITERAL_LONG_QUOTE
   String _parseString() {
     if (_startsWith('"""')) {
       _advance(3);
@@ -822,6 +832,7 @@ class _TurtleParser {
     throw FormatException('Unterminated string at $_pos');
   }
 
+  /// [23] NumericLiteral ::= INTEGER | DECIMAL | DOUBLE
   RdfTerm _parseNumericLiteral() {
     final start = _pos;
     if (_peek() == '+' || _peek() == '-') {
@@ -873,6 +884,7 @@ class _TurtleParser {
     }
   }
 
+  /// [25] BooleanLiteral ::= 'true' | 'false'
   RdfTerm _parseBooleanLiteral() {
     if (_consumeIf('true')) {
       return Literal(
@@ -997,6 +1009,7 @@ class _TurtleParser {
     throw FormatException('Invalid object type: ${t.runtimeType}');
   }
 
+  /// [16] verb ::= predicate | 'a'
   RdfTerm _parseVerb() {
     if (_isKeywordA()) {
       _advance(1);
