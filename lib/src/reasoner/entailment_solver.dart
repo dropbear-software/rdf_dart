@@ -66,15 +66,20 @@ class EntailmentSolver {
       );
     }
 
+    // Identify which variables appear as subjects inside TripleTerms.
+    // These MUST map to SubjectTerms (IRI or BlankNode) to form valid Triples.
+    // They cannot map to Literals or TripleTerms.
+    final quotedSubjectBNodes = <BlankNode>{};
+    for (final triple in queryNonGround) {
+      _scanForQuotedSubjects(triple.subject, quotedSubjectBNodes);
+      _scanForQuotedSubjects(triple.object, quotedSubjectBNodes);
+    }
+
     // Convert to list for backtracking
     final variables = queryBNodes.toList();
 
     // 3. Identify domain of values from Target (S)
     // M maps variables to Terms in S.
-    // We can restrict candidates:
-    // - A variable in subject position in E must map to a SubjectTerm in S.
-    // - A variable in object position in E must map to an ObjectTerm in S.
-    // For simplicity, we create a unified list of all terms in S.
     final targetTerms = target.nodes.toList();
 
     // 4. Backtracking Search
@@ -85,6 +90,7 @@ class EntailmentSolver {
       queryNonGround,
       target,
       targetTerms,
+      quotedSubjectBNodes,
     );
   }
 
@@ -101,6 +107,17 @@ class EntailmentSolver {
     );
   }
 
+  void _scanForQuotedSubjects(RdfTerm term, Set<BlankNode> set) {
+    if (term is TripleTerm) {
+      final inner = term.triple;
+      if (inner.subject is BlankNode) {
+        set.add(inner.subject as BlankNode);
+      }
+      _scanForQuotedSubjects(inner.subject, set);
+      _scanForQuotedSubjects(inner.object, set);
+    }
+  }
+
   bool _solve(
     List<BlankNode> variables,
     int index,
@@ -108,6 +125,7 @@ class EntailmentSolver {
     List<Triple> queryPattern,
     Graph targetGraph,
     List<RdfTerm> candidates,
+    Set<BlankNode> quotedSubjectBNodes,
   ) {
     // Base Case: All variables mapped
     if (index >= variables.length) {
@@ -115,19 +133,20 @@ class EntailmentSolver {
     }
 
     final currentVar = variables[index];
+    final isQuotedSubject = quotedSubjectBNodes.contains(currentVar);
 
     // Try mapping currentVar to each candidate
     for (final candidate in candidates) {
-      // Basic Type Check Optimization?
-      // If currentVar appears as subject, candidate must be SubjectTerm.
-      // (This is strictly always true for nodes from a valid RDF Graph,
-      // except maybe Literals which can't be subjects)
+      // Constraint Check:
+      // If the variable appears as a subject inside a TripleTerm,
+      // it MUST map to a SubjectTerm (IRI or BlankNode).
+      // It cannot map to a Literal or TripleTerm, as strict RDF 1.2
+      // does not allow these in the subject position.
+      if (isQuotedSubject && candidate is! SubjectTerm) {
+        continue;
+      }
 
       mapping[currentVar] = candidate;
-
-      // Optimization: Fail fast if the partial mapping is already invalid?
-      // Only useful if we check triples that are fully grounded by current mapping.
-      // For now, simple standard backtracking.
 
       if (_solve(
         variables,
@@ -136,6 +155,7 @@ class EntailmentSolver {
         queryPattern,
         targetGraph,
         candidates,
+        quotedSubjectBNodes,
       )) {
         return true;
       }
@@ -153,34 +173,29 @@ class EntailmentSolver {
   ) {
     for (final triple in queryPattern) {
       final s = _mapTerm(triple.subject, mapping);
-      final p = triple
-          .predicate; // Predicate is constant in Query Triple pattern (if not generalized)
+      final p =
+          triple.predicate; // Predicate is constant in Query Triple pattern
       final o = _mapTerm(triple.object, mapping);
 
       // --- RDF 1.2 Entailment: TripleTerm is a Proposition ---
-      // If s matches a TripleTerm, and we are checking for rdf:type rdfs:Proposition,
-      // then this holds true by definition, even if TripleTerm cannot be an explicit subject.
+      // Check specific entailment cases where TripleTerm might effectively be a subject
+      // (e.g., rdf:type rdfs:Proposition), even if it's not a valid SubjectTerm
+      // for an asserted triple construction.
       if (s is TripleTerm) {
         if (p == _rdfType && o == _rdfsProposition) {
           continue; // Valid entailment
         }
-        // TripleTerm cannot be a subject of any other triple in standard RDF 1.2
+        // TripleTerm cannot be a subject of any other asserted triple in strict RDF 1.2
         return false;
       }
 
-      // Safe to cast to valid Subject/Object terms now since we handled TripleTerm
+      // Safe to cast to valid Subject/Object terms now
       if (s is! SubjectTerm || o is! ObjectTerm) {
-        // Should not happen if query is valid and mapping aligns types,
-        // but candidates might contain Literals mixed with Subjects if we aren't careful.
         // Literal as Subject => Invalid in standard RDF.
         return false;
       }
 
-      final mappedTriple = Triple(
-        subject: s,
-        predicate: p,
-        object: o,
-      );
+      final mappedTriple = Triple(subject: s, predicate: p, object: o);
 
       if (!_matchesTriple(mappedTriple, targetGraph)) {
         return false;
@@ -217,12 +232,13 @@ class EntailmentSolver {
   }
 
   Triple _mapTriple(Triple t, Map<BlankNode, RdfTerm> mapping) {
+    // Maps a Triple inside a TripleTerm.
+    // Since this constructs a Triple, the subject MUST be a SubjectTerm.
+    // Our _solve loop constraints ensure that any variable mapping to t.subject
+    // is a SubjectTerm.
     return Triple(
       subject: _mapTerm(t.subject, mapping) as SubjectTerm,
-      predicate: t
-          .predicate, // Predicates are always IRIs in strict RDF, but TripleTerm might contain vars?
-      // Wait, TripleTerm is in Object.
-      // In RDF 1.2, predicate must be IRI. So no BNode there.
+      predicate: t.predicate,
       object: _mapTerm(t.object, mapping) as ObjectTerm,
     );
   }
