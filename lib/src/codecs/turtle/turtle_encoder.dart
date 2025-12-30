@@ -9,6 +9,14 @@ import '../../model/triple.dart';
 import '../../model/triple_term.dart';
 
 /// A [Converter] that encodes [Iterable] of [Triple]s to Turtle strings.
+///
+/// This encoder produces human-readable, terse output by utilizing:
+/// * **Prefixes**: Shortens IRIs using the provided [prefixes] map.
+/// * **Base URI**: Resolves IRIs relative to [baseUri] if provided.
+/// * **Grouping**: Combines triples with shared subjects and predicates using `;` and `,`.
+/// * **Inlining**: Nests single-reference blank nodes using `[ ... ]`.
+/// * **Collections**: Represents `rdf:List` structures using `( ... )`.
+/// * **RDF 1.2 Features**: Supports `TripleTerm` serialization and `{| ... |}` annotation syntax.
 class TurtleEncoder extends Converter<Iterable<Triple>, String> {
   /// Map of prefix labels to namespace IRIs.
   final Map<String, String> prefixes;
@@ -16,6 +24,7 @@ class TurtleEncoder extends Converter<Iterable<Triple>, String> {
   /// Base IRI to use for relative IRI resolution.
   final String? baseUri;
 
+  /// Creates a [TurtleEncoder] with the given [prefixes] and [baseUri].
   const TurtleEncoder({this.prefixes = const {}, this.baseUri});
 
   @override
@@ -27,16 +36,30 @@ class TurtleEncoder extends Converter<Iterable<Triple>, String> {
   }
 }
 
+/// A pre-processor that analyzes an RDF graph to identify opportunities for
+/// terse serialization.
+///
+/// It performs:
+/// 1. **Reference Counting**: Identifies blank nodes that are only used once as objects.
+/// 2. **List Detection**: Finds well-formed `rdf:List` structures.
+/// 3. **Annotation Detection**: Identifies `rdf:reifies` patterns for annotation syntax.
 class _TurtleGraphAnalyzer {
+  /// Map of blank nodes to their incoming reference count.
   final Map<BlankNode, int> refCounts = {};
+
+  /// Map of subjects to the triples they are part of.
   final Map<SubjectTerm, List<Triple>> subjectToTriples = {};
 
-  // List detection
+  /// Map of blank nodes representing list heads to their ordered member terms.
   final Map<BlankNode, List<ObjectTerm>> listMembers = {};
+
+  /// Set of blank nodes that are part of a detected collection.
   final Set<BlankNode> nodesInLists = {};
 
-  // Annotation detection
+  /// Map of triples to their reifier nodes (if any).
   final Map<Triple, Set<SubjectTerm>> tripleToReifiers = {};
+
+  /// Set of reifiers that can be serialized using annotation syntax `{| ... |}`.
   final Set<SubjectTerm> annotationReifiers = {};
 
   static final _rdfFirst = Iri(
@@ -56,19 +79,21 @@ class _TurtleGraphAnalyzer {
     'http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies',
   );
 
+  /// Performs the analysis pass over the given [triples].
   void analyze(Iterable<Triple> triples) {
     for (final t in triples) {
       final s = t.subject;
       subjectToTriples.putIfAbsent(s, () => []).add(t);
       _incrementRef(t.object);
 
+      // Detect reification for RDF 1.2
       if (t.predicate == _rdfReifies && t.object is TripleTerm) {
         final reifiedTriple = (t.object as TripleTerm).triple;
         tripleToReifiers.putIfAbsent(reifiedTriple, () => {}).add(t.subject);
       }
     }
 
-    // Detect lists
+    // Detect lists (collections)
     for (final s in subjectToTriples.keys) {
       if (s is BlankNode && !nodesInLists.contains(s)) {
         final ts = subjectToTriples[s]!;
@@ -81,7 +106,8 @@ class _TurtleGraphAnalyzer {
       }
     }
 
-    // Detect annotation reifiers
+    // Detect annotation reifiers: reifiers that are blank nodes,
+    // not referenced elsewhere, and have metadata properties.
     for (final entry in tripleToReifiers.entries) {
       for (final r in entry.value) {
         if (r is BlankNode && (refCounts[r] ?? 0) == 0) {
@@ -95,6 +121,7 @@ class _TurtleGraphAnalyzer {
     }
   }
 
+  /// Returns true if the set of triples [ts] suggests the node is an `rdf:List` element.
   bool _isPotentialListNode(List<Triple> ts) {
     bool hasFirst = false;
     bool hasRest = false;
@@ -114,6 +141,9 @@ class _TurtleGraphAnalyzer {
     return hasFirst && hasRest && (count == 2);
   }
 
+  /// Recursively collects the elements of a collection starting at [head].
+  ///
+  /// Returns `null` if the structure is not a valid, well-formed, acyclic list.
   List<ObjectTerm>? _collectList(BlankNode head) {
     final elements = <ObjectTerm>[];
     final visited = <BlankNode>{};
@@ -148,6 +178,7 @@ class _TurtleGraphAnalyzer {
     }
   }
 
+  /// Recursively increments reference counts for terms, delving into triple terms.
   void _incrementRef(RdfTerm term) {
     if (term is BlankNode) {
       refCounts[term] = (refCounts[term] ?? 0) + 1;
@@ -157,10 +188,14 @@ class _TurtleGraphAnalyzer {
     }
   }
 
+  /// Returns true if [bnode] is the starting node of a detected collection.
   bool isListHead(BlankNode bnode) => listMembers.containsKey(bnode);
+
+  /// Returns true if [bnode] is an internal part of a collection (not the head).
   bool isInternalListNode(BlankNode bnode) =>
       nodesInLists.contains(bnode) && !listMembers.containsKey(bnode);
 
+  /// Returns true if [bnode] can be inlined using the `[ ... ]` syntax.
   bool canInline(BlankNode bnode) {
     if (isInternalListNode(bnode)) return false;
     if (annotationReifiers.contains(bnode)) return false;
@@ -168,6 +203,10 @@ class _TurtleGraphAnalyzer {
   }
 }
 
+/// A stateful writer that handles the serialization of an RDF graph to Turtle.
+///
+/// It maintains indentation levels and tracks which blank nodes have been
+/// inlined to avoid duplicate serialization of nested structures.
 class _TurtleWriter {
   final StringSink _sink;
   final Map<String, String> prefixes;
@@ -182,8 +221,10 @@ class _TurtleWriter {
     'http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies',
   );
 
+  /// Creates a [_TurtleWriter] writing to [_sink].
   _TurtleWriter(this._sink, {this.prefixes = const {}, this.baseUri});
 
+  /// Serializes the set of [triples] to the output sink.
   void writeGraph(Iterable<Triple> triples) {
     _analyzer = _TurtleGraphAnalyzer()..analyze(triples);
 
@@ -200,7 +241,7 @@ class _TurtleWriter {
       _sink.write('\n');
     }
 
-    // 2. Filter subjects
+    // 2. Determine "root" subjects: nodes that are not inlined inside others.
     final allSubjects = <SubjectTerm>{};
     for (final t in triples) {
       allSubjects.add(t.subject);
@@ -208,9 +249,11 @@ class _TurtleWriter {
 
     final rootSubjects = allSubjects.where((s) {
       if (s is BlankNode) {
+        // Internal collection nodes and inlined objects are not root subjects.
         if (_analyzer.isInternalListNode(s)) return false;
         if (_analyzer.annotationReifiers.contains(s)) return false;
         if (_analyzer.isListHead(s)) {
+          // List heads are roots only if not referenced as an object.
           return (_analyzer.refCounts[s] ?? 0) == 0;
         }
         return !_analyzer.canInline(s);
@@ -218,13 +261,14 @@ class _TurtleWriter {
       return true;
     }).toList();
 
-    // 3. Sort subjects
+    // 3. Sort subjects for deterministic output.
     rootSubjects.sort((a, b) {
       if (a is Iri && b is! Iri) return -1;
       if (a is! Iri && b is Iri) return 1;
       return a.toString().compareTo(b.toString());
     });
 
+    // 4. Write each subject block.
     for (var i = 0; i < rootSubjects.length; i++) {
       final s = rootSubjects[i];
       final triplesForSubject = triples.where((t) => t.subject == s).toList();
@@ -245,13 +289,16 @@ class _TurtleWriter {
     }
   }
 
+  /// Writes a list of predicates and their objects for a shared subject.
   void _writePredicateObjectList(List<Triple> triples) {
+    // Group by predicate
     final predicates = <PredicateTerm, List<ObjectTerm>>{};
     for (final t in triples) {
       predicates.putIfAbsent(t.predicate, () => []).add(t.object);
     }
 
     final predicateList = predicates.keys.toList();
+    // Sort predicates, prioritizing rdf:type (shorthand 'a').
     predicateList.sort((a, b) {
       final as = a.toString();
       final bs = b.toString();
@@ -272,7 +319,7 @@ class _TurtleWriter {
         final o = objects[k];
         _writeObject(o);
 
-        // Check for annotations
+        // Check for RDF 1.2 Annotation syntax opportunities.
         final currentTriple = triples.firstWhere(
           (t) => t.predicate == p && t.object == o,
         );
@@ -295,7 +342,7 @@ class _TurtleWriter {
         if (k < objects.length - 1) {
           _sink.write(' ,\n');
           _writeIndent();
-          _sink.write('    ');
+          _sink.write('    '); // Extra alignment for object list items
         }
       }
 
@@ -305,6 +352,7 @@ class _TurtleWriter {
     }
   }
 
+  /// Writes the subject term, handling potential inlining or collections.
   void _writeSubject(SubjectTerm s) {
     if (s is BlankNode && _analyzer.isListHead(s)) {
       _writeList(s);
@@ -333,6 +381,7 @@ class _TurtleWriter {
     }
   }
 
+  /// Writes the predicate term, using 'a' for rdf:type.
   void _writePredicate(PredicateTerm p) {
     if (p is Iri) {
       if (p.toString() == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
@@ -343,6 +392,7 @@ class _TurtleWriter {
     }
   }
 
+  /// Writes the object term, recursing into nested structures if appropriate.
   void _writeObject(ObjectTerm o) {
     if (o is BlankNode && _analyzer.isListHead(o)) {
       _writeList(o);
@@ -379,6 +429,7 @@ class _TurtleWriter {
     }
   }
 
+  /// Writes an `rdf:List` using the `( ... )` collection syntax.
   void _writeList(BlankNode head) {
     final members = _analyzer.listMembers[head]!;
     _sink.write('( ');
@@ -389,6 +440,7 @@ class _TurtleWriter {
     _sink.write(' )');
   }
 
+  /// Writes a raw triple (s p o) without a terminator.
   void _writeTriple(Triple t) {
     _writeSubject(t.subject);
     _sink.write(' ');
@@ -397,12 +449,16 @@ class _TurtleWriter {
     _writeObject(t.object);
   }
 
+  /// Writes an IRI, applying relativization or prefix shortening.
   void _writeIri(Iri iri) {
     _sink.write(_relativizeIri(iri));
   }
 
+  /// Returns the shortened or relative string representation of [iri].
   String _relativizeIri(Iri iri) {
     final iriStr = iri.toString();
+
+    // 1. Try Prefix replacement
     for (final entry in prefixes.entries) {
       final namespace = entry.value;
       if (iriStr.startsWith(namespace)) {
@@ -412,25 +468,35 @@ class _TurtleWriter {
         }
       }
     }
+
+    // 2. Try Base URI stripping
     if (baseUri != null && iriStr.startsWith(baseUri!)) {
       final rel = iriStr.substring(baseUri!.length);
+      // Ensure the relative path doesn't break Turtle parsing.
       if (!rel.contains('>')) {
         return '<$rel>';
       }
     }
+
+    // Default: return full IRI in brackets.
     return '<$iriStr>';
   }
 
+  /// Validates [localName] against the Turtle `PN_LOCAL` grammar.
   bool _isValidLocalName(String localName) {
     if (localName.isEmpty) return true;
+    // Implementation note: This regex approximates the Turtle PN_LOCAL production
+    // without supporting escaping (PLX) for simplicity in generation.
     final regex = RegExp(r'^[a-zA-Z0-9_]([a-zA-Z0-9_\-:]*[a-zA-Z0-9_:])?$');
     return regex.hasMatch(localName);
   }
 
+  /// Writes a blank node identifier.
   void _writeBlankNode(BlankNode b) {
     _sink.write(b.toString());
   }
 
+  /// Writes a literal, including quotes, escaping, and datatype/lang tags.
   void _writeLiteral(Literal l) {
     _sink.write('"');
     _sink.write(_escapeString(l.lexicalForm));
@@ -449,10 +515,12 @@ class _TurtleWriter {
     }
   }
 
+  /// Outputs spaces for the current indentation level.
   void _writeIndent() {
     _sink.write('    ' * _indent);
   }
 
+  /// Escapes special characters in the literal's lexical form.
   String _escapeString(String s) {
     final sb = StringBuffer();
     for (final code in s.runes) {
@@ -492,6 +560,7 @@ class _TurtleWriter {
     return sb.toString();
   }
 
+  /// Writes a Unicode character as a numeric escape sequence.
   void _writeUchar(int code, StringBuffer sb) {
     if (code <= 0xFFFF) {
       sb.write(r'\u');

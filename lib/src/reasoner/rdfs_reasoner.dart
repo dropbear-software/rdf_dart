@@ -245,7 +245,7 @@ class RdfsReasoner {
   }
 
   /// Rule rdfD1: Generates datatypes for recognized literals.
-  /// "For each pair <s, l> where s forms the datatype of l ... s rdf:type rdfs:Datatype"
+  /// "For each pair `<s, l>` where s forms the datatype of l ... s rdf:type rdfs:Datatype"
   bool _applyRdfD1() {
     bool changed = false;
     for (final d in _recognizedDatatypes) {
