@@ -7,6 +7,7 @@ import '../../model/literal.dart';
 import '../../model/term.dart';
 import '../../model/triple.dart';
 import '../../model/triple_term.dart';
+import '../../vocabulary/vocabulary.dart';
 
 /// A [Converter] that encodes [Iterable] of [Triple]s to Turtle strings.
 ///
@@ -62,23 +63,6 @@ class _TurtleGraphAnalyzer {
   /// Set of reifiers that can be serialized using annotation syntax `{| ... |}`.
   final Set<SubjectTerm> annotationReifiers = {};
 
-  static final _rdfFirst = Iri(
-    'http://www.w3.org/1999/02/22-rdf-syntax-ns#first',
-  );
-  static final _rdfRest = Iri(
-    'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest',
-  );
-  static final _rdfNil = Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#nil');
-  static final _rdfType = Iri(
-    'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
-  );
-  static final _rdfList = Iri(
-    'http://www.w3.org/1999/02/22-rdf-syntax-ns#List',
-  );
-  static final _rdfReifies = Iri(
-    'http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies',
-  );
-
   /// Performs the analysis pass over the given [triples].
   void analyze(Iterable<Triple> triples) {
     for (final t in triples) {
@@ -87,7 +71,7 @@ class _TurtleGraphAnalyzer {
       _incrementRef(t.object);
 
       // Detect reification for RDF 1.2
-      if (t.predicate == _rdfReifies && t.object is TripleTerm) {
+      if (t.predicate == Rdf.reifies && t.object is TripleTerm) {
         final reifiedTriple = (t.object as TripleTerm).triple;
         tripleToReifiers.putIfAbsent(reifiedTriple, () => {}).add(t.subject);
       }
@@ -113,7 +97,7 @@ class _TurtleGraphAnalyzer {
         if (r is BlankNode && (refCounts[r] ?? 0) == 0) {
           final ts = subjectToTriples[r] ?? [];
           // It's an annotation if it has properties other than rdf:reifies
-          if (ts.any((t) => t.predicate != _rdfReifies)) {
+          if (ts.any((t) => t.predicate != Rdf.reifies)) {
             annotationReifiers.add(r);
           }
         }
@@ -127,11 +111,11 @@ class _TurtleGraphAnalyzer {
     bool hasRest = false;
     int count = 0;
     for (final t in ts) {
-      if (t.predicate == _rdfFirst) {
+      if (t.predicate == Rdf.first) {
         hasFirst = true;
-      } else if (t.predicate == _rdfRest) {
+      } else if (t.predicate == Rdf.rest) {
         hasRest = true;
-      } else if (t.predicate == _rdfType && t.object == _rdfList) {
+      } else if (t.predicate == Rdf.type && t.object == Rdf.List) {
         continue;
       } else {
         return false;
@@ -159,14 +143,14 @@ class _TurtleGraphAnalyzer {
       ObjectTerm? first;
       ObjectTerm? rest;
       for (final t in ts) {
-        if (t.predicate == _rdfFirst) first = t.object;
-        if (t.predicate == _rdfRest) rest = t.object;
+        if (t.predicate == Rdf.first) first = t.object;
+        if (t.predicate == Rdf.rest) rest = t.object;
       }
 
       if (first == null || rest == null) return null;
       elements.add(first);
 
-      if (rest == _rdfNil) {
+      if (rest == Rdf.nil) {
         nodesInLists.addAll(visited);
         return elements;
       }
@@ -216,10 +200,6 @@ class _TurtleWriter {
   final Set<BlankNode> _inlinedBNodes = {};
   final Set<SubjectTerm> _usedAsAnnotation = {};
   late _TurtleGraphAnalyzer _analyzer;
-
-  static final _rdfReifies = Iri(
-    'http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies',
-  );
 
   /// Creates a [_TurtleWriter] writing to [_sink].
   _TurtleWriter(this._sink, {this.prefixes = const {}, this.baseUri});
@@ -300,11 +280,9 @@ class _TurtleWriter {
     final predicateList = predicates.keys.toList();
     // Sort predicates, prioritizing rdf:type (shorthand 'a').
     predicateList.sort((a, b) {
-      final as = a.toString();
-      final bs = b.toString();
-      if (as == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') return -1;
-      if (bs == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') return 1;
-      return as.compareTo(bs);
+      if (a == Rdf.type) return -1;
+      if (b == Rdf.type) return 1;
+      return a.toString().compareTo(b.toString());
     });
 
     for (var j = 0; j < predicateList.length; j++) {
@@ -331,7 +309,7 @@ class _TurtleWriter {
               _usedAsAnnotation.add(r);
               _sink.write(' {| ');
               final annotationTriples = _analyzer.subjectToTriples[r]!
-                  .where((t) => t.predicate != _rdfReifies)
+                  .where((t) => t.predicate != Rdf.reifies)
                   .toList();
               _writePredicateObjectList(annotationTriples);
               _sink.write(' |}');
@@ -383,12 +361,10 @@ class _TurtleWriter {
 
   /// Writes the predicate term, using 'a' for rdf:type.
   void _writePredicate(PredicateTerm p) {
-    if (p is Iri) {
-      if (p.toString() == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') {
-        _sink.write('a');
-      } else {
-        _writeIri(p);
-      }
+    if (p == Rdf.type) {
+      _sink.write('a');
+    } else if (p is Iri) {
+      _writeIri(p);
     }
   }
 
@@ -508,8 +484,7 @@ class _TurtleWriter {
           '--${l.baseDirection == TextDirection.LTR ? 'ltr' : 'rtl'}',
         );
       }
-    } else if (l.datatypeIri.toString() !=
-        'http://www.w3.org/2001/XMLSchema#string') {
+    } else if (l.datatypeIri != Xsd.string) {
       _sink.write('^^');
       _writeIri(l.datatypeIri);
     }

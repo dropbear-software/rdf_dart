@@ -70,9 +70,7 @@ void main() {
 
     test('rdf:type shorthand "a"', () {
       final s = Iri('http://example.org/s');
-
-      final p = Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
-
+      final p = Rdf.type;
       final o = Iri('http://example.org/Class');
 
       final triples = [Triple(subject: s, predicate: p, object: o)];
@@ -84,9 +82,7 @@ void main() {
 
     test('Prefix support', () {
       final s = Iri('http://example.org/s');
-
       final p = Iri('http://example.org/p');
-
       final o = Iri('http://example.org/o');
 
       final triples = [Triple(subject: s, predicate: p, object: o)];
@@ -102,31 +98,22 @@ void main() {
 
     test('Base URI support', () {
       final s = Iri('http://example.org/s');
-
       final p = Iri('http://example.org/p');
-
       final o = Iri('http://example.org/o');
 
       final triples = [Triple(subject: s, predicate: p, object: o)];
-
       final encoder = TurtleEncoder(baseUri: 'http://example.org/');
-
       final output = encoder.convert(triples);
 
       expect(output, contains('BASE <http://example.org/>'));
-
       expect(output, contains('<s>\n    <p> <o> .'));
     });
 
     test('Blank Node inlining', () {
       final s = Iri('http://example.org/s');
-
       final p = Iri('http://example.org/p');
-
       final b = BlankNode('b1');
-
       final p2 = Iri('http://example.org/p2');
-
       final o2 = Literal('nested');
 
       final triples = [
@@ -138,88 +125,58 @@ void main() {
       final output = const TurtleEncoder().convert(triples);
 
       expect(output, contains('<http://example.org/s>'));
-
       expect(output, contains('<http://example.org/p> ['));
-
       expect(output, contains('<http://example.org/p2> "nested"'));
-
       expect(output, isNot(contains('_:b1')));
     });
 
     test('Collections support', () {
       final s = Iri('http://example.org/s');
-
       final p = Iri('http://example.org/p');
-
       final b1 = BlankNode('b1');
-
       final b2 = BlankNode('b2');
-
-      final rdfFirst = Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#first');
-
-      final rdfRest = Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#rest');
-
-      final rdfNil = Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#nil');
 
       final triples = [
         Triple(subject: s, predicate: p, object: b1),
-
-        Triple(subject: b1, predicate: rdfFirst, object: Literal('item1')),
-
-        Triple(subject: b1, predicate: rdfRest, object: b2),
-
-        Triple(subject: b2, predicate: rdfFirst, object: Literal('item2')),
-
-        Triple(subject: b2, predicate: rdfRest, object: rdfNil),
+        Triple(subject: b1, predicate: Rdf.first, object: Literal('item1')),
+        Triple(subject: b1, predicate: Rdf.rest, object: b2),
+        Triple(subject: b2, predicate: Rdf.first, object: Literal('item2')),
+        Triple(subject: b2, predicate: Rdf.rest, object: Rdf.nil),
       ];
 
       final output = const TurtleEncoder().convert(triples);
 
       expect(output, contains('( "item1" "item2" )'));
-
       expect(output, isNot(contains('_:b1')));
-
       expect(output, isNot(contains('_:b2')));
     });
 
     test('RDF 1.2 Annotations', () {
       final s = Iri('http://example.org/s');
-
       final p = Iri('http://example.org/p');
-
       final o = Iri('http://example.org/o');
 
       final r = BlankNode('r1');
-
-      final rdfReifies = Iri(
-        'http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies',
-      );
-
       final ap = Iri('http://example.org/ap');
-
       final ao = Literal('annotation');
 
       final triples = [
         Triple(subject: s, predicate: p, object: o),
-
         Triple(
           subject: r,
-          predicate: rdfReifies,
+          predicate: Rdf.reifies,
           object: TripleTerm(Triple(subject: s, predicate: p, object: o)),
         ),
-
         Triple(subject: r, predicate: ap, object: ao),
       ];
 
       final output = const TurtleEncoder().convert(triples);
 
       expect(output, contains('<http://example.org/s>'));
-
       expect(
         output,
         contains('<http://example.org/p> <http://example.org/o> {|'),
       );
-
       expect(output, contains('<http://example.org/ap> "annotation" |}'));
     });
   });

@@ -5,15 +5,6 @@ void main() {
   final graph = InMemoryGraph();
 
   // -- Vocabulary --
-  final rdfType = Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
-  final rdfsSubClassOf = Iri('http://www.w3.org/2000/01/rdf-schema#subClassOf');
-  final rdfsSubPropertyOf = Iri(
-    'http://www.w3.org/2000/01/rdf-schema#subPropertyOf',
-  );
-  final rdfsClass = Iri('http://www.w3.org/2000/01/rdf-schema#Class');
-  final rdfProperty = Iri(
-    'http://www.w3.org/1999/02/22-rdf-syntax-ns#Property',
-  );
 
   // Our Custom Vocabulary
   final animal = Iri('http://example.org/Animal');
@@ -33,22 +24,26 @@ void main() {
   // 2. Define the Schema (The Rules of our World)
 
   // "Dog is a subclass of Animal"
-  graph.add(Triple(subject: dog, predicate: rdfsSubClassOf, object: animal));
+  graph.add(Triple(subject: dog, predicate: Rdfs.subClassOf, object: animal));
 
   // "hasFather is a sub-property of hasParent"
   graph.add(
-    Triple(subject: hasFather, predicate: rdfsSubPropertyOf, object: hasParent),
+    Triple(
+      subject: hasFather,
+      predicate: Rdfs.subPropertyOf,
+      object: hasParent,
+    ),
   );
 
   // "Dog is a Class" (Triggers rdfs8 & rdfs10)
-  graph.add(Triple(subject: dog, predicate: rdfType, object: rdfsClass));
+  graph.add(Triple(subject: dog, predicate: Rdf.type, object: Rdfs.Class));
 
   // "hasFather is a Property" (Triggers rdfs6)
   graph.add(
-    Triple(subject: hasFather, predicate: rdfType, object: rdfProperty),
+    Triple(subject: hasFather, predicate: Rdf.type, object: Rdf.Property),
   );
 
-  graph.add(Triple(subject: hasAge, predicate: rdfType, object: rdfProperty));
+  graph.add(Triple(subject: hasAge, predicate: Rdf.type, object: Rdf.Property));
   graph.add(Triple(subject: rex, predicate: likes, object: fido));
   graph.add(
     Triple(
@@ -61,7 +56,7 @@ void main() {
   // 3. Add Instance Data (The Facts)
 
   // "Fido is a Dog"
-  graph.add(Triple(subject: fido, predicate: rdfType, object: dog));
+  graph.add(Triple(subject: fido, predicate: Rdf.type, object: dog));
 
   // "Fido has father Rex"
   graph.add(Triple(subject: fido, predicate: hasFather, object: rex));
@@ -70,10 +65,7 @@ void main() {
     Triple(
       subject: fido,
       predicate: hasAge,
-      object: Literal(
-        "5",
-        datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#unsignedByte'),
-      ),
+      object: Literal("5", datatypeIri: Xsd.unsignedByte),
     ),
   );
 
@@ -81,10 +73,7 @@ void main() {
     Triple(
       subject: rex,
       predicate: hasAge,
-      object: Literal(
-        "35",
-        datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#unsignedByte'),
-      ),
+      object: Literal("35", datatypeIri: Xsd.unsignedByte),
     ),
   );
 
@@ -104,7 +93,7 @@ void main() {
 
   // Check Rule rdfs9 (Inheritance): Is Fido an Animal?
   final isAnimal = graph.contains(
-    Triple(subject: fido, predicate: rdfType, object: animal),
+    Triple(subject: fido, predicate: Rdf.type, object: animal),
   );
   print('1. Is Fido an Animal? ${isAnimal ? "YES (Inferred)" : "NO"}');
 
@@ -118,7 +107,7 @@ void main() {
 
   // Check Rule rdfs10 (Reflexivity): Is Dog a subClass of Dog?
   final dogIsDog = graph.contains(
-    Triple(subject: dog, predicate: rdfsSubClassOf, object: dog),
+    Triple(subject: dog, predicate: Rdfs.subClassOf, object: dog),
   );
   print(
     '3. Is Dog a subClass of itself? ${dogIsDog ? "YES (Inferred)" : "NO"}',

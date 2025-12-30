@@ -7,6 +7,7 @@ import 'package:rdf_dart/src/model/iri.dart';
 import 'package:rdf_dart/src/model/literal.dart';
 import 'package:rdf_dart/src/model/triple.dart';
 import 'package:rdf_dart/src/model/triple_term.dart';
+import 'package:rdf_dart/src/vocabulary/vocabulary.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -123,10 +124,7 @@ void main() {
               expect(decoded.first.predicate, Iri('http://example/p'));
               expect(
                 decoded.first.object,
-                Literal(
-                  'string',
-                  datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#string'),
-                ),
+                Literal('string', datatypeIri: Xsd.string),
               );
 
               final encoded = nTriplesCodec.encode(decoded);
@@ -150,9 +148,7 @@ void main() {
                 decoded.first.object,
                 Literal(
                   'string',
-                  datatypeIri: Iri(
-                    'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString',
-                  ),
+                  datatypeIri: Rdf.langString,
                   languageTag: 'en',
                 ),
               );
@@ -178,9 +174,7 @@ void main() {
                 decoded.first.object,
                 Literal(
                   'string',
-                  datatypeIri: Iri(
-                    'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString',
-                  ),
+                  datatypeIri: Rdf.langString,
                   languageTag: 'en-uk',
                 ),
               );
@@ -306,10 +300,7 @@ void main() {
               expect(decoded.first.predicate, Iri('http://example/p'));
               expect(
                 decoded.first.object,
-                Literal(
-                  '123',
-                  datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#byte'),
-                ),
+                Literal('123', datatypeIri: Xsd.byte),
               );
 
               final encoded = nTriplesCodec.encode(decoded);
@@ -928,10 +919,7 @@ void main() {
 
               expect(result, hasLength(1));
               expect(result.first.subject, Iri('http://example/a'));
-              expect(
-                result.first.predicate,
-                Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies'),
-              );
+              expect(result.first.predicate, Rdf.reifies);
               expect(
                 result.first.object,
                 TripleTerm(
@@ -954,10 +942,7 @@ void main() {
 
               expect(result, hasLength(1));
               expect(result.first.subject, Iri('http://example/s'));
-              expect(
-                result.first.predicate,
-                Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies'),
-              );
+              expect(result.first.predicate, Rdf.reifies);
               expect(
                 result.first.object,
                 TripleTerm(
@@ -980,10 +965,7 @@ void main() {
 
               expect(result, hasLength(1));
               expect(result.first.subject, Iri('http://example/s'));
-              expect(
-                result.first.predicate,
-                Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies'),
-              );
+              expect(result.first.predicate, Rdf.reifies);
               expect(
                 result.first.object,
                 TripleTerm(
@@ -1021,10 +1003,7 @@ void main() {
               );
 
               expect(result.last.subject, BlankNode('b1'));
-              expect(
-                result.last.predicate,
-                Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies'),
-              );
+              expect(result.last.predicate, Rdf.reifies);
               expect(
                 result.last.object,
                 TripleTerm(
@@ -1054,9 +1033,7 @@ void main() {
                 ),
                 Triple(
                   subject: Iri('http://example/a'),
-                  predicate: Iri(
-                    'http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies',
-                  ),
+                  predicate: Rdf.reifies,
                   object: TripleTerm(
                     Triple(
                       subject: Iri('http://example/s1'),
@@ -1067,15 +1044,11 @@ void main() {
                 ),
                 Triple(
                   subject: Iri('http://example/r'),
-                  predicate: Iri(
-                    'http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies',
-                  ),
+                  predicate: Rdf.reifies,
                   object: TripleTerm(
                     Triple(
                       subject: Iri('http://example/23'),
-                      predicate: Iri(
-                        'http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies',
-                      ),
+                      predicate: Rdf.reifies,
                       object: TripleTerm(
                         Triple(
                           subject: Iri('http://example/s3'),
@@ -1105,9 +1078,7 @@ void main() {
                   predicate: Iri('http://example/b'),
                   object: Literal(
                     'Hello',
-                    datatypeIri: Iri(
-                      'http://www.w3.org/1999/02/22-rdf-syntax-ns#dirLangString',
-                    ),
+                    datatypeIri: Rdf.dirLangString,
                     baseDirection: TextDirection.LTR,
                     languageTag: 'en',
                   ),
@@ -1131,9 +1102,7 @@ void main() {
                   predicate: Iri('http://example/b'),
                   object: Literal(
                     'Hello',
-                    datatypeIri: Iri(
-                      'http://www.w3.org/1999/02/22-rdf-syntax-ns#dirLangString',
-                    ),
+                    datatypeIri: Rdf.dirLangString,
                     baseDirection: TextDirection.RTL,
                     languageTag: 'en',
                   ),

@@ -5,6 +5,7 @@ import 'package:xsd/xsd.dart' as xsd;
 
 import 'iri.dart';
 import 'term.dart';
+import '../vocabulary/vocabulary.dart';
 
 /// An RDF Literal.
 ///
@@ -61,15 +62,11 @@ class Literal implements ObjectTerm {
     // Determine datatype if not provided
     if (datatypeIri == null) {
       if (baseDirection != null) {
-        datatypeIri = Iri(
-          'http://www.w3.org/1999/02/22-rdf-syntax-ns#dirLangString',
-        );
+        datatypeIri = Rdf.dirLangString;
       } else if (languageTag != null) {
-        datatypeIri = Iri(
-          'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString',
-        );
+        datatypeIri = Rdf.langString;
       } else {
-        datatypeIri = Iri('http://www.w3.org/2001/XMLSchema#string');
+        datatypeIri = Xsd.string;
       }
     }
 
@@ -78,8 +75,7 @@ class Literal implements ObjectTerm {
     // If and only if datatype is dirLangString, language must be non-null and direction must be non-null.
     // Otherwise, language and direction must be null.
 
-    final iri = datatypeIri.toString();
-    if (iri == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#langString') {
+    if (datatypeIri == Rdf.langString) {
       if (languageTag == null) {
         throw FormatException(
           'Language tag must be provided for rdf:langString',
@@ -92,8 +88,7 @@ class Literal implements ObjectTerm {
           lexicalForm,
         );
       }
-    } else if (iri ==
-        'http://www.w3.org/1999/02/22-rdf-syntax-ns#dirLangString') {
+    } else if (datatypeIri == Rdf.dirLangString) {
       if (languageTag == null) {
         throw FormatException(
           'Language tag must be provided for rdf:dirLangString',
@@ -110,13 +105,13 @@ class Literal implements ObjectTerm {
       // For all other datatypes, language and direction must be null
       if (languageTag != null) {
         throw FormatException(
-          'Language tag must not be provided for datatype $iri',
+          'Language tag must not be provided for datatype $datatypeIri',
           lexicalForm,
         );
       }
       if (baseDirection != null) {
         throw FormatException(
-          'Direction must not be provided for datatype $iri',
+          'Direction must not be provided for datatype $datatypeIri',
           lexicalForm,
         );
       }
@@ -149,54 +144,47 @@ class Literal implements ObjectTerm {
   );
 
   // TODO: https://github.com/dropbear-software/xsd/issues/78
-  static final Map<String, convert.Codec> _xsdCodecs = {
-    'http://www.w3.org/2001/XMLSchema#string': xsd.XsdStringCodec(),
-    'http://www.w3.org/2001/XMLSchema#boolean': xsd.XsdBooleanCodec(),
-    'http://www.w3.org/2001/XMLSchema#decimal': xsd.XsdDecimalCodec(),
-    'http://www.w3.org/2001/XMLSchema#integer': xsd.XsdIntegerCodec(),
-    'http://www.w3.org/2001/XMLSchema#double': xsd.XsdDoubleCodec(),
-    'http://www.w3.org/2001/XMLSchema#float': xsd.XsdFloatCodec(),
-    'http://www.w3.org/2001/XMLSchema#date': xsd.XsdDateCodec(),
-    'http://www.w3.org/2001/XMLSchema#dateTime': xsd.XsdDateTimeCodec(),
-    'http://www.w3.org/2001/XMLSchema#gYear': xsd.GregorianYearCodec(),
-    'http://www.w3.org/2001/XMLSchema#gYearMonth': xsd.YearMonthCodec(),
-    'http://www.w3.org/2001/XMLSchema#gMonth': xsd.GregorianMonthCodec(),
-    'http://www.w3.org/2001/XMLSchema#gMonthDay': xsd.GregorianMonthDayCodec(),
-    'http://www.w3.org/2001/XMLSchema#gDay': xsd.XsdGDayCodec(),
-    'http://www.w3.org/2001/XMLSchema#duration': xsd.XsdDurationCodec(),
-    'http://www.w3.org/2001/XMLSchema#byte': xsd.XsdByteCodec(),
-    'http://www.w3.org/2001/XMLSchema#short': xsd.XsdShortCodec(),
-    'http://www.w3.org/2001/XMLSchema#int': xsd.XsdIntCodec(),
-    'http://www.w3.org/2001/XMLSchema#long': xsd.XsdLongCodec(),
-    'http://www.w3.org/2001/XMLSchema#unsignedByte': xsd.XsdUnsignedByteCodec(),
-    'http://www.w3.org/2001/XMLSchema#unsignedShort':
-        xsd.XsdUnsignedShortCodec(),
-    'http://www.w3.org/2001/XMLSchema#unsignedInt': xsd.XsdUnsignedIntCodec(),
-    'http://www.w3.org/2001/XMLSchema#unsignedLong': xsd.XsdUnsignedLongCodec(),
-    'http://www.w3.org/2001/XMLSchema#positiveInteger':
-        xsd.XmlPositiveIntegerCodec(),
-    'http://www.w3.org/2001/XMLSchema#nonNegativeInteger':
-        xsd.XsdNonNegativeIntegerCodec(),
-    'http://www.w3.org/2001/XMLSchema#negativeInteger':
-        xsd.XsdNegativeIntegerCodec(),
-    'http://www.w3.org/2001/XMLSchema#nonPositiveInteger':
-        xsd.XsdNonPositiveIntegerCodec(),
-    'http://www.w3.org/2001/XMLSchema#hexBinary': xsd.XsdHexbinaryCodec(),
-    'http://www.w3.org/2001/XMLSchema#base64Binary': xsd.XsdBase64BinaryCodec(),
-    'http://www.w3.org/2001/XMLSchema#anyURI': xsd.XsdAnyUriCodec(),
-    'http://www.w3.org/2001/XMLSchema#language': xsd.XsdLanguageCodec(),
-    'http://www.w3.org/2001/XMLSchema#normalizedString':
-        xsd.XsdNormalizedStringCodec(),
-    'http://www.w3.org/2001/XMLSchema#token': xsd.XsdTokenCodec(),
-    'http://www.w3.org/2001/XMLSchema#NMTOKEN': xsd.XsdNmtokenCodec(),
-    'http://www.w3.org/2001/XMLSchema#Name': xsd.XsdNameCodec(),
-    'http://www.w3.org/2001/XMLSchema#NCName': xsd.XsdNcnameCodec(),
+  static final Map<Iri, convert.Codec> _xsdCodecs = {
+    Xsd.string: xsd.XsdStringCodec(),
+    Xsd.boolean: xsd.XsdBooleanCodec(),
+    Xsd.decimal: xsd.XsdDecimalCodec(),
+    Xsd.integer: xsd.XsdIntegerCodec(),
+    Xsd.double: xsd.XsdDoubleCodec(),
+    Xsd.float: xsd.XsdFloatCodec(),
+    Xsd.date: xsd.XsdDateCodec(),
+    Xsd.dateTime: xsd.XsdDateTimeCodec(),
+    Xsd.gYear: xsd.GregorianYearCodec(),
+    Xsd.gYearMonth: xsd.YearMonthCodec(),
+    Xsd.gMonth: xsd.GregorianMonthCodec(),
+    Xsd.gMonthDay: xsd.GregorianMonthDayCodec(),
+    Xsd.gDay: xsd.XsdGDayCodec(),
+    Xsd.duration: xsd.XsdDurationCodec(),
+    Xsd.byte: xsd.XsdByteCodec(),
+    Xsd.short: xsd.XsdShortCodec(),
+    Xsd.int: xsd.XsdIntCodec(),
+    Xsd.long: xsd.XsdLongCodec(),
+    Xsd.unsignedByte: xsd.XsdUnsignedByteCodec(),
+    Xsd.unsignedShort: xsd.XsdUnsignedShortCodec(),
+    Xsd.unsignedInt: xsd.XsdUnsignedIntCodec(),
+    Xsd.unsignedLong: xsd.XsdUnsignedLongCodec(),
+    Xsd.positiveInteger: xsd.XmlPositiveIntegerCodec(),
+    Xsd.nonNegativeInteger: xsd.XsdNonNegativeIntegerCodec(),
+    Xsd.negativeInteger: xsd.XsdNegativeIntegerCodec(),
+    Xsd.nonPositiveInteger: xsd.XsdNonPositiveIntegerCodec(),
+    Xsd.hexBinary: xsd.XsdHexbinaryCodec(),
+    Xsd.base64Binary: xsd.XsdBase64BinaryCodec(),
+    Xsd.anyURI: xsd.XsdAnyUriCodec(),
+    Xsd.language: xsd.XsdLanguageCodec(),
+    Xsd.normalizedString: xsd.XsdNormalizedStringCodec(),
+    Xsd.token: xsd.XsdTokenCodec(),
+    Xsd.NMTOKEN: xsd.XsdNmtokenCodec(),
+    Xsd.Name: xsd.XsdNameCodec(),
+    Xsd.NCName: xsd.XsdNcnameCodec(),
   };
 
   static Object? _mapValue(String lexicalForm, Iri datatypeIri) {
     // Basic mapping for common XSD types using package:xsd codecs
-    final iri = datatypeIri.toString();
-    final codec = _xsdCodecs[iri];
+    final codec = _xsdCodecs[datatypeIri];
 
     if (codec != null) {
       try {
@@ -272,8 +260,7 @@ class Literal implements ObjectTerm {
   Literal get canonical {
     if (value == null) return this;
 
-    final iri = datatypeIri.toString();
-    final codec = _xsdCodecs[iri];
+    final codec = _xsdCodecs[datatypeIri];
 
     if (codec != null) {
       try {

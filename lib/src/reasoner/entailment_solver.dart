@@ -6,6 +6,7 @@ import '../model/literal.dart';
 import '../model/term.dart';
 import '../model/triple.dart';
 import '../model/triple_term.dart';
+import '../vocabulary/vocabulary.dart';
 
 /// Solves whether [target] entails [query] under Simple Entailment.
 ///
@@ -13,16 +14,6 @@ import '../model/triple_term.dart';
 /// [query] to the terms of [target] such that the graph obtained by applying
 /// M to [query] is a subgraph of [target].
 class EntailmentSolver {
-  static final _rdfType = Iri(
-    'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
-  );
-  static final _rdfsProposition = Iri(
-    'http://www.w3.org/2000/01/rdf-schema#Proposition',
-  );
-
-  static final _xsdDouble = Iri('http://www.w3.org/2001/XMLSchema#double');
-  static final _xsdFloat = Iri('http://www.w3.org/2001/XMLSchema#float');
-
   final Set<Iri> _recognizedDatatypes;
 
   EntailmentSolver({Set<Iri> recognizedDatatypes = const {}})
@@ -195,7 +186,7 @@ class EntailmentSolver {
 
       // --- RDF 1.2 Entailment: TripleTerm is a Proposition ---
       if (s is TripleTerm) {
-        if (p == _rdfType && o == _rdfsProposition) {
+        if (p == Rdf.type && o == Rdfs.Proposition) {
           continue; // Valid entailment
         }
         return false;
@@ -288,8 +279,8 @@ class EntailmentSolver {
   bool _isSignedZeroMismatch(Literal q, Literal t) {
     // If both are numeric and one is zero, check sign.
     // We only care if types are float/double where -0.0 is distinct.
-    final qIsFloat = q.datatypeIri == _xsdDouble || q.datatypeIri == _xsdFloat;
-    final tIsFloat = t.datatypeIri == _xsdDouble || t.datatypeIri == _xsdFloat;
+    final qIsFloat = q.datatypeIri == Xsd.double || q.datatypeIri == Xsd.float;
+    final tIsFloat = t.datatypeIri == Xsd.double || t.datatypeIri == Xsd.float;
 
     if (!qIsFloat || !tIsFloat) return false;
 

@@ -47,6 +47,26 @@ void main() {
 }
 ```
 
+### Vocabulary Constants
+
+The package includes type-safe `Iri` constants for standard vocabularies:
+
+- `Rdf`: Standard RDF terms (`Rdf.type`, `Rdf.nil`, `Rdf.first`, etc.)
+- `Rdfs`: RDF Schema terms (`Rdfs.label`, `Rdfs.subClassOf`, etc.)
+- `Xsd`: XML Schema datatypes (`Xsd.string`, `Xsd.integer`, `Xsd.boolean`, etc.)
+
+```dart
+import 'package:rdf_dart/rdf_dart.dart';
+
+void main() {
+  final type = Rdf.type;
+  final label = Rdfs.label;
+  final integer = Xsd.integer;
+
+  print(type); // http://www.w3.org/1999/02/22-rdf-syntax-ns#type
+}
+```
+
 ## Roadmap
 
 - [ ] Abstract Data Model (IRIs, Literals, Blank Nodes, Triple Terms)

@@ -1,48 +1,38 @@
-# Implementation Plan: RDF 1.2 Turtle Serializer
+# Implementation Plan: RDF Vocabulary Constants
 
-This plan outlines the steps to implement a fully compliant RDF 1.2 Turtle serializer for the `rdf_dart` package.
+This plan outlines the steps to introduce type-safe vocabulary constants and refactor the `rdf_dart` codebase to use them.
 
 ## Journal
-- **Phase 0:** Initial state. Analysis complete.
-- **Phase 1:** Completed basic setup. Created `_TurtleWriter` and updated `TurtleEncoder`. Implemented basic grouping by subject and predicate. Verified with new `turtle_encoder_test.dart`.
-- **Phase 2:** Implemented Prefix and Base URI support. Added `_relativizeIri` and `_isValidLocalName` logic. Updated encoder to emit directives. Verified with tests.
-- **Phase 3:** Implemented Blank Node inlining and Collections support. Added `_TurtleGraphAnalyzer` for preprocessing. Updated serializer to use `[ ... ]` and `( ... )` syntax. Verified with tests.
-- **Phase 4:** Implemented RDF 1.2 features. Added support for `TripleTerm` serialization and `{| ... |}` annotation syntax. Updated analyzer to detect reifiers. Verified with tests.
+- **Phase 0:** Initial state. Design approved.
+- **Phase 1:** Vocabulary definitions created (`lib/src/vocabulary/`). `Rdf`, `Rdfs`, `Xsd` classes implemented with `static final` fields to support non-const `Iri` constructor. Exported via `vocabulary.dart` and `rdf_dart.dart`. Verified with `dart analyze`.
+- **Phase 2:** Refactored `rdfs_reasoner.dart` and `entailment_solver.dart` to use vocabulary constants. Refactored `literal.dart` to use `Rdf.langString`, `Rdf.dirLangString`, and `Xsd.string` for default datatypes. Verified with existing tests.
+- **Phase 3:** Refactored `turtle_encoder.dart` and `n_triples_encoder.dart`. Refactoring `turtle_decoder.dart` (encountered truncation issue, retrying with full file read).
 
-## Phase 1: Preparation & Basic Setup
-- [x] Run all existing tests to ensure a clean baseline.
-- [x] Create `TurtleConfig` class (or just use named parameters) to hold configuration state (prefixes, base URI).
-- [x] Create a `TurtleWriter` helper class to manage `StringBuffer`, indentation, and basic token writing.
-- [x] Update `TurtleEncoder` to accept configuration and initialize the writer.
-- [x] Implement a basic "Grouped" serializer: Group triples by Subject, then Predicate. Output simple blocks using `;` and `,`. (No prefixes/nesting yet).
-- [x] Verify: Run existing tests. The output format will change from N-Triples to basic Turtle, so tests asserting exact string matches might fail and need updates.
+## Phase 1: Create Vocabulary Definitions
+- [x] Create `lib/src/vocabulary/` directory.
+- [x] Create `lib/src/vocabulary/rdf.dart` with `Rdf` class and standard RDF constants.
+- [x] Create `lib/src/vocabulary/rdfs.dart` with `Rdfs` class and standard RDFS constants.
+- [x] Create `lib/src/vocabulary/xsd.dart` with `Xsd` class and standard XSD constants.
+- [x] Create `lib/src/vocabulary/vocabulary.dart` to export the above files.
+- [x] Export `lib/src/vocabulary/vocabulary.dart` from `lib/rdf_dart.dart`.
+- [x] Verify: Run `dart analyze` to ensure new files are valid.
 
-## Phase 2: Prefix and Base URI Support
-- [x] Implement `_relativizeIri` logic in `TurtleWriter`.
-    - [x] Handle Base URI stripping.
-    - [x] Handle Prefix replacement (Map check).
-    - [x] Validate generated `prefix:localName` against Turtle grammar (PN_LOCAL) to ensure validity. Fallback to `<...>` if invalid characters are present.
-- [x] Update `TurtleEncoder` to output `@base` and `@prefix` directives at the start.
-- [x] Add unit tests specifically for prefix shrinking and base URI handling.
+## Phase 2: Refactor Code (Reasoner & Models)
+- [x] Refactor `lib/src/reasoner/rdfs_reasoner.dart` to use new constants.
+- [x] Refactor `lib/src/reasoner/entailment_solver.dart` to use new constants.
+- [x] Refactor `lib/src/model/literal.dart` to use new constants (especially for default datatype checks).
+- [x] Verify: Run existing tests to ensure no regressions in reasoning logic.
 
-## Phase 3: Blank Node Nesting and Collections
-- [x] Implement a `GraphAnalyzer` (or similar helper) to preprocess the input graph.
-    - [x] Count reference occurrences for each Blank Node.
-    - [x] Detect RDF List structures (`rdf:first`, `rdf:rest`, `rdf:nil`).
-- [x] Update serialization logic to use `[ ... ]` for blank nodes with single reference count (that aren't cyclic).
-- [x] Update serialization logic to use `( ... )` for valid RDF lists.
-- [x] Add unit tests for nesting and collections.
+## Phase 3: Refactor Code (Codecs)
+- [x] Refactor `lib/src/codecs/turtle/turtle_encoder.dart` (Turtle encoder) to use new constants (e.g., `rdf:type` detection).
+- [x] Refactor `lib/src/codecs/n-triples/n_triples_encoder.dart` (N-Triples encoder).
+- [x] Refactor `lib/src/codecs/turtle/turtle_decoder.dart` (Turtle decoder).
+- [x] Verify: Run codec tests.
 
-## Phase 4: RDF 1.2 Features (Triple Terms & Annotations)
-- [x] Implement serialization for `TripleTerm` objects using `<<( ... )>>` syntax.
-- [x] Implement logic to detect reified triples (`rdf:reifies`).
-- [x] Support `{| ... |}` annotation syntax for reifiers that are used as subjects of metadata assertions.
-- [x] Verify compliance with RDF 1.2 syntax tests (if available) or create specific scenarios covering Triple Terms.
-
-## Phase 5: Finalization & Polish
-- [ ] Review all TODOs.
-- [ ] Ensure formatting (indentation, newlines) matches the "pretty" goals (objects on new lines, etc.).
-- [ ] Run `dart_fix` and `dart_format`.
-- [ ] Run full test suite.
-- [ ] Update `README.md` to document the new serializer features and configuration options.
+## Phase 4: Finalization & Cleanup
+- [x] Refactor unit tests where applicable to use new constants (optional but good for consistency).
+- [x] Review all files for any remaining hardcoded strings for standard namespaces.
+- [x] Run `dart_fix` and `dart_format`.
+- [x] Run full test suite.
+- [ ] Update `README.md` to document the new `Rdf`, `Rdfs`, and `Xsd` classes.
 - [ ] Update `GEMINI.md`.

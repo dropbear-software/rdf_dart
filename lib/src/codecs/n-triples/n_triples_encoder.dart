@@ -7,6 +7,7 @@ import '../../model/literal.dart';
 import '../../model/term.dart';
 import '../../model/triple.dart';
 import '../../model/triple_term.dart';
+import '../../vocabulary/vocabulary.dart';
 
 /// A [Converter] that encodes [Iterable] of [Triple]s to N-Triples strings.
 ///
@@ -115,8 +116,7 @@ class NTriplesEncoder extends Converter<Iterable<Triple>, String> {
           sb.write(literal.baseDirection == TextDirection.LTR ? 'ltr' : 'rtl');
         }
       }
-    } else if (literal.datatypeIri.toString() !=
-        'http://www.w3.org/2001/XMLSchema#string') {
+    } else if (literal.datatypeIri != Xsd.string) {
       sb.write('^^');
       _writeIri(literal.datatypeIri, sb);
     }
@@ -125,7 +125,7 @@ class NTriplesEncoder extends Converter<Iterable<Triple>, String> {
   String _escapeIri(String s) {
     final sb = StringBuffer();
     for (final code in s.runes) {
-      // Check prohibited chars for IRI: 0x00-0x20, <, >, ", {, }, |, ^, `, \
+      // Check prohibited chars for IRI: 0x00-0x20, <, >, ", {, }, |, ^, `,
       // Note: s.runes gives integer codepoints.
       // Prohibited set check needs to be careful with integer comparison.
       if (code <= 0x20 ||

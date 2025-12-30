@@ -10,6 +10,7 @@
     *   **`src/model/`**: Core RDF data model definitions (IRI, Literal, BlankNode, Triple, Quad, Graph, Dataset).
     *   **`src/codecs/`**: Parsers and serializers (Turtle, N-Triples).
     *   **`src/reasoner/`**: Implementation of semantic reasoning (RDFS, Entailment).
+    *   `src/vocabulary/`: Type-safe constants for RDF, RDFS, and XSD.
 *   **`example/`**: Usage examples.
     *   `rdf_dart_example.dart`: Basic triple creation example.
 *   **`test/`**: Unit and compliance tests.

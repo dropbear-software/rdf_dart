@@ -1,118 +1,113 @@
-# Design Document: RDF 1.2 Turtle Serializer
+# Design Document: RDF Vocabulary Constants
 
 ## Overview
-The goal is to implement a fully compliant RDF 1.2 Turtle serializer for the `rdf_dart` package. Currently, the `TurtleEncoder` delegates to the `NTriplesEncoder`, which produces valid but verbose output. The new implementation will utilize the specific features of the Turtle language (terse syntax, prefixes, nesting, collections, and RDF 1.2 extensions) to produce human-readable and compact output.
+This document outlines the design for replacing manual string representations of common RDF, RDFS, and XSD IRIs with structured, type-safe constants. This refactor aims to improve developer experience, reduce errors from typos, and provide a central location for standard vocabulary definitions.
 
-## Problem Analysis
-Turtle (Terse RDF Triple Language) is designed to be easy to write and read. The current implementation outputs N-Triples, which is a subset of Turtle but lacks the "terse" features:
-- **Prefixes:** N-Triples uses full IRIs. Turtle allows `PREFIX` declarations and `prefix:localName` abbreviations.
-- **Base IRI:** N-Triples does not use `@base`. Turtle allows relative IRIs.
-- **Grouping:** N-Triples repeats the subject and predicate for every object. Turtle allows grouping via `;` (predicate lists) and `,` (object lists).
-- **Blank Nodes:** N-Triples uses explicit `_:label` identifiers. Turtle allows `[]` for anonymous blank nodes and nesting.
-- **Collections:** Turtle provides `( ... )` syntax for `rdf:List` structures.
-- **RDF 1.2 Features:** Support for `<< ... >>` (triple terms) and `{| ... |}` (annotations).
+## Goal
+The primary goal is to provide a clean, idiomatic Dart interface for accessing common RDF-related IRIs:
+- `rdf:type`, `rdf:Property`, `rdf:langString`, etc.
+- `rdfs:subClassOf`, `rdfs:domain`, `rdfs:range`, etc.
+- `xsd:string`, `xsd:integer`, `xsd:boolean`, etc.
 
-## Design Considerations
+## Analysis
+Currently, the codebase uses `Iri('...')` with literal strings in many places (e.g., `rdfs_reasoner.dart`, `turtle_encoder.dart`, `literal.dart`). This leads to redundancy and is prone to errors.
 
-### 1. Configuration & API
-To support the requested features (prefixes, base IRI), the `TurtleEncoder` needs a configuration mechanism. Since `Converter` subclasses are typically stateless/immutable, we will pass configuration via the constructor.
+### Constraints
+1.  **Type Safety:** Constants should be of type `Iri`.
+2.  **Grouping:** Constants should be logically grouped by namespace.
+3.  **Idiomatic Dart:** While classes with only static members are generally discouraged, they are a common pattern for "Namespace" groupings in Dart libraries (similar to `Colors` or `Icons`). Alternatively, top-level constants in a library can be used with prefixed imports.
+4.  **Performance:** Constants should be `const` expressions to allow efficient reuse and usage in other `const` contexts (where applicable).
 
-**Proposed API:**
+## Proposed Design
+
+### 1. File Structure
+We will create a new directory `lib/src/vocabulary/` containing separate files for each namespace:
+- `lib/src/vocabulary/rdf.dart`
+- `lib/src/vocabulary/rdfs.dart`
+- `lib/src/vocabulary/xsd.dart`
+- `lib/src/vocabulary/vocabulary.dart` (Central export and combined access)
+
+### 2. Implementation Pattern
+We will use classes with a private constructor to prevent instantiation. Each class will contain `static const Iri` members.
+
+**Example: `lib/src/vocabulary/xsd.dart`**
 ```dart
-class TurtleEncoder extends Converter<Iterable<Triple>, String> {
-  final Map<String, String> prefixes;
-  final String? baseUri;
-  final bool compact; // Toggles aggressive syntactic sugar (nesting, collections)
+import '../model/iri.dart';
 
-  const TurtleEncoder({
-    this.prefixes = const {}, 
-    this.baseUri,
-    this.compact = true,
-  });
-  
-  // ...
+/// XML Schema Datatypes (XSD) vocabulary.
+class Xsd {
+  Xsd._();
+
+  static const String _base = 'http://www.w3.org/2001/XMLSchema#';
+
+  static const string = Iri.fromUri(Uri(scheme: 'http', host: 'www.w3.org', path: '2001/XMLSchema', fragment: 'string'));
+  static const integer = Iri.fromUri(Uri(scheme: 'http', host: 'www.w3.org', path: '2001/XMLSchema', fragment: 'integer'));
+  static const boolean = Iri.fromUri(Uri(scheme: 'http', host: 'www.w3.org', path: '2001/XMLSchema', fragment: 'boolean'));
+  // ... more types
 }
 ```
 
-### 2. Architecture
-Unlike N-Triples, which can be serialized in a single streaming pass (line-by-line), optimal Turtle serialization requires a holistic view of the graph to:
-- Group triples by subject.
-- Identify list structures (collections).
-- Identify blank nodes that can be inlined (reference counting).
-- Detect reification patterns for annotation syntax.
+*Note: Since `Iri.fromUri` and `Uri` constructors are `const`, these can be true constants.*
 
-**Pipeline:**
-1.  **Ingest:** Load the input `Iterable<Triple>` into an efficiently queryable structure (likely the existing `Graph` implementation or a temporary internal index).
-2.  **Analyze (Pre-pass):**
-    *   Compute reference counts for blank nodes to determine if they can be nested `[]`.
-    *   Identify heads of RDF lists for `()` syntax.
-    *   Index reified triples for `{| ... |}` syntax.
-3.  **Serialize (Output):**
-    *   Write `BASE` and `PREFIX` directives.
-    *   Iterate through subjects (sorted for deterministic output).
-    *   Apply syntactic sugar (Predicate Lists, Object Lists, Nesting).
-    *   Use a `TurtleWriter` helper class to manage indentation and line wrapping.
-
-### 3. Syntactic Sugar Strategy
-
-#### Predicate and Object Lists
-- **Strategy:** Group triples by Subject. Within that group, group by Predicate.
-- **Output:**
-  ```turtle
-  :subject 
-      :pred1 :obj1, :obj2 ;
-      :pred2 :obj3 .
-  ```
-
-#### Relative IRIs and Prefixes
-- **Base URI:** If provided, verify if an IRI starts with the base. If so, strip the base to produce a relative IRI.
-- **Prefixes:** Iterate through provided `prefixes`. If an IRI matches a namespace, replace with `prefix:localName`.
-- **Validation:** Ensure the `localName` is valid according to the Turtle grammar (PN_LOCAL). If not, fallback to full `<...>` IRI.
-
-#### Blank Nodes & Nesting
-- **Analysis:** Count incoming references to each Blank Node.
-- **Rule:** If a Blank Node has exactly **one** incoming reference and is **not** the root of a cycle, it can be inlined using `[ ... ]`.
-- **Recursion:** This logic applies recursively for nested structures.
-
-#### Collections
-- **Analysis:** Identify Blank Nodes that are subjects of `rdf:first` and `rdf:rest`.
-- **Rule:** If a chain of these forms a valid list structure and the nodes are not referenced elsewhere, serialize as `( item1 item2 ... )`.
-
-#### RDF 1.2 Annotations
-- **Analysis:** Identify triples where the object is a `TripleTerm` (e.g., `_:r rdf:reifies <<( s p o )>>`).
-- **Sugar:** If `_:r` is used as the subject of other triples (`_:r :assertedBy :bob`), output using annotation syntax:
-  ```turtle
-  s p o {| :assertedBy :bob |} .
-  ```
-- **Fallback:** If complex reification structures exist that don't fit the `{| |}` pattern, fallback to explicit reification triples.
-
-## Detailed Logic
-
-### `TurtleWriter` Class
-A helper class to handle the output buffer, indentation levels, and context.
+### 3. Central Access
+A central `vocabulary.dart` will export these for convenience.
 
 ```dart
-class TurtleWriter {
-  final StringSink _sink;
-  int _indent = 0;
-  
-  // Methods to write tokens, manage newlines, increase/decrease indent
-}
+export 'rdf.dart';
+export 'rdfs.dart';
+export 'xsd.dart';
 ```
 
-### Relativization Logic
-```dart
-String relativize(Iri iri) {
-  // 1. Try Base URI relativization
-  // 2. Try Prefix Map replacement
-  // 3. Return <absoluteIRI>
-}
+### 4. Refactoring Strategy
+I will systematically replace string literals with these constants in:
+- `lib/src/reasoner/rdfs_reasoner.dart` (Large number of vocabulary constants here)
+- `lib/src/codecs/turtle/turtle_encoder.dart`
+- `lib/src/codecs/turtle/turtle_decoder.dart`
+- `lib/src/codecs/n-triples/n_triples_encoder.dart`
+- `lib/src/model/literal.dart`
+- Tests and examples.
+
+## Alternatives Considered
+
+### Top-level constants in libraries
+Instead of `Xsd.string`, we could have `const string = ...` in `xsd.dart` and require `import '.../xsd.dart' as xsd;`.
+- **Pros:** More strictly follows `Effective Dart`.
+- **Cons:** Requires users to remember to use `as xsd` to avoid name collisions (like `string` or `type`).
+- **Decision:** The class-based "Namespace" pattern is more robust for a library where users might import multiple vocabularies.
+
+### Enhanced Enums
+- **Pros:** Built-in grouping.
+- **Cons:** `Xsd.string` would be the enum value, requiring `Xsd.string.iri` to get the actual `Iri`. This adds verbosity.
+
+## Diagrams
+
+```mermaid
+classDiagram
+    class Rdf {
+        <<Namespace>>
+        +type: Iri
+        +Property: Iri
+        +langString: Iri
+        +reifies: Iri
+    }
+    class Rdfs {
+        <<Namespace>>
+        +Resource: Iri
+        +Class: Iri
+        +subClassOf: Iri
+        +domain: Iri
+        +range: Iri
+    }
+    class Xsd {
+        <<Namespace>>
+        +string: Iri
+        +integer: Iri
+        +boolean: Iri
+        +decimal: Iri
+    }
 ```
 
 ## References
-- **RDF 1.2 Turtle Spec:** https://www.w3.org/TR/rdf12-turtle/
-- **RDF 1.2 Concepts:** https://www.w3.org/TR/rdf12-concepts/
-- **Turtle Grammar (BNF):** Local file `turtle.bnf`
-
-## Summary
-The implementation will upgrade `TurtleEncoder` from a proxy to a sophisticated graph serializer. It will prioritize readability and standard compliance, utilizing a multi-pass approach to handle complex syntactic sugars like nesting and collections. The API will remain clean but allow necessary configuration for prefixes and base URIs.
+- [Effective Dart: Design - Avoid classes with only static members](https://dart.dev/effective-dart/design#avoid-classes-with-only-static-members)
+- [Dart URI class](https://api.dart.dev/stable/dart-core/Uri-class.html)
+- [XSD Datatypes in RDF](https://www.w3.org/TR/rdf12-concepts/#section-Datatypes)

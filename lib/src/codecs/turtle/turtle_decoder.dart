@@ -8,6 +8,7 @@ import '../../model/literal.dart';
 import '../../model/term.dart';
 import '../../model/triple.dart';
 import '../../model/triple_term.dart';
+import '../../vocabulary/vocabulary.dart';
 
 /// A [Converter] that decodes Turtle strings to [Iterable] of [Triple]s.
 ///
@@ -207,9 +208,7 @@ class _TurtleParser {
           _triples.add(
             Triple(
               subject: _toSubject(reifier),
-              predicate: Iri(
-                'http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies',
-              ),
+              predicate: Rdf.reifies,
               object: TripleTerm(t),
             ),
           );
@@ -237,9 +236,7 @@ class _TurtleParser {
           _triples.add(
             Triple(
               subject: _toSubject(reifier),
-              predicate: Iri(
-                'http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies',
-              ),
+              predicate: Rdf.reifies,
               object: TripleTerm(t),
             ),
           );
@@ -566,22 +563,18 @@ class _TurtleParser {
     }
     _expect(')');
 
-    RdfTerm current = Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#nil');
+    RdfTerm current = Rdf.nil;
     for (var i = items.length - 1; i >= 0; i--) {
       final bnode = BlankNode(_newBNodeLabel());
       _triples.add(
         Triple(
           subject: bnode,
-          predicate: Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#first'),
+          predicate: Rdf.first,
           object: _toObject(items[i]),
         ),
       );
       _triples.add(
-        Triple(
-          subject: bnode,
-          predicate: Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#rest'),
-          object: _toObject(current),
-        ),
+        Triple(subject: bnode, predicate: Rdf.rest, object: _toObject(current)),
       );
       current = bnode;
     }
@@ -651,11 +644,7 @@ class _TurtleParser {
     final r = reifier ?? BlankNode(_newBNodeLabel());
 
     _triples.add(
-      Triple(
-        subject: _toSubject(r),
-        predicate: Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies'),
-        object: tt,
-      ),
+      Triple(subject: _toSubject(r), predicate: Rdf.reifies, object: tt),
     );
 
     return r;
@@ -864,39 +853,24 @@ class _TurtleParser {
     }
     final lexical = _input.substring(start, _pos);
     if (isDouble) {
-      return Literal(
-        lexical,
-        datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#double'),
-      );
+      return Literal(lexical, datatypeIri: Xsd.double);
     } else if (isDecimal) {
-      return Literal(
-        lexical,
-        datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#decimal'),
-      );
+      return Literal(lexical, datatypeIri: Xsd.decimal);
     } else {
       if (!hasDigits && lexical.length <= 1) {
         throw FormatException('Invalid numeric literal');
       }
-      return Literal(
-        lexical,
-        datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#integer'),
-      );
+      return Literal(lexical, datatypeIri: Xsd.integer);
     }
   }
 
   /// [25] BooleanLiteral ::= 'true' | 'false'
   RdfTerm _parseBooleanLiteral() {
     if (_consumeIf('true')) {
-      return Literal(
-        'true',
-        datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#boolean'),
-      );
+      return Literal('true', datatypeIri: Xsd.boolean);
     }
     if (_consumeIf('false')) {
-      return Literal(
-        'false',
-        datatypeIri: Iri('http://www.w3.org/2001/XMLSchema#boolean'),
-      );
+      return Literal('false', datatypeIri: Xsd.boolean);
     }
     throw FormatException('Expected boolean');
   }
@@ -1027,7 +1001,7 @@ class _TurtleParser {
   RdfTerm _parseVerb() {
     if (_isKeywordA()) {
       _advance(1);
-      return Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
+      return Rdf.type;
     }
     return _parseTerm();
   }
