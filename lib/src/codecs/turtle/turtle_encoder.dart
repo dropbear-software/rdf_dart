@@ -115,7 +115,7 @@ class _TurtleGraphAnalyzer {
         hasFirst = true;
       } else if (t.predicate == Rdf.rest) {
         hasRest = true;
-      } else if (t.predicate == Rdf.type && t.object == Rdf.List) {
+      } else if (t.predicate == Rdf.type && t.object == Rdf.list) {
         continue;
       } else {
         return false;

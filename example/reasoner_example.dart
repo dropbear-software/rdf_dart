@@ -40,10 +40,10 @@ void main() {
 
   // "hasFather is a Property" (Triggers rdfs6)
   graph.add(
-    Triple(subject: hasFather, predicate: Rdf.type, object: Rdf.Property),
+    Triple(subject: hasFather, predicate: Rdf.type, object: Rdf.property),
   );
 
-  graph.add(Triple(subject: hasAge, predicate: Rdf.type, object: Rdf.Property));
+  graph.add(Triple(subject: hasAge, predicate: Rdf.type, object: Rdf.property));
   graph.add(Triple(subject: rex, predicate: likes, object: fido));
   graph.add(
     Triple(

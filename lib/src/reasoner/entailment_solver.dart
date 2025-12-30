@@ -186,7 +186,7 @@ class EntailmentSolver {
 
       // --- RDF 1.2 Entailment: TripleTerm is a Proposition ---
       if (s is TripleTerm) {
-        if (p == Rdf.type && o == Rdfs.Proposition) {
+        if (p == Rdf.type && o == Rdfs.proposition) {
           continue; // Valid entailment
         }
         return false;

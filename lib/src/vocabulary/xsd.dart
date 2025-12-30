@@ -1,5 +1,3 @@
-// ignore_for_file: constant_identifier_names, non_constant_identifier_names
-
 import '../model/iri.dart';
 
 /// The XML Schema vocabulary.
@@ -44,7 +42,7 @@ class Xsd {
   static final language = Iri('${namespace}language');
   static final normalizedString = Iri('${namespace}normalizedString');
   static final token = Iri('${namespace}token');
-  static final NMTOKEN = Iri('${namespace}NMTOKEN');
-  static final Name = Iri('${namespace}Name');
-  static final NCName = Iri('${namespace}NCName');
+  static final nmToken = Iri('${namespace}NMTOKEN');
+  static final name = Iri('${namespace}Name');
+  static final ncName = Iri('${namespace}NCName');
 }

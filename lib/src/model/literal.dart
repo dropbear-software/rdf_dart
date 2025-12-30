@@ -177,9 +177,9 @@ class Literal implements ObjectTerm {
     Xsd.language: xsd.XsdLanguageCodec(),
     Xsd.normalizedString: xsd.XsdNormalizedStringCodec(),
     Xsd.token: xsd.XsdTokenCodec(),
-    Xsd.NMTOKEN: xsd.XsdNmtokenCodec(),
-    Xsd.Name: xsd.XsdNameCodec(),
-    Xsd.NCName: xsd.XsdNcnameCodec(),
+    Xsd.nmToken: xsd.XsdNmtokenCodec(),
+    Xsd.name: xsd.XsdNameCodec(),
+    Xsd.ncName: xsd.XsdNcnameCodec(),
   };
 
   static Object? _mapValue(String lexicalForm, Iri datatypeIri) {

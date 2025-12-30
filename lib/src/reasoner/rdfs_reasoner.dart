@@ -37,7 +37,7 @@ class RdfsReasoner {
                Xsd.decimal,
                Xsd.dateTime,
                Rdf.langString,
-               Rdf.XMLLiteral,
+               Rdf.xmlLiteral,
              }
            : recognizedDatatypes;
 
@@ -84,14 +84,14 @@ class RdfsReasoner {
   }
 
   void _addRdfAxioms() {
-    _addAxiom(Rdf.type, Rdf.type, Rdf.Property);
-    _addAxiom(Rdf.subject, Rdf.type, Rdf.Property);
-    _addAxiom(Rdf.predicate, Rdf.type, Rdf.Property);
-    _addAxiom(Rdf.object, Rdf.type, Rdf.Property);
-    _addAxiom(Rdf.first, Rdf.type, Rdf.Property);
-    _addAxiom(Rdf.rest, Rdf.type, Rdf.Property);
-    _addAxiom(Rdf.value, Rdf.type, Rdf.Property);
-    _addAxiom(Rdf.nil, Rdf.type, Rdf.List);
+    _addAxiom(Rdf.type, Rdf.type, Rdf.property);
+    _addAxiom(Rdf.subject, Rdf.type, Rdf.property);
+    _addAxiom(Rdf.predicate, Rdf.type, Rdf.property);
+    _addAxiom(Rdf.object, Rdf.type, Rdf.property);
+    _addAxiom(Rdf.first, Rdf.type, Rdf.property);
+    _addAxiom(Rdf.rest, Rdf.type, Rdf.property);
+    _addAxiom(Rdf.value, Rdf.type, Rdf.property);
+    _addAxiom(Rdf.nil, Rdf.type, Rdf.list);
   }
 
   void _addRdfsAxioms() {
@@ -110,43 +110,43 @@ class RdfsReasoner {
       Rdf.subject,
       Rdf.predicate,
       Rdf.object,
-      Rdf.Statement,
+      Rdf.statement,
       Rdf.first,
       Rdf.rest,
       Rdf.value,
       Rdf.reifies,
     ]) {
-      _addAxiom(p, Rdf.type, Rdf.Property);
-      _addAxiom(p, Rdfs.domain, Rdfs.Resource);
-      _addAxiom(p, Rdfs.range, Rdfs.Resource);
+      _addAxiom(p, Rdf.type, Rdf.property);
+      _addAxiom(p, Rdfs.domain, Rdfs.resource);
+      _addAxiom(p, Rdfs.range, Rdfs.resource);
     }
 
-    _addAxiom(Rdfs.domain, Rdfs.domain, Rdf.Property);
+    _addAxiom(Rdfs.domain, Rdfs.domain, Rdf.property);
     _addAxiom(Rdfs.domain, Rdfs.range, Rdfs.Class);
 
-    _addAxiom(Rdfs.range, Rdfs.domain, Rdf.Property);
+    _addAxiom(Rdfs.range, Rdfs.domain, Rdf.property);
     _addAxiom(Rdfs.range, Rdfs.range, Rdfs.Class);
 
-    _addAxiom(Rdfs.subPropertyOf, Rdfs.domain, Rdf.Property);
-    _addAxiom(Rdfs.subPropertyOf, Rdfs.range, Rdf.Property);
+    _addAxiom(Rdfs.subPropertyOf, Rdfs.domain, Rdf.property);
+    _addAxiom(Rdfs.subPropertyOf, Rdfs.range, Rdf.property);
 
     _addAxiom(Rdfs.subClassOf, Rdfs.domain, Rdfs.Class);
     _addAxiom(Rdfs.subClassOf, Rdfs.range, Rdfs.Class);
 
-    _addAxiom(Rdf.type, Rdfs.domain, Rdfs.Resource);
+    _addAxiom(Rdf.type, Rdfs.domain, Rdfs.resource);
     _addAxiom(Rdf.type, Rdfs.range, Rdfs.Class);
 
     // Classes
-    _addAxiom(Rdfs.Resource, Rdf.type, Rdfs.Class);
+    _addAxiom(Rdfs.resource, Rdf.type, Rdfs.Class);
     _addAxiom(Rdfs.Class, Rdf.type, Rdfs.Class);
-    _addAxiom(Rdfs.Literal, Rdf.type, Rdfs.Class);
-    _addAxiom(Rdfs.Datatype, Rdf.type, Rdfs.Class);
-    _addAxiom(Rdf.Statement, Rdf.type, Rdfs.Class); // RDF Statement is a class
-    _addAxiom(Rdf.Property, Rdf.type, Rdfs.Class);
-    _addAxiom(Rdfs.ContainerMembershipProperty, Rdfs.subClassOf, Rdf.Property);
-    _addAxiom(Rdfs.Proposition, Rdf.type, Rdfs.Class);
+    _addAxiom(Rdfs.literal, Rdf.type, Rdfs.Class);
+    _addAxiom(Rdfs.datatype, Rdf.type, Rdfs.Class);
+    _addAxiom(Rdf.statement, Rdf.type, Rdfs.Class); // RDF Statement is a class
+    _addAxiom(Rdf.property, Rdf.type, Rdfs.Class);
+    _addAxiom(Rdfs.containerMembershipProperty, Rdfs.subClassOf, Rdf.property);
+    _addAxiom(Rdfs.proposition, Rdf.type, Rdfs.Class);
 
-    _addAxiom(Rdf.reifies, Rdfs.range, Rdfs.Proposition);
+    _addAxiom(Rdf.reifies, Rdfs.range, Rdfs.proposition);
   }
 
   bool _addAxiom(SubjectTerm s, Iri p, ObjectTerm o) {
@@ -163,7 +163,7 @@ class RdfsReasoner {
   bool _applyRdfD1() {
     bool changed = false;
     for (final d in _recognizedDatatypes) {
-      final t = Triple(subject: d, predicate: Rdf.type, object: Rdfs.Datatype);
+      final t = Triple(subject: d, predicate: Rdf.type, object: Rdfs.datatype);
       if (_graph.add(t)) changed = true;
     }
     return changed;
@@ -178,7 +178,7 @@ class RdfsReasoner {
         Triple(
           subject: predicate as SubjectTerm,
           predicate: Rdf.type,
-          object: Rdf.Property,
+          object: Rdf.property,
         ),
       )) {
         changed = true;
@@ -194,7 +194,7 @@ class RdfsReasoner {
     for (final node in _graph.nodes) {
       if (node is Iri && _recognizedDatatypes.contains(node)) {
         if (_graph.add(
-          Triple(subject: node, predicate: Rdf.type, object: Rdfs.Datatype),
+          Triple(subject: node, predicate: Rdf.type, object: Rdfs.datatype),
         )) {
           changed = true;
         }
@@ -251,7 +251,7 @@ class RdfsReasoner {
     for (final node in _graph.nodes.toList()) {
       if (node is SubjectTerm) {
         if (_graph.add(
-          Triple(subject: node, predicate: Rdf.type, object: Rdfs.Resource),
+          Triple(subject: node, predicate: Rdf.type, object: Rdfs.resource),
         )) {
           changed = true;
         }
@@ -287,7 +287,7 @@ class RdfsReasoner {
   bool _applyRdfs6() {
     bool changed = false;
     // Reflexivity for properties
-    final properties = _graph.match(predicate: Rdf.type, object: Rdf.Property);
+    final properties = _graph.match(predicate: Rdf.type, object: Rdf.property);
     for (final t in properties.toList()) {
       final p = t.subject;
       if (p is ObjectTerm) {
@@ -338,7 +338,7 @@ class RdfsReasoner {
         Triple(
           subject: t.subject,
           predicate: Rdfs.subClassOf,
-          object: Rdfs.Resource,
+          object: Rdfs.resource,
         ),
       )) {
         changed = true;
@@ -420,7 +420,7 @@ class RdfsReasoner {
     // ContainerMembershipProperty
     final props = _graph.match(
       predicate: Rdf.type,
-      object: Rdfs.ContainerMembershipProperty,
+      object: Rdfs.containerMembershipProperty,
     );
     for (final t in props.toList()) {
       if (_graph.add(
@@ -439,13 +439,13 @@ class RdfsReasoner {
   bool _applyRdfs13() {
     bool changed = false;
     // Datatype subClassOf Literal
-    final dts = _graph.match(predicate: Rdf.type, object: Rdfs.Datatype);
+    final dts = _graph.match(predicate: Rdf.type, object: Rdfs.datatype);
     for (final t in dts.toList()) {
       if (_graph.add(
         Triple(
           subject: t.subject,
           predicate: Rdfs.subClassOf,
-          object: Rdfs.Literal,
+          object: Rdfs.literal,
         ),
       )) {
         changed = true;
@@ -497,7 +497,7 @@ class RdfsReasoner {
           Triple(
             subject: node,
             predicate: Rdf.type,
-            object: Rdfs.ContainerMembershipProperty,
+            object: Rdfs.containerMembershipProperty,
           ),
         )) {
           changed = true;
