@@ -86,7 +86,7 @@ void _writeSyntaxGroup(
     final rawName = test['mf:name'];
     final name = rawName
         ?.replaceAll(r'\', r'\\') // Escape backslashes first
-        ?.replaceAll("'", r"\'")  // Escape single quotes
+        ?.replaceAll("'", r"\'") // Escape single quotes
         ?.replaceAll(r'$', r'\$'); // Escape dollar signs
     final actionFile = test['mf:action']['@id'];
 

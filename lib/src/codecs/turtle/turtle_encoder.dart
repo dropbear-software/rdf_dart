@@ -16,19 +16,12 @@ class TurtleEncoder extends Converter<Iterable<Triple>, String> {
   /// Base IRI to use for relative IRI resolution.
   final String? baseUri;
 
-  const TurtleEncoder({
-    this.prefixes = const {},
-    this.baseUri,
-  });
+  const TurtleEncoder({this.prefixes = const {}, this.baseUri});
 
   @override
   String convert(Iterable<Triple> input) {
     final sb = StringBuffer();
-    final writer = _TurtleWriter(
-      sb,
-      prefixes: prefixes,
-      baseUri: baseUri,
-    );
+    final writer = _TurtleWriter(sb, prefixes: prefixes, baseUri: baseUri);
     writer.writeGraph(input);
     return sb.toString();
   }
@@ -46,17 +39,22 @@ class _TurtleGraphAnalyzer {
   final Map<Triple, Set<SubjectTerm>> tripleToReifiers = {};
   final Set<SubjectTerm> annotationReifiers = {};
 
-  static final _rdfFirst =
-      Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#first');
-  static final _rdfRest =
-      Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#rest');
+  static final _rdfFirst = Iri(
+    'http://www.w3.org/1999/02/22-rdf-syntax-ns#first',
+  );
+  static final _rdfRest = Iri(
+    'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest',
+  );
   static final _rdfNil = Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#nil');
-  static final _rdfType =
-      Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
-  static final _rdfList =
-      Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#List');
-  static final _rdfReifies =
-      Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies');
+  static final _rdfType = Iri(
+    'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
+  );
+  static final _rdfList = Iri(
+    'http://www.w3.org/1999/02/22-rdf-syntax-ns#List',
+  );
+  static final _rdfReifies = Iri(
+    'http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies',
+  );
 
   void analyze(Iterable<Triple> triples) {
     for (final t in triples) {
@@ -146,7 +144,7 @@ class _TurtleGraphAnalyzer {
       if (rest is! BlankNode) return null;
       if (refCounts[rest] != 1) return null;
 
-      current = rest as BlankNode;
+      current = rest;
     }
   }
 
@@ -180,8 +178,9 @@ class _TurtleWriter {
   final Set<SubjectTerm> _usedAsAnnotation = {};
   late _TurtleGraphAnalyzer _analyzer;
 
-  static final _rdfReifies =
-      Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies');
+  static final _rdfReifies = Iri(
+    'http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies',
+  );
 
   _TurtleWriter(this._sink, {this.prefixes = const {}, this.baseUri});
 
@@ -274,8 +273,9 @@ class _TurtleWriter {
         _writeObject(o);
 
         // Check for annotations
-        final currentTriple =
-            triples.firstWhere((t) => t.predicate == p && t.object == o);
+        final currentTriple = triples.firstWhere(
+          (t) => t.predicate == p && t.object == o,
+        );
         final reifiers = _analyzer.tripleToReifiers[currentTriple];
         if (reifiers != null) {
           for (final r in reifiers) {
@@ -438,7 +438,9 @@ class _TurtleWriter {
     if (l.languageTag != null) {
       _sink.write('@${l.languageTag}');
       if (l.baseDirection != null) {
-        _sink.write('--${l.baseDirection == TextDirection.LTR ? 'ltr' : 'rtl'}');
+        _sink.write(
+          '--${l.baseDirection == TextDirection.LTR ? 'ltr' : 'rtl'}',
+        );
       }
     } else if (l.datatypeIri.toString() !=
         'http://www.w3.org/2001/XMLSchema#string') {

@@ -17,18 +17,13 @@ class TurtleCodec extends Codec<Iterable<Triple>, String> {
   /// Base IRI to use for relative IRI resolution.
   final String? baseUri;
 
-  const TurtleCodec({
-    this.prefixes = const {},
-    this.baseUri,
-  });
+  const TurtleCodec({this.prefixes = const {}, this.baseUri});
 
   @override
   Converter<String, Iterable<Triple>> get decoder =>
       TurtleDecoder(baseUri: baseUri);
 
   @override
-  Converter<Iterable<Triple>, String> get encoder => TurtleEncoder(
-    prefixes: prefixes,
-    baseUri: baseUri,
-  );
+  Converter<Iterable<Triple>, String> get encoder =>
+      TurtleEncoder(prefixes: prefixes, baseUri: baseUri);
 }
