@@ -53,15 +53,80 @@ void main() {
       expect(output, contains('"hello"@en--ltr'));
     });
     
-    test('rdf:type shorthand "a"', () {
-      final s = Iri('http://example.org/s');
-      final p = Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
-      final o = Iri('http://example.org/Class');
-
-      final triples = [Triple(subject: s, predicate: p, object: o)];
-      final output = const TurtleEncoder().convert(triples);
-
-      expect(output, contains('a <http://example.org/Class>'));
-    });
-  });
-}
+        test('rdf:type shorthand "a"', () {
+    
+          final s = Iri('http://example.org/s');
+    
+          final p = Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
+    
+          final o = Iri('http://example.org/Class');
+    
+    
+    
+          final triples = [Triple(subject: s, predicate: p, object: o)];
+    
+          final output = const TurtleEncoder().convert(triples);
+    
+    
+    
+          expect(output, contains('a <http://example.org/Class>'));
+    
+        });
+    
+    
+    
+        test('Prefix support', () {
+    
+          final s = Iri('http://example.org/s');
+    
+          final p = Iri('http://example.org/p');
+    
+          final o = Iri('http://example.org/o');
+    
+    
+    
+          final triples = [Triple(subject: s, predicate: p, object: o)];
+    
+          final encoder = TurtleEncoder(prefixes: {'ex': 'http://example.org/'});
+    
+          final output = encoder.convert(triples);
+    
+    
+    
+          expect(output, contains('PREFIX ex: <http://example.org/>'));
+    
+          expect(output, contains('ex:s\n    ex:p ex:o .'));
+    
+        });
+    
+    
+    
+        test('Base URI support', () {
+    
+          final s = Iri('http://example.org/s');
+    
+          final p = Iri('http://example.org/p');
+    
+          final o = Iri('http://example.org/o');
+    
+    
+    
+          final triples = [Triple(subject: s, predicate: p, object: o)];
+    
+          final encoder = TurtleEncoder(baseUri: 'http://example.org/');
+    
+          final output = encoder.convert(triples);
+    
+    
+    
+          expect(output, contains('BASE <http://example.org/>'));
+    
+          expect(output, contains('<s>\n    <p> <o> .'));
+    
+        });
+    
+      });
+    
+    }
+    
+    

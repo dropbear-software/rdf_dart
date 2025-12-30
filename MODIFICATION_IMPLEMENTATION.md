@@ -5,6 +5,7 @@ This plan outlines the steps to implement a fully compliant RDF 1.2 Turtle seria
 ## Journal
 - **Phase 0:** Initial state. Analysis complete.
 - **Phase 1:** Completed basic setup. Created `_TurtleWriter` and updated `TurtleEncoder`. Implemented basic grouping by subject and predicate. Verified with new `turtle_encoder_test.dart`.
+- **Phase 2:** Implemented Prefix and Base URI support. Added `_relativizeIri` and `_isValidLocalName` logic. Updated encoder to emit directives. Verified with tests.
 
 ## Phase 1: Preparation & Basic Setup
 - [x] Run all existing tests to ensure a clean baseline.
@@ -15,12 +16,12 @@ This plan outlines the steps to implement a fully compliant RDF 1.2 Turtle seria
 - [x] Verify: Run existing tests. The output format will change from N-Triples to basic Turtle, so tests asserting exact string matches might fail and need updates.
 
 ## Phase 2: Prefix and Base URI Support
-- [ ] Implement `_relativizeIri` logic in `TurtleWriter`.
-    - [ ] Handle Base URI stripping.
-    - [ ] Handle Prefix replacement (Map check).
-    - [ ] Validate generated `prefix:localName` against Turtle grammar (PN_LOCAL) to ensure validity. Fallback to `<...>` if invalid characters are present.
-- [ ] Update `TurtleEncoder` to output `@base` and `@prefix` directives at the start.
-- [ ] Add unit tests specifically for prefix shrinking and base URI handling.
+- [x] Implement `_relativizeIri` logic in `TurtleWriter`.
+    - [x] Handle Base URI stripping.
+    - [x] Handle Prefix replacement (Map check).
+    - [x] Validate generated `prefix:localName` against Turtle grammar (PN_LOCAL) to ensure validity. Fallback to `<...>` if invalid characters are present.
+- [x] Update `TurtleEncoder` to output `@base` and `@prefix` directives at the start.
+- [x] Add unit tests specifically for prefix shrinking and base URI handling.
 
 ## Phase 3: Blank Node Nesting and Collections
 - [ ] Implement a `GraphAnalyzer` (or similar helper) to preprocess the input graph.

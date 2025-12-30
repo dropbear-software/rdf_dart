@@ -171,9 +171,42 @@ class _TurtleWriter {
   }
 
   void _writeIri(Iri iri) {
-    // Phase 1: Simple full IRI output.
-    // Relativization and Prefixes come in Phase 2.
-    _sink.write('<$iri>');
+    _sink.write(_relativizeIri(iri));
+  }
+
+  String _relativizeIri(Iri iri) {
+    final iriStr = iri.toString();
+
+    // 1. Try Prefix replacement
+    for (final entry in prefixes.entries) {
+      final namespace = entry.value;
+      if (iriStr.startsWith(namespace)) {
+        final localName = iriStr.substring(namespace.length);
+        if (_isValidLocalName(localName)) {
+          return '${entry.key}:$localName';
+        }
+      }
+    }
+
+    // 2. Try Base URI stripping
+    if (baseUri != null && iriStr.startsWith(baseUri!)) {
+      final rel = iriStr.substring(baseUri!.length);
+      // Ensure it doesn't contain > or other invalid chars for relative IRI
+      if (!rel.contains('>')) {
+        return '<$rel>';
+      }
+    }
+
+    return '<$iriStr>';
+  }
+
+  bool _isValidLocalName(String localName) {
+    if (localName.isEmpty) return true;
+    // PN_LOCAL ::= ( PN_CHARS_U | ':' | [0-9] | PLX ) ( ( PN_CHARS | '.' | ':' | PLX )*  ( PN_CHARS | ':' | PLX ) ) ?
+    // Simplified check: alphanumeric, underscore, hyphen. No dots at end.
+    // We don't support PLX (escaping) in localName generation yet for simplicity.
+    final regex = RegExp(r'^[a-zA-Z0-9_]([a-zA-Z0-9_\-\:]*[a-zA-Z0-9_\:])?$');
+    return regex.hasMatch(localName);
   }
 
   void _writeBlankNode(BlankNode b) {
