@@ -7,6 +7,7 @@ This plan outlines the steps to implement a fully compliant RDF 1.2 Turtle seria
 - **Phase 1:** Completed basic setup. Created `_TurtleWriter` and updated `TurtleEncoder`. Implemented basic grouping by subject and predicate. Verified with new `turtle_encoder_test.dart`.
 - **Phase 2:** Implemented Prefix and Base URI support. Added `_relativizeIri` and `_isValidLocalName` logic. Updated encoder to emit directives. Verified with tests.
 - **Phase 3:** Implemented Blank Node inlining and Collections support. Added `_TurtleGraphAnalyzer` for preprocessing. Updated serializer to use `[ ... ]` and `( ... )` syntax. Verified with tests.
+- **Phase 4:** Implemented RDF 1.2 features. Added support for `TripleTerm` serialization and `{| ... |}` annotation syntax. Updated analyzer to detect reifiers. Verified with tests.
 
 ## Phase 1: Preparation & Basic Setup
 - [x] Run all existing tests to ensure a clean baseline.
@@ -33,10 +34,10 @@ This plan outlines the steps to implement a fully compliant RDF 1.2 Turtle seria
 - [x] Add unit tests for nesting and collections.
 
 ## Phase 4: RDF 1.2 Features (Triple Terms & Annotations)
-- [ ] Implement serialization for `TripleTerm` objects using `<<( ... )>>` syntax.
-- [ ] Implement logic to detect reified triples (`rdf:reifies`).
-- [ ] Support `{| ... |}` annotation syntax for reifiers that are used as subjects of metadata assertions.
-- [ ] Verify compliance with RDF 1.2 syntax tests (if available) or create specific scenarios covering Triple Terms.
+- [x] Implement serialization for `TripleTerm` objects using `<<( ... )>>` syntax.
+- [x] Implement logic to detect reified triples (`rdf:reifies`).
+- [x] Support `{| ... |}` annotation syntax for reifiers that are used as subjects of metadata assertions.
+- [x] Verify compliance with RDF 1.2 syntax tests (if available) or create specific scenarios covering Triple Terms.
 
 ## Phase 5: Finalization & Polish
 - [ ] Review all TODOs.

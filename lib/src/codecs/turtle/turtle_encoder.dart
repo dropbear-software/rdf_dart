@@ -36,11 +36,15 @@ class TurtleEncoder extends Converter<Iterable<Triple>, String> {
 
 class _TurtleGraphAnalyzer {
   final Map<BlankNode, int> refCounts = {};
-  final Map<BlankNode, List<Triple>> subjectToTriples = {};
+  final Map<SubjectTerm, List<Triple>> subjectToTriples = {};
 
   // List detection
   final Map<BlankNode, List<ObjectTerm>> listMembers = {};
   final Set<BlankNode> nodesInLists = {};
+
+  // Annotation detection
+  final Map<Triple, Set<SubjectTerm>> tripleToReifiers = {};
+  final Set<SubjectTerm> annotationReifiers = {};
 
   static final _rdfFirst =
       Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#first');
@@ -51,25 +55,43 @@ class _TurtleGraphAnalyzer {
       Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
   static final _rdfList =
       Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#List');
+  static final _rdfReifies =
+      Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies');
 
   void analyze(Iterable<Triple> triples) {
     for (final t in triples) {
       final s = t.subject;
-      if (s is BlankNode) {
-        subjectToTriples.putIfAbsent(s, () => []).add(t);
-      }
+      subjectToTriples.putIfAbsent(s, () => []).add(t);
       _incrementRef(t.object);
+
+      if (t.predicate == _rdfReifies && t.object is TripleTerm) {
+        final reifiedTriple = (t.object as TripleTerm).triple;
+        tripleToReifiers.putIfAbsent(reifiedTriple, () => {}).add(t.subject);
+      }
     }
 
     // Detect lists
     for (final s in subjectToTriples.keys) {
-      if (nodesInLists.contains(s)) continue;
+      if (s is BlankNode && !nodesInLists.contains(s)) {
+        final ts = subjectToTriples[s]!;
+        if (_isPotentialListNode(ts)) {
+          final elements = _collectList(s);
+          if (elements != null) {
+            listMembers[s] = elements;
+          }
+        }
+      }
+    }
 
-      final ts = subjectToTriples[s]!;
-      if (_isPotentialListNode(ts)) {
-        final elements = _collectList(s);
-        if (elements != null) {
-          listMembers[s] = elements;
+    // Detect annotation reifiers
+    for (final entry in tripleToReifiers.entries) {
+      for (final r in entry.value) {
+        if (r is BlankNode && (refCounts[r] ?? 0) == 0) {
+          final ts = subjectToTriples[r] ?? [];
+          // It's an annotation if it has properties other than rdf:reifies
+          if (ts.any((t) => t.predicate != _rdfReifies)) {
+            annotationReifiers.add(r);
+          }
         }
       }
     }
@@ -143,7 +165,8 @@ class _TurtleGraphAnalyzer {
 
   bool canInline(BlankNode bnode) {
     if (isInternalListNode(bnode)) return false;
-    return refCounts[bnode] == 1 || (refCounts[bnode] ?? 0) == 0;
+    if (annotationReifiers.contains(bnode)) return false;
+    return (refCounts[bnode] ?? 0) <= 1;
   }
 }
 
@@ -154,7 +177,11 @@ class _TurtleWriter {
 
   int _indent = 0;
   final Set<BlankNode> _inlinedBNodes = {};
+  final Set<SubjectTerm> _usedAsAnnotation = {};
   late _TurtleGraphAnalyzer _analyzer;
+
+  static final _rdfReifies =
+      Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies');
 
   _TurtleWriter(this._sink, {this.prefixes = const {}, this.baseUri});
 
@@ -183,6 +210,7 @@ class _TurtleWriter {
     final rootSubjects = allSubjects.where((s) {
       if (s is BlankNode) {
         if (_analyzer.isInternalListNode(s)) return false;
+        if (_analyzer.annotationReifiers.contains(s)) return false;
         if (_analyzer.isListHead(s)) {
           return (_analyzer.refCounts[s] ?? 0) == 0;
         }
@@ -242,7 +270,28 @@ class _TurtleWriter {
       _sink.write(' ');
 
       for (var k = 0; k < objects.length; k++) {
-        _writeObject(objects[k]);
+        final o = objects[k];
+        _writeObject(o);
+
+        // Check for annotations
+        final currentTriple =
+            triples.firstWhere((t) => t.predicate == p && t.object == o);
+        final reifiers = _analyzer.tripleToReifiers[currentTriple];
+        if (reifiers != null) {
+          for (final r in reifiers) {
+            if (_analyzer.annotationReifiers.contains(r) &&
+                !_usedAsAnnotation.contains(r)) {
+              _usedAsAnnotation.add(r);
+              _sink.write(' {| ');
+              final annotationTriples = _analyzer.subjectToTriples[r]!
+                  .where((t) => t.predicate != _rdfReifies)
+                  .toList();
+              _writePredicateObjectList(annotationTriples);
+              _sink.write(' |}');
+            }
+          }
+        }
+
         if (k < objects.length - 1) {
           _sink.write(' ,\n');
           _writeIndent();
