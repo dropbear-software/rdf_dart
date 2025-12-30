@@ -6,6 +6,7 @@ This plan outlines the steps to implement a fully compliant RDF 1.2 Turtle seria
 - **Phase 0:** Initial state. Analysis complete.
 - **Phase 1:** Completed basic setup. Created `_TurtleWriter` and updated `TurtleEncoder`. Implemented basic grouping by subject and predicate. Verified with new `turtle_encoder_test.dart`.
 - **Phase 2:** Implemented Prefix and Base URI support. Added `_relativizeIri` and `_isValidLocalName` logic. Updated encoder to emit directives. Verified with tests.
+- **Phase 3:** Implemented Blank Node inlining and Collections support. Added `_TurtleGraphAnalyzer` for preprocessing. Updated serializer to use `[ ... ]` and `( ... )` syntax. Verified with tests.
 
 ## Phase 1: Preparation & Basic Setup
 - [x] Run all existing tests to ensure a clean baseline.
@@ -24,12 +25,12 @@ This plan outlines the steps to implement a fully compliant RDF 1.2 Turtle seria
 - [x] Add unit tests specifically for prefix shrinking and base URI handling.
 
 ## Phase 3: Blank Node Nesting and Collections
-- [ ] Implement a `GraphAnalyzer` (or similar helper) to preprocess the input graph.
-    - [ ] Count reference occurrences for each Blank Node.
-    - [ ] Detect RDF List structures (`rdf:first`, `rdf:rest`, `rdf:nil`).
-- [ ] Update serialization logic to use `[ ... ]` for blank nodes with single reference count (that aren't cyclic).
-- [ ] Update serialization logic to use `( ... )` for valid RDF lists.
-- [ ] Add unit tests for nesting and collections.
+- [x] Implement a `GraphAnalyzer` (or similar helper) to preprocess the input graph.
+    - [x] Count reference occurrences for each Blank Node.
+    - [x] Detect RDF List structures (`rdf:first`, `rdf:rest`, `rdf:nil`).
+- [x] Update serialization logic to use `[ ... ]` for blank nodes with single reference count (that aren't cyclic).
+- [x] Update serialization logic to use `( ... )` for valid RDF lists.
+- [x] Add unit tests for nesting and collections.
 
 ## Phase 4: RDF 1.2 Features (Triple Terms & Annotations)
 - [ ] Implement serialization for `TripleTerm` objects using `<<( ... )>>` syntax.

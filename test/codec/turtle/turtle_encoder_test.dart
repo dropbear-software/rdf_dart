@@ -101,32 +101,248 @@ void main() {
     
     
     
-        test('Base URI support', () {
-    
-          final s = Iri('http://example.org/s');
-    
-          final p = Iri('http://example.org/p');
-    
-          final o = Iri('http://example.org/o');
+                test('Base URI support', () {
     
     
     
-          final triples = [Triple(subject: s, predicate: p, object: o)];
-    
-          final encoder = TurtleEncoder(baseUri: 'http://example.org/');
-    
-          final output = encoder.convert(triples);
+                  final s = Iri('http://example.org/s');
     
     
     
-          expect(output, contains('BASE <http://example.org/>'));
+                  final p = Iri('http://example.org/p');
     
-          expect(output, contains('<s>\n    <p> <o> .'));
     
-        });
     
-      });
+                  final o = Iri('http://example.org/o');
     
-    }
+    
+    
+            
+    
+    
+    
+                  final triples = [Triple(subject: s, predicate: p, object: o)];
+    
+    
+    
+                  final encoder = TurtleEncoder(baseUri: 'http://example.org/');
+    
+    
+    
+                  final output = encoder.convert(triples);
+    
+    
+    
+            
+    
+    
+    
+                  expect(output, contains('BASE <http://example.org/>'));
+    
+    
+    
+                  expect(output, contains('<s>\n    <p> <o> .'));
+    
+    
+    
+                });
+    
+    
+    
+        
+    
+    
+    
+            test('Blank Node inlining', () {
+    
+    
+    
+              final s = Iri('http://example.org/s');
+    
+    
+    
+              final p = Iri('http://example.org/p');
+    
+    
+    
+              final b = BlankNode('b1');
+    
+    
+    
+              final p2 = Iri('http://example.org/p2');
+    
+    
+    
+              final o2 = Literal('nested');
+    
+    
+    
+        
+    
+    
+    
+              final triples = [
+    
+    
+    
+                Triple(subject: s, predicate: p, object: b),
+    
+    
+    
+                Triple(subject: b, predicate: p2, object: o2),
+    
+    
+    
+              ];
+    
+    
+    
+        
+    
+    
+    
+              final output = const TurtleEncoder().convert(triples);
+    
+    
+    
+        
+    
+    
+    
+              expect(output, contains('<http://example.org/s>'));
+    
+    
+    
+              expect(output, contains('<http://example.org/p> ['));
+    
+    
+    
+              expect(output, contains('<http://example.org/p2> "nested"'));
+    
+    
+    
+              expect(output, isNot(contains('_:b1')));
+    
+    
+    
+            });
+    
+    
+    
+                test('Collections support', () {
+    
+    
+    
+                  final s = Iri('http://example.org/s');
+    
+    
+    
+                  final p = Iri('http://example.org/p');
+    
+    
+    
+                  
+    
+    
+    
+                  final b1 = BlankNode('b1');
+    
+    
+    
+                  final b2 = BlankNode('b2');
+    
+    
+    
+                  
+    
+    
+    
+                  final rdfFirst = Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#first');
+    
+    
+    
+                  final rdfRest = Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#rest');
+    
+    
+    
+                  final rdfNil = Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#nil');
+    
+    
+    
+            
+    
+    
+    
+                  final triples = [
+    
+    
+    
+                    Triple(subject: s, predicate: p, object: b1),
+    
+    
+    
+                    Triple(subject: b1, predicate: rdfFirst, object: Literal('item1')),
+    
+    
+    
+                    Triple(subject: b1, predicate: rdfRest, object: b2),
+    
+    
+    
+                    Triple(subject: b2, predicate: rdfFirst, object: Literal('item2')),
+    
+    
+    
+                    Triple(subject: b2, predicate: rdfRest, object: rdfNil),
+    
+    
+    
+                  ];
+    
+    
+    
+            
+    
+    
+    
+                  final output = const TurtleEncoder().convert(triples);
+    
+    
+    
+            
+    
+    
+    
+                  expect(output, contains('( "item1" "item2" )'));
+    
+    
+    
+                  expect(output, isNot(contains('_:b1')));
+    
+    
+    
+                  expect(output, isNot(contains('_:b2')));
+    
+    
+    
+                });
+    
+    
+    
+              });
+    
+    
+    
+            }
+    
+    
+    
+        
+    
+    
+    
+    
+    
+        
     
     

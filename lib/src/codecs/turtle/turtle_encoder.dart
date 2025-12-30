@@ -34,22 +34,133 @@ class TurtleEncoder extends Converter<Iterable<Triple>, String> {
   }
 }
 
+class _TurtleGraphAnalyzer {
+  final Map<BlankNode, int> refCounts = {};
+  final Map<BlankNode, List<Triple>> subjectToTriples = {};
+
+  // List detection
+  final Map<BlankNode, List<ObjectTerm>> listMembers = {};
+  final Set<BlankNode> nodesInLists = {};
+
+  static final _rdfFirst =
+      Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#first');
+  static final _rdfRest =
+      Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#rest');
+  static final _rdfNil = Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#nil');
+  static final _rdfType =
+      Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
+  static final _rdfList =
+      Iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#List');
+
+  void analyze(Iterable<Triple> triples) {
+    for (final t in triples) {
+      final s = t.subject;
+      if (s is BlankNode) {
+        subjectToTriples.putIfAbsent(s, () => []).add(t);
+      }
+      _incrementRef(t.object);
+    }
+
+    // Detect lists
+    for (final s in subjectToTriples.keys) {
+      if (nodesInLists.contains(s)) continue;
+
+      final ts = subjectToTriples[s]!;
+      if (_isPotentialListNode(ts)) {
+        final elements = _collectList(s);
+        if (elements != null) {
+          listMembers[s] = elements;
+        }
+      }
+    }
+  }
+
+  bool _isPotentialListNode(List<Triple> ts) {
+    bool hasFirst = false;
+    bool hasRest = false;
+    int count = 0;
+    for (final t in ts) {
+      if (t.predicate == _rdfFirst) {
+        hasFirst = true;
+      } else if (t.predicate == _rdfRest) {
+        hasRest = true;
+      } else if (t.predicate == _rdfType && t.object == _rdfList) {
+        continue;
+      } else {
+        return false;
+      }
+      count++;
+    }
+    return hasFirst && hasRest && (count == 2);
+  }
+
+  List<ObjectTerm>? _collectList(BlankNode head) {
+    final elements = <ObjectTerm>[];
+    final visited = <BlankNode>{};
+    var current = head;
+
+    while (true) {
+      if (visited.contains(current)) return null; // Cycle
+      visited.add(current);
+
+      final ts = subjectToTriples[current];
+      if (ts == null || !_isPotentialListNode(ts)) return null;
+
+      ObjectTerm? first;
+      ObjectTerm? rest;
+      for (final t in ts) {
+        if (t.predicate == _rdfFirst) first = t.object;
+        if (t.predicate == _rdfRest) rest = t.object;
+      }
+
+      if (first == null || rest == null) return null;
+      elements.add(first);
+
+      if (rest == _rdfNil) {
+        nodesInLists.addAll(visited);
+        return elements;
+      }
+
+      if (rest is! BlankNode) return null;
+      if (refCounts[rest] != 1) return null;
+
+      current = rest as BlankNode;
+    }
+  }
+
+  void _incrementRef(RdfTerm term) {
+    if (term is BlankNode) {
+      refCounts[term] = (refCounts[term] ?? 0) + 1;
+    } else if (term is TripleTerm) {
+      _incrementRef(term.triple.subject);
+      _incrementRef(term.triple.object);
+    }
+  }
+
+  bool isListHead(BlankNode bnode) => listMembers.containsKey(bnode);
+  bool isInternalListNode(BlankNode bnode) =>
+      nodesInLists.contains(bnode) && !listMembers.containsKey(bnode);
+
+  bool canInline(BlankNode bnode) {
+    if (isInternalListNode(bnode)) return false;
+    return refCounts[bnode] == 1 || (refCounts[bnode] ?? 0) == 0;
+  }
+}
+
 class _TurtleWriter {
   final StringSink _sink;
   final Map<String, String> prefixes;
   final String? baseUri;
 
   int _indent = 0;
+  final Set<BlankNode> _inlinedBNodes = {};
+  late _TurtleGraphAnalyzer _analyzer;
 
-  _TurtleWriter(
-    this._sink,
-    {
-      this.prefixes = const {},
-      this.baseUri,
-    }
-  );
+  _TurtleWriter(this._sink, {this.prefixes = const {}, this.baseUri});
 
   void writeGraph(Iterable<Triple> triples) {
+    _analyzer = _TurtleGraphAnalyzer()..analyze(triples);
+
     // 1. Write Directives
     if (baseUri != null) {
       _sink.write('BASE <$baseUri>\n');
@@ -63,74 +174,109 @@ class _TurtleWriter {
       _sink.write('\n');
     }
 
-    // 2. Group by Subject
-    final subjects = <SubjectTerm, Map<PredicateTerm, List<ObjectTerm>>>{};
+    // 2. Filter subjects
+    final allSubjects = <SubjectTerm>{};
     for (final t in triples) {
-      subjects
-          .putIfAbsent(t.subject, () => {})
-          .putIfAbsent(t.predicate, () => [])
-          .add(t.object);
+      allSubjects.add(t.subject);
     }
 
-    // 3. Write each subject block
-    final subjectList = subjects.keys.toList();
-    // Deterministic sorting: BNodes after IRIs
-    subjectList.sort((a, b) {
+    final rootSubjects = allSubjects.where((s) {
+      if (s is BlankNode) {
+        if (_analyzer.isInternalListNode(s)) return false;
+        if (_analyzer.isListHead(s)) {
+          return (_analyzer.refCounts[s] ?? 0) == 0;
+        }
+        return !_analyzer.canInline(s);
+      }
+      return true;
+    }).toList();
+
+    // 3. Sort subjects
+    rootSubjects.sort((a, b) {
       if (a is Iri && b is! Iri) return -1;
       if (a is! Iri && b is Iri) return 1;
       return a.toString().compareTo(b.toString());
     });
 
-    for (var i = 0; i < subjectList.length; i++) {
-      final s = subjectList[i];
-      final predicates = subjects[s]!;
+    for (var i = 0; i < rootSubjects.length; i++) {
+      final s = rootSubjects[i];
+      final triplesForSubject = triples.where((t) => t.subject == s).toList();
+      if (triplesForSubject.isEmpty && s is! BlankNode) continue;
 
       _writeSubject(s);
       _sink.write('\n');
       _indent++;
 
-      final predicateList = predicates.keys.toList();
-      // Deterministic sorting
-      predicateList.sort((a, b) {
-        final as = a.toString();
-        final bs = b.toString();
-        // rdf:type first
-        if (as == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') return -1;
-        if (bs == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') return 1;
-        return as.compareTo(bs);
-      });
+      _writePredicateObjectList(triplesForSubject);
 
-      for (var j = 0; j < predicateList.length; j++) {
-        final p = predicateList[j];
-        final objects = predicates[p]!;
-
-        _writeIndent();
-        _writePredicate(p);
-        _sink.write(' ');
-
-        for (var k = 0; k < objects.length; k++) {
-          _writeObject(objects[k]);
-          if (k < objects.length - 1) {
-            _sink.write(' ,\n');
-            _writeIndent();
-            _sink.write('    '); // Additional indent for object list items
-          }
-        }
-
-        if (j < predicateList.length - 1) {
-          _sink.write(' ;\n');
-        } else {
-          _sink.write(' .\n');
-        }
-      }
+      _sink.write(' .\n');
       _indent--;
-      if (i < subjectList.length - 1) {
+
+      if (i < rootSubjects.length - 1) {
         _sink.write('\n');
       }
     }
   }
 
+  void _writePredicateObjectList(List<Triple> triples) {
+    final predicates = <PredicateTerm, List<ObjectTerm>>{};
+    for (final t in triples) {
+      predicates.putIfAbsent(t.predicate, () => []).add(t.object);
+    }
+
+    final predicateList = predicates.keys.toList();
+    predicateList.sort((a, b) {
+      final as = a.toString();
+      final bs = b.toString();
+      if (as == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') return -1;
+      if (bs == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type') return 1;
+      return as.compareTo(bs);
+    });
+
+    for (var j = 0; j < predicateList.length; j++) {
+      final p = predicateList[j];
+      final objects = predicates[p]!;
+
+      _writeIndent();
+      _writePredicate(p);
+      _sink.write(' ');
+
+      for (var k = 0; k < objects.length; k++) {
+        _writeObject(objects[k]);
+        if (k < objects.length - 1) {
+          _sink.write(' ,\n');
+          _writeIndent();
+          _sink.write('    ');
+        }
+      }
+
+      if (j < predicateList.length - 1) {
+        _sink.write(' ;\n');
+      }
+    }
+  }
+
   void _writeSubject(SubjectTerm s) {
+    if (s is BlankNode && _analyzer.isListHead(s)) {
+      _writeList(s);
+      return;
+    }
+    if (s is BlankNode &&
+        _analyzer.canInline(s) &&
+        (_analyzer.refCounts[s] ?? 0) == 0) {
+      _sink.write('[ ');
+      final triples = _analyzer.subjectToTriples[s] ?? [];
+      if (triples.isNotEmpty) {
+        _sink.write('\n');
+        _indent++;
+        _writePredicateObjectList(triples);
+        _indent--;
+        _writeIndent();
+      }
+      _sink.write(']');
+      return;
+    }
+
     if (s is Iri) {
       _writeIri(s);
     } else if (s is BlankNode) {
@@ -149,6 +295,28 @@ class _TurtleWriter {
   }
 
   void _writeObject(ObjectTerm o) {
+    if (o is BlankNode && _analyzer.isListHead(o)) {
+      _writeList(o);
+      return;
+    }
+
+    if (o is BlankNode &&
+        _analyzer.canInline(o) &&
+        !_inlinedBNodes.contains(o)) {
+      _inlinedBNodes.add(o);
+      _sink.write('[ ');
+      final triples = _analyzer.subjectToTriples[o] ?? [];
+      if (triples.isNotEmpty) {
+        _sink.write('\n');
+        _indent++;
+        _writePredicateObjectList(triples);
+        _indent--;
+        _writeIndent();
+      }
+      _sink.write(']');
+      return;
+    }
+
     if (o is Iri) {
       _writeIri(o);
     } else if (o is BlankNode) {
@@ -160,6 +328,16 @@ class _TurtleWriter {
       _writeTriple(o.triple);
       _sink.write(' ) >>');
     }
+  }
+
+  void _writeList(BlankNode head) {
+    final members = _analyzer.listMembers[head]!;
+    _sink.write('( ');
+    for (var i = 0; i < members.length; i++) {
+      _writeObject(members[i]);
+      if (i < members.length - 1) _sink.write(' ');
+    }
+    _sink.write(' )');
   }
 
   void _writeTriple(Triple t) {
@@ -176,8 +354,6 @@ class _TurtleWriter {
 
   String _relativizeIri(Iri iri) {
     final iriStr = iri.toString();
-
-    // 1. Try Prefix replacement
     for (final entry in prefixes.entries) {
       final namespace = entry.value;
       if (iriStr.startsWith(namespace)) {
@@ -187,25 +363,18 @@ class _TurtleWriter {
         }
       }
     }
-
-    // 2. Try Base URI stripping
     if (baseUri != null && iriStr.startsWith(baseUri!)) {
       final rel = iriStr.substring(baseUri!.length);
-      // Ensure it doesn't contain > or other invalid chars for relative IRI
       if (!rel.contains('>')) {
         return '<$rel>';
       }
     }
-
     return '<$iriStr>';
   }
 
   bool _isValidLocalName(String localName) {
     if (localName.isEmpty) return true;
-    // PN_LOCAL ::= ( PN_CHARS_U | ':' | [0-9] | PLX ) ( ( PN_CHARS | '.' | ':' | PLX )*  ( PN_CHARS | ':' | PLX ) ) ?
-    // Simplified check: alphanumeric, underscore, hyphen. No dots at end.
-    // We don't support PLX (escaping) in localName generation yet for simplicity.
-    final regex = RegExp(r'^[a-zA-Z0-9_]([a-zA-Z0-9_\-\:]*[a-zA-Z0-9_\:])?$');
+    final regex = RegExp(r'^[a-zA-Z0-9_]([a-zA-Z0-9_\-:]*[a-zA-Z0-9_:])?$');
     return regex.hasMatch(localName);
   }
 
@@ -222,7 +391,8 @@ class _TurtleWriter {
       if (l.baseDirection != null) {
         _sink.write('--${l.baseDirection == TextDirection.LTR ? 'ltr' : 'rtl'}');
       }
-    } else if (l.datatypeIri.toString() != 'http://www.w3.org/2001/XMLSchema#string') {
+    } else if (l.datatypeIri.toString() !=
+        'http://www.w3.org/2001/XMLSchema#string') {
       _sink.write('^^');
       _writeIri(l.datatypeIri);
     }
