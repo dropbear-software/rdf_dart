@@ -67,10 +67,3 @@ void main() {
 }
 ```
 
-## Roadmap
-
-- [ ] Abstract Data Model (IRIs, Literals, Blank Nodes, Triple Terms)
-- [ ] RDF Datasets
-- [ ] Serialization (Turtle, N-Triples, etc.)
-- [ ] Semantics & Reasoning (Entailment)
-
