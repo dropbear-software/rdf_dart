@@ -1,23 +1,23 @@
-import '../util/iri.dart' as impl;
+import 'package:iri/iri.dart' as iri_pkg;
 import 'term.dart';
 
 /// An RDF Term acting as an IRI (Internationalized Resource Identifier).
 ///
 /// An [Iri] can appear in the Subject, Predicate, or Object position of a triple.
-/// It wraps [impl.Iri] to provide IRI handling while implementing RDF term interfaces.
+/// It wraps [iri_pkg.Iri] to provide IRI handling while implementing RDF term interfaces.
 class Iri implements SubjectTerm, PredicateTerm, ObjectTerm, GraphName {
-  final impl.Iri _iri;
+  final iri_pkg.Iri _iri;
 
   /// Creates an [Iri] from a string.
   ///
-  /// Delegates to [impl.Iri.parse].
+  /// Delegates to [iri_pkg.Iri.parse].
   factory Iri(String value) => Iri.parse(value);
 
   /// Parses [value] as an IRI.
-  factory Iri.parse(String value) => Iri._(impl.Iri.parse(value));
+  factory Iri.parse(String value) => Iri._(iri_pkg.Iri.parse(value));
 
   /// Creates an [Iri] from an existing Uri.
-  factory Iri.fromUri(Uri uri) => Iri._(impl.Iri.fromUri(uri));
+  factory Iri.fromUri(Uri uri) => Iri._(iri_pkg.Iri.fromUri(uri));
 
   /// Creates an [Iri] from its components.
   factory Iri.fromComponents({
@@ -32,7 +32,7 @@ class Iri implements SubjectTerm, PredicateTerm, ObjectTerm, GraphName {
     String? fragment,
   }) {
     return Iri._(
-      impl.Iri(
+      iri_pkg.Iri(
         scheme: scheme,
         userInfo: userInfo,
         host: host,
