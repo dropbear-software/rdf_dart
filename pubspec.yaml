@@ -10,7 +10,9 @@ environment:
 # Add regular dependencies here.
 dependencies:
   intl: ^0.20.2
-  iri: ^0.2.0
+  meta: ^1.17.0
+  punycoder: ^0.3.0
+  unorm_dart: ^0.3.2
   xsd:
     git: https://github.com/dropbear-software/xsd.git
       
