@@ -56,7 +56,7 @@ dart format .
 ## Architecture & Design
 
 The library is structured around the core concepts of RDF 1.2:
-*   **Term Hierarchy**: `Term` is the base class, with implementations for `Iri`, `Literal`, `BlankNode`, and `TripleTerm` (for RDF-star).
+*   **Term Hierarchy**: `Term` is the base class, with implementations for `Iri`, `Literal`, `BlankNode`, and `TripleTerm` (for RDF-star). `Iri` relies on a robust local implementation (`lib/src/util/iri.dart`) based on RFC 3987 for Internationalized Resource Identifiers.
 *   **Statements**: `Triple` (Subject, Predicate, Object) and `Quad` (Subject, Predicate, Object, Graph Name).
 *   **Collections**: `Graph` (set of triples) and `Dataset` (default graph + named graphs).
 *   **Codecs**: Implements Dart's `Converter` pattern (Encoder/Decoder) for parsing and serializing formats like Turtle and N-Triples. The `TurtleEncoder` is a sophisticated implementation that supports prefixes, base URIs, grouping, blank node inlining, and RDF 1.2 features (Triple Terms, Annotations).
