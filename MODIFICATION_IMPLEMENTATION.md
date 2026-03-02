@@ -30,18 +30,18 @@ This plan outlines the steps to replace the internal IRI implementation with a r
 - [x] Add `punycoder`, `unorm_dart`, and `meta` to `pubspec.yaml`.
 - [x] Remove `iri` from `pubspec.yaml`.
 - [x] Run `analyze_files` and `run_tests` to verify the fix.
-- [ ] Create/modify unit tests for testing the code added or modified in this phase, if relevant.
+- [x] Create/modify unit tests for testing the code added or modified in this phase, if relevant.
 - [x] Run the `dart_fix` tool to clean up the code.
 - [x] Run the `analyze_files` tool one more time and fix any issues.
 - [x] Run any tests to make sure they all pass.
 - [x] Run `dart_format` to make sure that the formatting is correct.
-- [ ] Use `git diff` to verify the changes and create a suitable commit message.
-- [ ] Wait for approval.
+- [x] Use `git diff` to verify the changes and create a suitable commit message.
+- [x] Wait for approval.
 
 ## Phase 3: Refactor Callers and Cleanup
-- [ ] Search for all occurrences of `toPercentEncodedUri()` in the codebase and replace with `toUri()`.
-- [ ] Identify and fix any code that assumes `Iri` is a `Uri` (e.g., passing `Iri` where `Uri` is expected) by adding `.toUri()`.
-- [ ] Update documentation references to use the new `Iri` class.
+- [x] Search for all occurrences of `toPercentEncodedUri()` in the codebase and replace with `toUri()`.
+- [x] Identify and fix any code that assumes `Iri` is a `Uri` (e.g., passing `Iri` where `Uri` is expected) by adding `.toUri()`.
+- [x] Update documentation references to use the new `Iri` class.
 
 ## Phase 4: Finalization and Documentation
 - [ ] Update `GEMINI.md` to reflect the new architecture (local `util/iri.dart` based on RFC 3987).

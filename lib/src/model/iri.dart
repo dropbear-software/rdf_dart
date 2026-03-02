@@ -81,10 +81,6 @@ class Iri implements SubjectTerm, PredicateTerm, ObjectTerm, GraphName {
   /// Returns the underlying [Uri] with percent-encoded components.
   Uri toUri() => _iri.toUri();
 
-  /// Deprecated: use [toUri] instead.
-  @Deprecated('Use toUri instead')
-  Uri toPercentEncodedUri() => toUri();
-
   /// Resolves [reference] against this IRI.
   Iri resolve(String reference) => Iri._(_iri.resolve(reference));
 

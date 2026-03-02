@@ -358,18 +358,18 @@ class _TurtleParser {
         var iriStr = sb.toString();
         if (_base != null) {
           try {
-            var resolvedUri = Uri.parse(_base!.toString()).resolve(iriStr);
+            var resolvedIri = _base!.resolve(iriStr);
             // Workaround for Dart Uri bug where trailing dot segment may not be removed
             // before query or fragment (e.g. /path/.?q=v)
-            if (resolvedUri.path.endsWith('/.')) {
-              resolvedUri = resolvedUri.replace(
-                path: resolvedUri.path.substring(
+            if (resolvedIri.path.endsWith('/.')) {
+              resolvedIri = resolvedIri.replace(
+                path: resolvedIri.path.substring(
                   0,
-                  resolvedUri.path.length - 1,
+                  resolvedIri.path.length - 1,
                 ),
               );
             }
-            iriStr = resolvedUri.toString();
+            iriStr = resolvedIri.toString();
           } catch (_) {}
         }
         return Iri(iriStr);
