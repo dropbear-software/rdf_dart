@@ -14,6 +14,11 @@ This plan outlines the steps to replace the internal IRI implementation with a r
     * Updated `lib/src/model/iri.dart` to wrap the local `impl.Iri`.
     * Verified that `test/codec/n_triples/n_triples_w3c_test.dart` now passes its canonicalization tests.
     * Swapped `package:iri` dependency for direct dependencies on `punycoder`, `unorm_dart`, and `meta`.
+* **Phase 3: Refactor Callers and Cleanup**
+    * Refactored `TurtleDecoder` to use the new `Iri.resolve` method directly instead of converting to/from `Uri`.
+    * Removed the deprecated `toPercentEncodedUri()` method from `lib/src/model/iri.dart` as it's no longer used or needed.
+* **Phase 4: Finalization and Documentation**
+    * Updated `GEMINI.md` to reflect the new architecture.
 
 ## Phase 1: Baseline and Dependency Setup (COMPLETED)
 - [x] Run all tests to ensure the project is in a good state before starting modifications.
@@ -22,7 +27,7 @@ This plan outlines the steps to replace the internal IRI implementation with a r
 - [x] Update the Journal with any findings.
 - [x] Use `git diff` to verify changes, propose a commit message, and wait for approval.
 
-## Phase 2: Local Integration and Fix
+## Phase 2: Local Integration and Fix (COMPLETED)
 - [x] Fetch `iri_base.dart` from `package:iri`.
 - [x] Write to `lib/src/util/iri.dart` and refactor for project needs.
 - [x] Implement selective decoding (`_decodeIriComponent`) to fix percent-encoding issues.
@@ -38,12 +43,12 @@ This plan outlines the steps to replace the internal IRI implementation with a r
 - [x] Use `git diff` to verify the changes and create a suitable commit message.
 - [x] Wait for approval.
 
-## Phase 3: Refactor Callers and Cleanup
+## Phase 3: Refactor Callers and Cleanup (COMPLETED)
 - [x] Search for all occurrences of `toPercentEncodedUri()` in the codebase and replace with `toUri()`.
 - [x] Identify and fix any code that assumes `Iri` is a `Uri` (e.g., passing `Iri` where `Uri` is expected) by adding `.toUri()`.
 - [x] Update documentation references to use the new `Iri` class.
 
 ## Phase 4: Finalization and Documentation
-- [ ] Update `GEMINI.md` to reflect the new architecture (local `util/iri.dart` based on RFC 3987).
-- [ ] Run all tests one last time.
-- [ ] Ask the user to inspect the package and say if they are satisfied.
+- [x] Update `GEMINI.md` to reflect the new architecture (local `util/iri.dart` based on RFC 3987).
+- [x] Run all tests one last time.
+- [x] Ask the user to inspect the package and say if they are satisfied.
